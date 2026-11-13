@@ -1,0 +1,26 @@
+CRGT Sample Workstation, offline version (v26)
+
+What this is
+  The same app as the Claude artifact, packed to live on your iPad's home screen and run with no connection:
+  fonts are inside it, and after the first visit everything is kept on the iPad by a service worker.
+  Numbers use the iPad's own monospace (SF Mono) instead of JetBrains Mono.
+
+Put it online once (any HTTPS static host; GitHub Pages is free)
+  1. Make a new repository on github.com (public), e.g. "crgt".
+  2. Upload these files to it as they are: index.html, sw.js, manifest.webmanifest, icon-180.png, icon-192.png, icon-512.png.
+  3. Settings > Pages > Build and deployment: "Deploy from a branch", branch main, folder / (root). Save.
+  4. After a minute it is at https://YOUR-NAME.github.io/crgt/
+
+Install on the iPad
+  5. Open that address in Safari, tap Share > Add to Home Screen, then Add.
+  6. Open CRGT from the home screen once while online and wait a few seconds (it saves itself).
+  7. From then on it opens and plays in airplane mode.
+
+Your sessions
+  The home-screen app keeps its own sessions, separate from the Claude artifact. To bring one over: in the artifact,
+  SESSION > export the session (.zip); in the home-screen app, SESSION > load that .zip. Takes and session exports
+  from the home-screen app go through the share sheet: tap SAVE, then Save to Files.
+
+Updating
+  Replace the files in the repository with a newer build. The app picks it up the next time it is opened online,
+  and uses it from the launch after.
