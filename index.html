@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>CRGT Sample Workstation</title>
-<meta name="crgt-offline" content="v28">
+<meta name="crgt-offline" content="v29">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1040,6 +1040,7 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
   <p class="desc" id="sr-desc"></p>
   <div class="rp-row"><button class="btn sm" id="aud-wake" type="button" aria-pressed="true">KEEP SCREEN ON</button><span class="rp-st" id="aud-wake-st"></span></div>
   <div class="rp-row"><button class="btn sm" id="aud-bg" type="button" aria-pressed="true">PLAY WHEN LOCKED</button><span class="rp-st" id="aud-bg-st"></span></div>
+  <p class="desc" id="app-ver" hidden></p>
   <p class="desc" id="aud-desc">KEEP SCREEN ON stops the iPad locking by itself while CRGT is open. PLAY WHEN LOCKED keeps the sound going if you lock it anyway, the way a music player does (CRGT shows on the lock screen); loops wait while it is locked and carry on in time when you unlock. If the iPad still pauses the sound, the next tap or key brings it back.</p>
 </div>
 <button class="aud-back" id="aud-back" type="button" hidden>The iPad paused the sound · tap to bring it back</button>
@@ -3986,6 +3987,7 @@ function setupNode(){
 }
 const ratePop=$('#rate-pop'), rateBtn=$('#eng'), segSr=$('#seg-sr');
 function renderRatePop(){
+  { const m=document.querySelector('meta[name="crgt-offline"]'), v=$('#app-ver'); if(m && v.hidden){ v.hidden=false; v.textContent='Home-screen app, version '+m.content+'. It updates itself when you open it online.'; } }
   segSr.querySelectorAll('button').forEach(b=>{ b.setAttribute('aria-pressed',String(+b.dataset.sr===srWant)); b.disabled=srBusy||!!rec; });
   {
     $('#aud-wake').setAttribute('aria-pressed',String(AUD.wake)); $('#aud-bg').setAttribute('aria-pressed',String(AUD.bg));
@@ -7641,6 +7643,24 @@ window.__ws={get tabOrder(){ return tabOrder.slice(); },get secAll(){ return {in
 // ==/UI==
 </script>
 
-<script>if('serviceWorker' in navigator && (location.protocol==='https:'||location.hostname==='localhost')) addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));</script>
+<script>
+// the app keeps itself on the device; when a newer version is online it is fetched in the background, and a banner
+// offers to restart into it (never by itself, so a performance is not cut)
+(function(){
+  if(!('serviceWorker' in navigator) || !(location.protocol==='https:'||location.hostname==='localhost')) return;
+  let reg=null, shown=false;
+  function banner(){ if(shown) return; shown=true; const b=document.createElement('button'); b.type='button'; b.className='aud-back';
+    b.style.background='var(--accent)'; b.style.borderColor='var(--accent)'; b.style.color='var(--on-accent)';
+    b.textContent='A new version of CRGT is ready · tap to restart into it'; b.onclick=()=>location.reload(); document.body.appendChild(b); }
+  addEventListener('load',async()=>{
+    try{ reg=await navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}); }catch(e){ return; }
+    const had=!!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange',()=>{ if(had) banner(); });
+    const check=()=>{ if(reg && navigator.onLine!==false) reg.update().catch(()=>{}); };
+    document.addEventListener('visibilitychange',()=>{ if(!document.hidden) check(); });
+    addEventListener('online',check); setInterval(check,20*60*1000); check();
+  });
+})();
+</script>
 </body>
 </html>

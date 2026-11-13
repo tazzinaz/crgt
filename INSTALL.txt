@@ -1,4 +1,4 @@
-CRGT Sample Workstation, offline version (v28)
+CRGT Sample Workstation, offline version (v29)
 
 What this is
   The same app as the Claude artifact, packed to live on your iPad's home screen and run with no connection:
@@ -22,5 +22,6 @@ Your sessions
   from the home-screen app go through the share sheet: tap SAVE, then Save to Files.
 
 Updating
-  Replace the files in the repository with a newer build. The app picks it up the next time it is opened online,
-  and uses it from the launch after.
+  Replace the files in the repository with a newer build. When the app is open and online it fetches the new version
+  in the background and shows "A new version of CRGT is ready": tap it to restart into it (it never restarts by
+  itself). The AUDIO window (tap the audio pill) shows which version is running.
