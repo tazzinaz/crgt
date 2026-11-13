@@ -328,19 +328,56 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
 @media (max-width:699px){.rack>.p-sp,.rack>.p-spp,.rack>.p-spf,.rack>.p-fx{grid-column:auto}}
 /* floating windows: LFO and MATRIX */
 .fwin{position:fixed;z-index:17;left:16px;top:120px;display:flex;flex-direction:column;max-height:calc(100vh - 24px);background:var(--panel);border:1px solid var(--dim);border-radius:8px;box-shadow:0 14px 44px rgba(0,0,0,.6)}
-#fw-lfo{width:min(420px,calc(100vw - 16px))}#fw-mx{width:min(620px,calc(100vw - 16px))}#fw-fx{width:min(660px,calc(100vw - 16px))}
-/* FX rack: the chain of five slots, IN to OUT; parallel slots are dashed and marked ∥ */
-.fx-chain{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
-.fx-chain .fx-io{font:500 10px/1 var(--f-mono);letter-spacing:.1em;color:var(--dim)}
-.fx-chain .fx-arr{color:var(--dim);font-size:12px}
-.fx-slot{appearance:none;display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:78px;min-height:44px;padding:6px 9px;border:1px solid var(--line);border-radius:6px;background:var(--inset);color:var(--ink);font:600 11px/1 var(--f-mono);letter-spacing:.04em;cursor:pointer;text-align:left}
-.fx-slot small{font:500 9px/1 var(--f-mono);color:var(--dim);letter-spacing:.08em}
-.fx-slot.empty{color:var(--dim)}
-.fx-slot.par{border-style:dashed}
-.fx-slot.byp{opacity:.45}
-.fx-slot.sel{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+#fw-lfo{width:min(420px,calc(100vw - 16px))}#fw-mx{width:min(620px,calc(100vw - 16px))}
+/* FX rack: a patch of up to five devices; IN on the left, OUT on the right, wires between them */
+#fw-fx{width:min(760px,calc(100vw - 16px))}
+.fx-tools{gap:8px;flex-wrap:wrap;align-items:center}
+.fx-tools .grp{display:inline-flex;gap:4px;flex-wrap:wrap}
+.fx-tools .grp .btn[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
+.fx-pick{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:6px}
+.fx-tile{appearance:none;display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-height:48px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--inset);color:var(--ink);font:600 12px/1 var(--f-mono);letter-spacing:.04em;cursor:pointer;text-align:left}
+.fx-tile small{font:500 10px/1.2 var(--f-mono);color:var(--muted);letter-spacing:.02em}
+.fx-tile:active{border-color:var(--accent)}
+.fx-graph{position:relative;height:250px;border:1px solid var(--line);border-radius:6px;background:var(--inset);overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;flex:0 0 auto;
+  background-image:radial-gradient(circle,var(--line) 1px,transparent 1.2px);background-size:22px 22px}
+@media (max-width:699px){.fx-graph{height:290px}}
+.fx-wires{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.fx-wires .w{fill:none;stroke:var(--muted);stroke-width:2}
+.fx-wires .w.dead{stroke:var(--line);stroke-dasharray:4 4}
+.fx-wires .w.sel{stroke:var(--accent);stroke-width:3}
+.fx-wires .hit{fill:none;stroke:transparent;stroke-width:22;pointer-events:stroke;cursor:pointer}
+.fx-wires .tmp{fill:none;stroke:var(--accent);stroke-width:2;stroke-dasharray:6 4}
+.fx-nodes{position:absolute;inset:0;pointer-events:none}
+.fx-node{position:absolute;pointer-events:auto;display:flex;flex-direction:column;justify-content:center;gap:3px;box-sizing:border-box;padding:6px 14px 6px 12px;border:1px solid var(--dim);border-radius:7px;background:var(--panel);color:var(--ink);cursor:grab;touch-action:none}
+.fx-node b{font:600 12px/1 var(--f-mono);letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fx-node small{font:500 9px/1 var(--f-mono);letter-spacing:.08em;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fx-node.io{align-items:center;padding:0;border-style:dashed;cursor:default}
+.fx-node.io b{font-size:10px;letter-spacing:.12em;color:var(--muted)}
+.fx-node.cur{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.fx-node.byp{opacity:.5}
+.fx-node.dead{border-style:dashed}
+.fx-node.can{border-color:var(--accent);border-style:dashed}
+.fx-node.over{background:var(--on-bg)}
+.fx-node.drag{cursor:grabbing;box-shadow:0 6px 18px rgba(0,0,0,.45);z-index:2}
+.fx-port{position:absolute;top:50%;width:30px;height:30px;margin-top:-15px;display:flex;align-items:center;justify-content:center;cursor:crosshair}
+.fx-port::after{content:"";width:11px;height:11px;border-radius:50%;background:var(--panel);border:2px solid var(--muted);box-sizing:border-box}
+.fx-port.o{right:-16px}.fx-port.i{left:-16px;cursor:default}
+.fx-port.o:hover::after,.fx-port.o.on::after{background:var(--accent);border-color:var(--accent)}
+.fx-cut{position:absolute;z-index:3;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;border:1px solid var(--accent);background:var(--panel);color:var(--accent);font:500 18px/1 var(--f-mono);padding:0}
+.fx-hint{margin:0;font:400 12px/1.45 var(--f-sans);color:var(--muted)}
+.fx-io-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px}
+.fx-chips{display:inline-flex;flex-wrap:wrap;gap:4px;margin-right:6px}
+.fx-chips .btn[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
+.fx-mini{appearance:none;display:block;width:100%;height:112px;padding:0;border:1px solid var(--line);border-radius:6px;background:var(--inset);cursor:pointer}
+.fx-mini svg{width:100%;height:100%;display:block}
+.fx-mini .w{fill:none;stroke:var(--muted);stroke-width:1.5}
+.fx-mini .w.dead{stroke:var(--line);stroke-dasharray:3 3}
+.fx-mini rect{fill:var(--panel);stroke:var(--dim)}
+.fx-mini rect.io{stroke-dasharray:3 3}
+.fx-mini rect.byp{opacity:.5}
+.fx-mini text{fill:var(--ink);font:600 10px var(--f-mono);letter-spacing:.04em}
+.fx-mini text.io{fill:var(--muted);font-size:9px}
 .fx-ed{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:10px}
-.fx-all{gap:8px}
 #fw-lfo .lfos{grid-template-columns:minmax(0,1fr)}
 .fw-h{display:flex;align-items:center;gap:10px;padding:6px 6px 6px 14px;border-bottom:1px solid var(--line);cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none;flex:0 0 auto}
 .fwin.drag .fw-h{cursor:grabbing}.fwin.drag{border-color:var(--accent)}
@@ -896,7 +933,7 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
 
     <section class="panel p-fx" aria-labelledby="h-fx">
       <div class="ph"><h2 id="h-fx">FX</h2><button class="btn" id="open-fx" type="button" aria-pressed="false">FX RACK</button></div>
-      <div class="fx-chain" id="fx-chain-p" role="group" aria-label="FX slots"></div>
+      <button class="fx-mini" id="fx-mini" type="button" aria-label="The FX patch: tap to open the FX RACK"><svg id="fx-mini-svg" aria-hidden="true"></svg></button>
       <p class="desc keep" id="fx-sum"></p>
     </section>
 
@@ -941,7 +978,7 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
     </section>
   </main>
 
-  <p class="foot"><b>Full screen:</b> the corner button (where the browser allows it) fills the whole display and hides the viewer’s bar; tap it again or press Esc to leave. <b>Sections:</b> every part of the page has an icon in the bar above the panels (it stays at the top while you scroll). Tap an icon to fold that section away or bring it back; a folded section shows just its icon. Double-tap an icon to keep only that panel open, and double-tap it again for the ones you had; ALL shows everything. The icon beside each panel’s title folds it too. The panels left open widen into the space. Each player keeps its own panels, so switching player switches the view (players, clock and keys are the same for all of them), and the whole view is saved with the session and inside its exported .zip: you keep just what you are playing with on screen, player by player. <b>Players:</b> drag a tab to move the player to another place (or hold it a moment, then drag); the others slide aside. A player keeps its sound, loops and view when it moves; its number is its place, and the keys 1–8 follow the places. The order is saved with the session. eight, each with its own sample, engine, settings, loop region and gesture loop; all eight sound together. The tab you pick receives the knobs, the waveform and the keys (1–8 on a computer keyboard switch tabs). M mutes a player. <b>Copy a player:</b> COPY takes the selected player as it is (sample, every setting, gesture loops, panels); pick another player and tap PASTE to make it a copy, then change what you like: the two are separate, and UNDO brings back what the player had. The copy can be pasted into several players. <b>CPU:</b> the pill shows how busy the sound engine is; tap it for each player’s share, how many blocks ran late in the last minute (each may be heard as a click), PROTECT (when the engine is over 85% busy, notes that are only fading out end quickly) and LATENCY (MEDIUM and SAFE give the device a longer buffer, so busy moments do not break the sound). <b>Touch:</b> drag a knob up or right to raise it, double-tap to reset. Touch the waveform to play the sample from there, at the pitch it was recorded (C4), as long as your finger stays; drag to move through it. While keys are sounding the touch does not play by itself: it moves the position the notes play from, and the touch sound comes back 120 ms after you let go of the keys. The blue handle is where you send it, each thin line is a read position you hear. <b>Several fingers:</b> every extra finger on the waveform (up to four in all) adds a read position for as long as it stays down, marked by a blue ring; each note plays all of them, so three notes with two fingers sound six streams. Lift the first finger and the next one takes over the blue handle. Gesture loops record and replay these fingers too (violet rings). <b>Scrub:</b> SKIP jumps to where your finger is; FLUID glides there through the wavesets in between, in order (backwards like tape when you drag left), as fast as GLIDE allows; while your finger moves the sound follows it, and when it rests the unit loops there. <b>Granular:</b> ENGINE above the waveform switches the player between WAVESET and GRANULAR, an engine modelled on the Tasty Chips GR-1. Only the engine's own panels change (GRAIN, GRAIN WINDOW and SCAN · KEYS take the place of WAVESET, INTERPOLATION, JITTER and PROCESS); the sample, position, loop, keys, voices, output, time stretch, filter, fx, LFOs, matrix, presets and gesture loops stay. Grains: DENSITY 0.1–1000 a second, SIZE 5 ms–5 s, SPRAY, SCAN −2×…+2×, TUNE, DIRECTION, PAN and PAN SPRAY; a window shaped by SIDES, TILT and CURVE; four spawn modes, granular glide, key sync, anti-aliasing and up to 128 grains per voice. Sample modes GRANULAR, AUDITION and TAPE; scan modes LOOP, ONE SHOT and PING PONG; KEY→POS and KEY PITCH. With LOOP on, the scan pointer, spray, grains and position offsets all stay inside the loop and scale with it, as in the waveset engine. With time stretch on, the grains keep TUNE and the stretch mode transposes to the key. <b>Simpler:</b> the third ENGINE plays the sample as Ableton's Simpler does. CLASSIC: notes start at the blue handle and play S LENGTH of the region (the LOOP region, or the file), pitched by the key, through the ADSR, with a sustain LOOP (LOOP LEN, LOOP FADE). ONE-SHOT: one note at a time, TRIGGER or GATE, FADE IN and FADE OUT. SLICE: one slice per key from ROOT, sliced by TRANSIENT, BEAT (DIVISION of the sample's tempo, found or typed), REGION (equal parts), MANUAL, or by spectral features: LOUDNESS, CHROMA (harmony), BRIGHTNESS, TIMBRE (MFCC) and NOISINESS; SENSITIVITY sets how many. Drag markers in the band at the top of the waveform, double-tap the band to add one, double-tap a marker to remove it; ◀ ▶ nudge, SPLIT and DELETE act on the selected slice; MONO, POLY and THRU playback. Every mode has SNAP, REVERSE, GAIN, TRANSPOSE, DETUNE, a pitch envelope, GLIDE and PORTA, SPREAD, PAN, VEL→VOL, RETRIG, WARP AS (bars of the BPM, with the TIME STRETCH mode as warp mode) and the FILTER (shared with the other engines). <b>LFO and MATRIX:</b> the buttons next to ENGINE open them as floating windows; drag a window by its title bar, × or Esc closes it. Two LFOs (sine, square, saw, S&amp;H and AUX, a shape you draw in the LFO SHAPE window opened by ✎ DRAW) with key sync, MAIN clock, quantize and cross-modulation; with CLOCK MAIN, RATE divides or multiplies MAIN, whether MAIN came from a take, was typed in or comes from the BPM. The matrix holds up to 16 routes from the LFOs, velocity, key, pressure or a random value per note; its menu lists the controls of the engine in use and the shared ones (envelope, filter, effect, time stretch); every note is modulated on its own. <b>Filter:</b> in every engine each note has its own filter, the one from SIMPLER: LP, HP, BP, NOTCH or MORPH, 12 or 24 dB, five circuits with DRIVE, an envelope (F.ATTACK … F.RELEASE, ENV), KEY and VEL tracking; sessions with the old 12 dB player filter open with it set the same. <b>FX:</b> each player has an FX RACK of five slots (the FX panel shows the chain; tap a slot or FX RACK to open the window). A slot holds a device: MOSAIC (granular), RING (filter and tuned resonators), DEFORM (drive, compression, crush, noise) and VAST (delay into reverb), after the Torso S-4; DJ FILTER and COMPRESS, after its mixer; or one of the classic DELAY, DISTORTION, REDUCER and REVERB. Each slot runs in SERIES (it processes the chain, WET mixes it in) or in PARALLEL (it is fed what reaches the rack and added at the end, WET is its level), can be bypassed and moved with ◀ ▶; ALL IN SERIES and ALL IN PARALLEL set every slot at once. Every knob of every slot can be modulated from the MATRIX and recorded in gesture loops. Sessions from before keep their effect as slot 1. <b>SIMPLER slice LOOP:</b> FWD loops a slice while its key is held (LOOP FADE crossfades the joint), B&amp;F plays it back and forth; letting go fades it over FADE OUT. <b>Time stretch:</b> besides the four modes from the SuperCollider patch, MODE has Max stretch~’s modes (BASIC, MONOPHONIC, RHYTHMIC, GENERAL, POLYPHONIC, PADS, EXTREMESTRETCH, EFFICIENT), made here for this engine, with QUALITY and formant control, and five creative modes: BEATS and TEXTURE after Ableton Live’s warp modes, SPECTRAL after PaulXStretch (random phase, spread, harmonics tuned to the key, freeze), PRISM after CDP’s spectral shift, stretch and blur, and HYBRID after the noise-morphing method from Aalto University (sines and noise stretched apart). TRANSIENTS, after Rubber Band, chooses how GENERAL, POLYPHONIC, PADS and HYBRID treat hits. Every mode but OFF has controls of its own beyond PITCH, shown when it is chosen and described under the panel: from SuperCollider’s PitchShift P.DISP and T.DISP, Warp1’s window SHAPE, TGrains’ random rate and reverse; for the Max modes GRAIN, SEARCH, JITTER, SENS, PUNCH, FORMANT, ROUGH, DRIFT and SMOOTH; PaulXStretch’s ONSETS and octave mixer (OCT −1, OCT +1); CDP’s TRACE; and LOOP SIZE, FADE, SWING, DENSITY, WIDTH and SPLIT. All of them can be modulated from the MATRIX. <b>Loop:</b> drag on the ruler under the waveform to draw a loop; drag its edges or its middle to change it. Edges always land on a zero crossing. ◀ ▶ move an edge by one waveset; SET IN / SET OUT place it at the playhead you hear. Pinch on the ruler (or ctrl + scroll) to zoom down to single samples; the strip below shows the whole file, tap it to move the view. <b>Keys:</b> C4 (red mark) is the original pitch; press lower on a key to play louder. With time stretch OFF a key changes speed and pitch together; with any other mode it changes pitch only. On a computer keyboard, A–K play and Z/X change octave. <b>FREE:</b> the keyboard becomes a continuous surface; each finger glides on its own. <b>Process:</b> the PROCESS menu above the waveform runs Trevor Wishart’s CDP DISTORT waveset processes live (MULTIPLY, DIVIDE, HARMONIC, FRACTAL, REFORM, PITCH, QUIRK, AVERAGE, TELESCOPE, REPLACE, DELETE, OMIT, REVERSE, SHUFFLE, ENVEL); their settings are in the PROCESS panel. Group processes work inside each unit, so raise SIZE to give them wavecycles to group. ORDER reads the file in time, by waveset length or by waveset power. <b>Gesture loops:</b> each player loops what your hands do on it, in up to four layers (A–D) that play together. REC arms the selected layer; the take starts with your next move and ends when you press REC or PLAY. + adds a new layer and arms it while the other layers keep playing: give it its own LENGTH first, say MAIN ×2 for a position sweep twice as long as the notes in A. LENGTH decides what a layer plays: FREE plays the take as it is; a multiple or division of MAIN cuts the take to that length, or repeats it until it is filled. Each layer keeps its take, so its LENGTH can be changed at any time: shorter cuts, longer brings the cut part back or repeats it. MAIN is set by the first MAIN-length take, or type it in (÷2 and ×2 halve and double it), or let the tempo set it: SYNC makes MAIN a number of BARS of the signature at the BPM (type it or TAP it), CLICK ticks every beat (it is not recorded), free takes become whole beats and stay on the beat grid, and QUANT gives new takes a QUANTIZE of 1/4 … 1/32 notes (kept with the layer: change or remove it in ✎ EDIT); MAIN-length layers stay in time with it and with each other, and the lanes under the layer buttons show their lengths side by side. Notes and fingers of all layers sound together; a knob, a switch or the position follows the layer that recorded it last, so a new layer takes it over. Tap a layer to select it, tap it again to mute it: it keeps its place and comes back in time, and its controls go back to the layer below. While the layers play, REC overdubs into the selected one; a control you hold is yours. CLEAR empties the selected layer. <b>Fix a take:</b> ✎ EDIT opens the gesture editor on the selected layer, in every engine. Notes are bars (in SIMPLER SLICE the rows are slices, each drawn with its sound): drag one to move it in time, snapped to GRID, or up and down to another note or slice; drag its right end to change the length; drag its stem in VEL for how hard. POSITION shows where in the sample you played on the waveform, against the sample drawn top to bottom on the left: drag a point, or a whole jump or drag by its line, in time or to another part of the sample; it snaps to the sample's onsets (by transient, loudness, chroma, brightness, timbre or noisiness, as SLICE finds them), to zero crossings or to the loop's edges. Violet bars are extra fingers; THIN keeps the shape of long drags with fewer points. CONTROL shows a recorded knob or switch. Notes: tap one to select it and its tools appear beside it (DUPLICATE, LENGTH − +, ◀ ▶ ▲ ▼, DELETE); drag it to move it, drag the grips at either end to make it longer or shorter. Double-tap empty space to add a note and keep your finger down to drag out its length; with DRAW on, a single tap or drag on empty space draws one and a tap on a note removes it. New notes take the length and velocity of the last note you touched. DUPLICATE puts a copy right after the selection, so pressing it again builds a run. To work on several notes, hold your finger still on empty space for a moment and then drag a box around them (with a mouse just drag; ⇧-click adds or removes one); dragging, resizing, the velocity, the arrows, DUPLICATE and DELETE then act on all of them. With a keyboard: ⌫ deletes, ⌘D duplicates, ⌘A selects every note, ← → move, ⇧← ⇧→ shorter and longer, ↑ ↓ change the note, and ⌥-drag copies. Points on the waveform and in the control lane: double-tap to add or remove, the arrows move the selected one (◀ ▶ a grid step, 10 ms with GRID OFF; ▲ ▼ to the next onset or step). ▶ PLAY plays the loops while you edit. Zoom in time and in each lane (notes or slices, the position in the sample, the control): pinch with the fingers side by side to zoom time, one above the other to zoom the lane under them, and move them together to scroll; drag empty space to scroll; drag the ruler sideways to scroll and down to zoom in on the moment you hold; drag a lane's left edge up and down to scroll it, sideways to zoom it; ↔ − + zoom time around the selection, ↕ − + the lane you last touched (marked at its left edge). FIT frames the selection (or everything you played) in time and in every lane, and ALL shows the whole take again; double-tap the ruler or a lane's edge for the same on just that. Zoomed in, ◀ ▶ without GRID and ▲ ▼ between onsets or control values take finer steps, and an edit dragged to the edge scrolls the view. Drag between two lanes to give one more room (double-tap there to reset). On a trackpad: pinch or ⌘-scroll zooms time, ⌥-scroll zooms the lane, scrolling moves it. Each layer keeps its own view. QUANTIZE pulls the layer's notes and fingers (with + POSITION the jumps on the waveform too) to GRID by STRENGTH, with SWING; it keeps what you played, so it can be changed or turned off at any time, and whatever you moved by hand stays where you put it. Every change is one undo step, is saved with the session and is heard from the next cycle. LAT COMP (on unless you turn it off) puts new takes and overdubs where you heard them, moving them back by the output latency the browser reports; the button shows how much. <b>Undo:</b> ↶ and ↷ (or ⌘Z, ⇧⌘Z) step back and forward through changes to settings, samples, loop regions, gesture buffers, LENGTH, MAIN and mutes; a knob drag counts as one step. <b>Engine rate:</b> tap the audio pill at the top right (AUDIOWORKLET · 48.0 kHz) to choose the rate everything plays and records at: AUTO (your device’s own), 44.1, 48, 88.2 or 96 kHz. Higher rates leave less aliasing when you pitch up, drive or REDUCE, and take about twice the processing. Changing it restarts the sound for a moment with every sample, setting and loop kept; notes sounding at that moment stop. It is locked while a take is recording, and kept on this device. <b>Sound that keeps going:</b> there is no PLAY / STOP; the players sound from the keys, the FREE surface, the waveform and their loops. In the same AUDIO window, KEEP SCREEN ON stops the iPad locking by itself while CRGT is open, and PLAY WHEN LOCKED keeps the sound going if you lock it anyway, the way a music player does (CRGT shows on the lock screen); loops wait while it is locked and carry on in step when you unlock. If the iPad pauses the sound all the same (a call, another app, a long lock), the pill turns red and reads SOUND PAUSED: the next tap or key anywhere brings it back, with a fresh engine if the old one will not wake, keeping every sample, setting and loop. <b>Record:</b> REC captures the master (the mix you hear) as 24-bit WAV; with STEMS on it also records every player on its own track, sample-aligned with the master, and the takes sheet saves master and stems as separate files. Every joint between wavesets is spliced with a 1.5 ms crossfade from the sound's own continuation, and wavesets are cut from a DC-blocked copy of the file, so jumps, short units and fast scrubbing stay free of clicks. <b>Sessions:</b> everything is saved in this browser as you play and comes back when you reopen the page; SESSION saves named copies and exports them as .zip files with their samples.</p>
+  <p class="foot"><b>Full screen:</b> the corner button (where the browser allows it) fills the whole display and hides the viewer’s bar; tap it again or press Esc to leave. <b>Sections:</b> every part of the page has an icon in the bar above the panels (it stays at the top while you scroll). Tap an icon to fold that section away or bring it back; a folded section shows just its icon. Double-tap an icon to keep only that panel open, and double-tap it again for the ones you had; ALL shows everything. The icon beside each panel’s title folds it too. The panels left open widen into the space. Each player keeps its own panels, so switching player switches the view (players, clock and keys are the same for all of them), and the whole view is saved with the session and inside its exported .zip: you keep just what you are playing with on screen, player by player. <b>Players:</b> drag a tab to move the player to another place (or hold it a moment, then drag); the others slide aside. A player keeps its sound, loops and view when it moves; its number is its place, and the keys 1–8 follow the places. The order is saved with the session. eight, each with its own sample, engine, settings, loop region and gesture loop; all eight sound together. The tab you pick receives the knobs, the waveform and the keys (1–8 on a computer keyboard switch tabs). M mutes a player. <b>Copy a player:</b> COPY takes the selected player as it is (sample, every setting, gesture loops, panels); pick another player and tap PASTE to make it a copy, then change what you like: the two are separate, and UNDO brings back what the player had. The copy can be pasted into several players. <b>CPU:</b> the pill shows how busy the sound engine is; tap it for each player’s share, how many blocks ran late in the last minute (each may be heard as a click), PROTECT (when the engine is over 85% busy, notes that are only fading out end quickly) and LATENCY (MEDIUM and SAFE give the device a longer buffer, so busy moments do not break the sound). <b>Touch:</b> drag a knob up or right to raise it, double-tap to reset. Touch the waveform to play the sample from there, at the pitch it was recorded (C4), as long as your finger stays; drag to move through it. While keys are sounding the touch does not play by itself: it moves the position the notes play from, and the touch sound comes back 120 ms after you let go of the keys. The blue handle is where you send it, each thin line is a read position you hear. <b>Several fingers:</b> every extra finger on the waveform (up to four in all) adds a read position for as long as it stays down, marked by a blue ring; each note plays all of them, so three notes with two fingers sound six streams. Lift the first finger and the next one takes over the blue handle. Gesture loops record and replay these fingers too (violet rings). <b>Scrub:</b> SKIP jumps to where your finger is; FLUID glides there through the wavesets in between, in order (backwards like tape when you drag left), as fast as GLIDE allows; while your finger moves the sound follows it, and when it rests the unit loops there. <b>Granular:</b> ENGINE above the waveform switches the player between WAVESET and GRANULAR, an engine modelled on the Tasty Chips GR-1. Only the engine's own panels change (GRAIN, GRAIN WINDOW and SCAN · KEYS take the place of WAVESET, INTERPOLATION, JITTER and PROCESS); the sample, position, loop, keys, voices, output, time stretch, filter, fx, LFOs, matrix, presets and gesture loops stay. Grains: DENSITY 0.1–1000 a second, SIZE 5 ms–5 s, SPRAY, SCAN −2×…+2×, TUNE, DIRECTION, PAN and PAN SPRAY; a window shaped by SIDES, TILT and CURVE; four spawn modes, granular glide, key sync, anti-aliasing and up to 128 grains per voice. Sample modes GRANULAR, AUDITION and TAPE; scan modes LOOP, ONE SHOT and PING PONG; KEY→POS and KEY PITCH. With LOOP on, the scan pointer, spray, grains and position offsets all stay inside the loop and scale with it, as in the waveset engine. With time stretch on, the grains keep TUNE and the stretch mode transposes to the key. <b>Simpler:</b> the third ENGINE plays the sample as Ableton's Simpler does. CLASSIC: notes start at the blue handle and play S LENGTH of the region (the LOOP region, or the file), pitched by the key, through the ADSR, with a sustain LOOP (LOOP LEN, LOOP FADE). ONE-SHOT: one note at a time, TRIGGER or GATE, FADE IN and FADE OUT. SLICE: one slice per key from ROOT, sliced by TRANSIENT, BEAT (DIVISION of the sample's tempo, found or typed), REGION (equal parts), MANUAL, or by spectral features: LOUDNESS, CHROMA (harmony), BRIGHTNESS, TIMBRE (MFCC) and NOISINESS; SENSITIVITY sets how many. Drag markers in the band at the top of the waveform, double-tap the band to add one, double-tap a marker to remove it; ◀ ▶ nudge, SPLIT and DELETE act on the selected slice; MONO, POLY and THRU playback. Every mode has SNAP, REVERSE, GAIN, TRANSPOSE, DETUNE, a pitch envelope, GLIDE and PORTA, SPREAD, PAN, VEL→VOL, RETRIG, WARP AS (bars of the BPM, with the TIME STRETCH mode as warp mode) and the FILTER (shared with the other engines). <b>LFO and MATRIX:</b> the buttons next to ENGINE open them as floating windows; drag a window by its title bar, × or Esc closes it. Two LFOs (sine, square, saw, S&amp;H and AUX, a shape you draw in the LFO SHAPE window opened by ✎ DRAW) with key sync, MAIN clock, quantize and cross-modulation; with CLOCK MAIN, RATE divides or multiplies MAIN, whether MAIN came from a take, was typed in or comes from the BPM. The matrix holds up to 16 routes from the LFOs, velocity, key, pressure or a random value per note; its menu lists the controls of the engine in use and the shared ones (envelope, filter, effect, time stretch); every note is modulated on its own. <b>Filter:</b> in every engine each note has its own filter, the one from SIMPLER: LP, HP, BP, NOTCH or MORPH, 12 or 24 dB, five circuits with DRIVE, an envelope (F.ATTACK … F.RELEASE, ENV), KEY and VEL tracking; sessions with the old 12 dB player filter open with it set the same. <b>FX:</b> each player has an FX RACK: a patch of up to five devices between IN and OUT (the FX panel shows it small; tap it or FX RACK to open the window). + ADD FX puts in a device: COMPRESS, DEFORM, DELAY, DISTORTION, DJ FILTER, MOSAIC, REDUCER, REVERB, RING or VAST; it goes after the device shown, onto the wire you picked, or at the end of the chain. Drag a device to place it; drag from its right-hand dot onto another device or OUT to wire them (or tap the dot, then the device); tap a wire and × to cut it. Devices one after another are in series; devices fed from the same place and wired to the same place are in parallel, and where wires meet the sounds mix equally (each device’s LEVEL sets its share). CHAINS rearranges them: SERIES (one chain), PARALLEL (each on its own), 2 CHAINS (side by side) or SPLIT (the first feeds the others in parallel, and with four or more they meet again in the last); DRY adds the plain sound straight from IN to OUT. Under the patch, FROM and TO wire the device shown without dragging, BYPASS lets the sound through it, REMOVE takes it out and joins the wires around it. Every knob of every device, and its LEVEL, can be modulated from the MATRIX and recorded in gesture loops. Sessions from before keep their effects, wired as they sounded. <b>SIMPLER slice LOOP:</b> FWD loops a slice while its key is held (LOOP FADE crossfades the joint), B&amp;F plays it back and forth; letting go fades it over FADE OUT. <b>Time stretch:</b> besides the four modes from the SuperCollider patch, MODE has Max stretch~’s modes (BASIC, MONOPHONIC, RHYTHMIC, GENERAL, POLYPHONIC, PADS, EXTREMESTRETCH, EFFICIENT), made here for this engine, with QUALITY and formant control, and five creative modes: BEATS and TEXTURE after Ableton Live’s warp modes, SPECTRAL after PaulXStretch (random phase, spread, harmonics tuned to the key, freeze), PRISM after CDP’s spectral shift, stretch and blur, and HYBRID after the noise-morphing method from Aalto University (sines and noise stretched apart). TRANSIENTS, after Rubber Band, chooses how GENERAL, POLYPHONIC, PADS and HYBRID treat hits. Every mode but OFF has controls of its own beyond PITCH, shown when it is chosen and described under the panel: from SuperCollider’s PitchShift P.DISP and T.DISP, Warp1’s window SHAPE, TGrains’ random rate and reverse; for the Max modes GRAIN, SEARCH, JITTER, SENS, PUNCH, FORMANT, ROUGH, DRIFT and SMOOTH; PaulXStretch’s ONSETS and octave mixer (OCT −1, OCT +1); CDP’s TRACE; and LOOP SIZE, FADE, SWING, DENSITY, WIDTH and SPLIT. All of them can be modulated from the MATRIX. <b>Loop:</b> drag on the ruler under the waveform to draw a loop; drag its edges or its middle to change it. Edges always land on a zero crossing. ◀ ▶ move an edge by one waveset; SET IN / SET OUT place it at the playhead you hear. Pinch on the ruler (or ctrl + scroll) to zoom down to single samples; the strip below shows the whole file, tap it to move the view. <b>Keys:</b> C4 (red mark) is the original pitch; press lower on a key to play louder. With time stretch OFF a key changes speed and pitch together; with any other mode it changes pitch only. On a computer keyboard, A–K play and Z/X change octave. <b>FREE:</b> the keyboard becomes a continuous surface; each finger glides on its own. <b>Process:</b> the PROCESS menu above the waveform runs Trevor Wishart’s CDP DISTORT waveset processes live (MULTIPLY, DIVIDE, HARMONIC, FRACTAL, REFORM, PITCH, QUIRK, AVERAGE, TELESCOPE, REPLACE, DELETE, OMIT, REVERSE, SHUFFLE, ENVEL); their settings are in the PROCESS panel. Group processes work inside each unit, so raise SIZE to give them wavecycles to group. ORDER reads the file in time, by waveset length or by waveset power. <b>Gesture loops:</b> each player loops what your hands do on it, in up to four layers (A–D) that play together. REC arms the selected layer; the take starts with your next move and ends when you press REC or PLAY. + adds a new layer and arms it while the other layers keep playing: give it its own LENGTH first, say MAIN ×2 for a position sweep twice as long as the notes in A. LENGTH decides what a layer plays: FREE plays the take as it is; a multiple or division of MAIN cuts the take to that length, or repeats it until it is filled. Each layer keeps its take, so its LENGTH can be changed at any time: shorter cuts, longer brings the cut part back or repeats it. MAIN is set by the first MAIN-length take, or type it in (÷2 and ×2 halve and double it), or let the tempo set it: SYNC makes MAIN a number of BARS of the signature at the BPM (type it or TAP it), CLICK ticks every beat (it is not recorded), free takes become whole beats and stay on the beat grid, and QUANT gives new takes a QUANTIZE of 1/4 … 1/32 notes (kept with the layer: change or remove it in ✎ EDIT); MAIN-length layers stay in time with it and with each other, and the lanes under the layer buttons show their lengths side by side. Notes and fingers of all layers sound together; a knob, a switch or the position follows the layer that recorded it last, so a new layer takes it over. Tap a layer to select it, tap it again to mute it: it keeps its place and comes back in time, and its controls go back to the layer below. While the layers play, REC overdubs into the selected one; a control you hold is yours. CLEAR empties the selected layer. <b>Fix a take:</b> ✎ EDIT opens the gesture editor on the selected layer, in every engine. Notes are bars (in SIMPLER SLICE the rows are slices, each drawn with its sound): drag one to move it in time, snapped to GRID, or up and down to another note or slice; drag its right end to change the length; drag its stem in VEL for how hard. POSITION shows where in the sample you played on the waveform, against the sample drawn top to bottom on the left: drag a point, or a whole jump or drag by its line, in time or to another part of the sample; it snaps to the sample's onsets (by transient, loudness, chroma, brightness, timbre or noisiness, as SLICE finds them), to zero crossings or to the loop's edges. Violet bars are extra fingers; THIN keeps the shape of long drags with fewer points. CONTROL shows a recorded knob or switch. Notes: tap one to select it and its tools appear beside it (DUPLICATE, LENGTH − +, ◀ ▶ ▲ ▼, DELETE); drag it to move it, drag the grips at either end to make it longer or shorter. Double-tap empty space to add a note and keep your finger down to drag out its length; with DRAW on, a single tap or drag on empty space draws one and a tap on a note removes it. New notes take the length and velocity of the last note you touched. DUPLICATE puts a copy right after the selection, so pressing it again builds a run. To work on several notes, hold your finger still on empty space for a moment and then drag a box around them (with a mouse just drag; ⇧-click adds or removes one); dragging, resizing, the velocity, the arrows, DUPLICATE and DELETE then act on all of them. With a keyboard: ⌫ deletes, ⌘D duplicates, ⌘A selects every note, ← → move, ⇧← ⇧→ shorter and longer, ↑ ↓ change the note, and ⌥-drag copies. Points on the waveform and in the control lane: double-tap to add or remove, the arrows move the selected one (◀ ▶ a grid step, 10 ms with GRID OFF; ▲ ▼ to the next onset or step). ▶ PLAY plays the loops while you edit. Zoom in time and in each lane (notes or slices, the position in the sample, the control): pinch with the fingers side by side to zoom time, one above the other to zoom the lane under them, and move them together to scroll; drag empty space to scroll; drag the ruler sideways to scroll and down to zoom in on the moment you hold; drag a lane's left edge up and down to scroll it, sideways to zoom it; ↔ − + zoom time around the selection, ↕ − + the lane you last touched (marked at its left edge). FIT frames the selection (or everything you played) in time and in every lane, and ALL shows the whole take again; double-tap the ruler or a lane's edge for the same on just that. Zoomed in, ◀ ▶ without GRID and ▲ ▼ between onsets or control values take finer steps, and an edit dragged to the edge scrolls the view. Drag between two lanes to give one more room (double-tap there to reset). On a trackpad: pinch or ⌘-scroll zooms time, ⌥-scroll zooms the lane, scrolling moves it. Each layer keeps its own view. QUANTIZE pulls the layer's notes and fingers (with + POSITION the jumps on the waveform too) to GRID by STRENGTH, with SWING; it keeps what you played, so it can be changed or turned off at any time, and whatever you moved by hand stays where you put it. Every change is one undo step, is saved with the session and is heard from the next cycle. LAT COMP (on unless you turn it off) puts new takes and overdubs where you heard them, moving them back by the output latency the browser reports; the button shows how much. <b>Undo:</b> ↶ and ↷ (or ⌘Z, ⇧⌘Z) step back and forward through changes to settings, samples, loop regions, gesture buffers, LENGTH, MAIN and mutes; a knob drag counts as one step. <b>Engine rate:</b> tap the audio pill at the top right (AUDIOWORKLET · 48.0 kHz) to choose the rate everything plays and records at: AUTO (your device’s own), 44.1, 48, 88.2 or 96 kHz. Higher rates leave less aliasing when you pitch up, drive or REDUCE, and take about twice the processing. Changing it restarts the sound for a moment with every sample, setting and loop kept; notes sounding at that moment stop. It is locked while a take is recording, and kept on this device. <b>Sound that keeps going:</b> there is no PLAY / STOP; the players sound from the keys, the FREE surface, the waveform and their loops. In the same AUDIO window, KEEP SCREEN ON stops the iPad locking by itself while CRGT is open, and PLAY WHEN LOCKED keeps the sound going if you lock it anyway, the way a music player does (CRGT shows on the lock screen); loops wait while it is locked and carry on in step when you unlock. If the iPad pauses the sound all the same (a call, another app, a long lock), the pill turns red and reads SOUND PAUSED: the next tap or key anywhere brings it back, with a fresh engine if the old one will not wake, keeping every sample, setting and loop. <b>Record:</b> REC captures the master (the mix you hear) as 24-bit WAV; with STEMS on it also records every player on its own track, sample-aligned with the master, and the takes sheet saves master and stems as separate files. Every joint between wavesets is spliced with a 1.5 ms crossfade from the sound's own continuation, and wavesets are cut from a DC-blocked copy of the file, so jumps, short units and fast scrubbing stay free of clicks. <b>Sessions:</b> everything is saved in this browser as you play and comes back when you reopen the page; SESSION saves named copies and exports them as .zip files with their samples.</p>
 </div>
 
 <div class="fwin" id="fw-lfo" hidden role="dialog" aria-labelledby="wl-h">
@@ -1021,15 +1058,28 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
 <div class="fwin" id="fw-fx" hidden role="dialog" aria-labelledby="wf-h">
   <div class="fw-h"><span class="gl" id="wf-h">FX · Player 1</span><span class="fw-g" aria-hidden="true">⠿</span><button class="fw-x" type="button" aria-label="Close the FX window">×</button></div>
   <div class="fw-b">
-    <div class="fx-chain" id="fx-chain-w" role="group" aria-label="FX slots"></div>
-    <div class="row fx-all"><span class="gl">ROUTING</span><button class="btn sm" id="fx-all-ser" type="button">ALL IN SERIES</button><button class="btn sm" id="fx-all-par" type="button">ALL IN PARALLEL</button></div>
-    <div class="fx-ed">
+    <div class="row fx-tools">
+      <button class="btn sm" id="fx-add" type="button" aria-expanded="false">+ ADD FX</button>
+      <span class="gl">CHAINS</span>
+      <span class="grp" id="fx-lay" role="group" aria-label="Arrange the devices into chains">
+        <button class="btn sm" type="button" data-l="ser" title="One chain: every device after the one before">SERIES</button><button class="btn sm" type="button" data-l="par" title="Every device on its own branch from IN to OUT, mixed at OUT">PARALLEL</button><button class="btn sm" type="button" data-l="two" title="Two chains side by side, mixed at OUT">2 CHAINS</button><button class="btn sm" type="button" data-l="split" title="The first device feeds the next ones in parallel; with four or more, the last one is where they meet again">SPLIT</button>
+      </span>
+      <button class="btn sm" id="fx-dry" type="button" aria-pressed="false" title="A wire straight from IN to OUT: the dry sound mixed with the chains">DRY</button>
+    </div>
+    <div class="fx-pick" id="fx-pick" hidden role="group" aria-label="Add a device"></div>
+    <div class="fx-graph" id="fx-graph" role="group" aria-label="FX patch">
+      <svg class="fx-wires" id="fx-wires" aria-hidden="true"></svg>
+      <div class="fx-nodes" id="fx-nodes"></div>
+      <button class="fx-cut" id="fx-cut" type="button" hidden aria-label="Remove this wire">×</button>
+    </div>
+    <p class="fx-hint" id="fx-hint"></p>
+    <div class="fx-ed" id="fx-ed">
       <div class="row">
-        <label class="lsel"><span>SLOT <b id="fx-n">1</b></span><select class="sel" id="fx-type" aria-label="Device in this slot"></select></label>
-        <div class="seg" id="fx-route" role="group" aria-label="Routing of this slot"><button type="button" data-r="ser" title="Processes the chain: what comes before goes through it">SERIES</button><button type="button" data-r="par" title="Fed the rack’s input; its output is added at the end (a send)">PARALLEL</button></div>
+        <label class="lsel"><span id="fx-n">FX 1</span><select class="sel" id="fx-type" aria-label="Device in this node"></select></label>
         <button class="btn sm" id="fx-byp" type="button" aria-pressed="false">BYPASS</button>
-        <span class="grp"><button class="btn sm nud" id="fx-left" type="button" aria-label="Move this device one slot earlier">◀</button><button class="btn sm nud" id="fx-right" type="button" aria-label="Move this device one slot later">▶</button></span>
+        <button class="btn sm" id="fx-del" type="button">REMOVE</button>
       </div>
+      <div class="fx-io-row"><span class="gl">FROM</span><span class="fx-chips" id="fx-from" role="group" aria-label="Wires into this device"></span><span class="gl">TO</span><span class="fx-chips" id="fx-to" role="group" aria-label="Wires out of this device"></span></div>
       <div class="knobs" id="k-fx"></div>
       <p class="desc keep" id="fx-desc"></p>
     </div>
@@ -2729,12 +2779,13 @@ class GrFx{
   }
 }
 
-// ---------- FX RACK (v33): five slots per player, after the Torso S-4's devices ----------
-// Every slot holds one device and is SERIES (it processes the chain: out = dry + (effect - dry) x WET) or PARALLEL
-// (it is fed the signal that reaches the rack and its output, x WET, is added after the chain: a send). Its
-// parameters are knobs 0..1 (P keys x<slot>p0 … p11), turned into each device's units here.
-// The devices: MOSAIC (granular), RING (filter + tuned resonator bank), DEFORM (drive, compression, crush, noise),
-// VAST (delay into reverb), DJ FILTER and COMPRESS (from the S-4's mixer), and the four classic effects.
+// ---------- FX RACK (v34): up to five devices per player, patched as a graph ----------
+// Every device is a node; wires run from IN through the nodes to OUT. What reaches a node is the mix of the wires into
+// it (mixed equally), and so is OUT: devices one after another are in SERIES, devices fed from the same place and
+// wired to the same place are in PARALLEL, and any mix of the two works (two chains, a split that merges again ...).
+// P keys: x<n>T device, x<n>B bypass, x<n>G LEVEL, x<n>I its inputs (bit 0 IN, bit k node k), xOut OUT's inputs,
+// x<n>X / x<n>Y where it sits on the page, x<n>p0 … p11 the device's knobs (0..1, turned into its units here).
+// Inside a node: out = (in + (device - in) x WET) x LEVEL.
 const FX_SCALES=[['MAJOR',[0,2,4,5,7,9,11]],['MINOR',[0,2,3,5,7,8,10]],['PENTA',[0,2,4,7,9]],['MIN PENTA',[0,3,5,7,10]],['DORIAN',[0,2,3,5,7,9,10]],
   ['WHOLE TONE',[0,2,4,6,8,10]],['FIFTHS',[0,7]],['OCTAVES',[0]],['MAJOR CHORD',[0,4,7]],['MINOR CHORD',[0,3,7]],['HARMONICS',null]];
 const FX_PATTERNS=[['NONE',[0]],['OCT UP',[0,12]],['OCT DOWN',[0,-12]],['FIFTH',[0,7]],['ARP MAJ',[0,4,7,12]],['ARP MIN',[0,3,7,12]],['UP DOWN',[0,12,0,-12]],['STACK',[0,7,12,19,24]]];
@@ -2742,31 +2793,31 @@ const fxExp=(u,a,b)=>a*Math.pow(b/a,u), fxStep=(u,n)=>Math.min(n-1,Math.round(u*
 const fxMs=v=>v<1?(v*1000<100?(v*1000).toFixed(1):Math.round(v*1000))+' ms':v.toFixed(2)+' s', fxPc=u=>Math.round(u*100)+'%';
 const fxHz=v=>v<1000?Math.round(v)+' Hz':(v/1000).toFixed(v<10000?2:1)+' kHz', fxSt=v=>(Math.abs(v)<0.05?'0':(v>0?'+':'−')+Math.abs(v).toFixed(Math.abs(v)<10?1:0))+' st';
 const fxBi=u=>{ const v=Math.round((u-0.5)*200); return v===0?'0':(v>0?'+':'−')+Math.abs(v); };
-// [id, name, group, params: [label, default, display(u)], index of WET (-1: none), what it is]
+// [id, name, what it is in two words, params: [label, default, display(u)], index of WET (-1: none), what it is]
 const FX_DEFS=[
-  ['mosaic','MOSAIC','Torso S-4',[['PITCH',0.5,u=>fxSt(FxMosaic.semi(u))],['RATE',0.45,u=>fxExp(u,1,120).toFixed(1)+' /s'],['SIZE',0.5,u=>fxMs(fxExp(u,0.01,1))],
+  ['mosaic','MOSAIC','granular',[['PITCH',0.5,u=>fxSt(FxMosaic.semi(u))],['RATE',0.45,u=>fxExp(u,1,120).toFixed(1)+' /s'],['SIZE',0.5,u=>fxMs(fxExp(u,0.01,1))],
     ['CONTOUR',0.5,u=>u<0.2?'perc':u>0.8?'flat':fxPc(u)],['SCAN',0.15,u=>fxMs(u*u*3.6)],['SPRAY',0.2,fxPc],['PATTERN',0,u=>FX_PATTERNS[fxStep(u,FX_PATTERNS.length)][0],FX_PATTERNS.length],
     ['R.PITCH',0,u=>'±'+(u*12).toFixed(1)+' st'],['R.REV',0,fxPc],['R.AMP',0,fxPc],['FEEDBACK',0,fxPc],['WET',0.5,fxPc]],11,
-    'MOSAIC (the S-4’s granular device): grains taken from the last 4 s of sound. <em>PITCH</em> transposes them, <em>RATE</em> sets how many start each second, <em>SIZE</em> how long they are, <em>CONTOUR</em> their shape (percussive … smooth … flat). <em>SCAN</em> reaches back in time, <em>SPRAY</em> scatters where and where in the stereo field they start, <em>PATTERN</em> steps their pitch through a pattern, <em>R.PITCH</em>, <em>R.REV</em> and <em>R.AMP</em> randomise pitch, direction and level per grain, <em>FEEDBACK</em> sends the grains back into the buffer.'],
-  ['ring','RING','Torso S-4',[['CUTOFF',1,u=>fxHz(fxExp(u,30,20000))],['RESO',0.2,fxPc],['SLOPE',0,u=>u<0.17?'LP':u<0.5?'LP › BP':u<0.83?'BP › HP':'HP'],
+    'MOSAIC, granular: grains taken from the last 4 s of sound. <em>PITCH</em> transposes them, <em>RATE</em> sets how many start each second, <em>SIZE</em> how long they are, <em>CONTOUR</em> their shape (percussive … smooth … flat). <em>SCAN</em> reaches back in time, <em>SPRAY</em> scatters where and where in the stereo field they start, <em>PATTERN</em> steps their pitch through a pattern, <em>R.PITCH</em>, <em>R.REV</em> and <em>R.AMP</em> randomise pitch, direction and level per grain, <em>FEEDBACK</em> sends the grains back into the buffer.'],
+  ['ring','RING','filter · resonators',[['CUTOFF',1,u=>fxHz(fxExp(u,30,20000))],['RESO',0.2,fxPc],['SLOPE',0,u=>u<0.17?'LP':u<0.5?'LP › BP':u<0.83?'BP › HP':'HP'],
     ['PITCH',0.5,u=>{ const st=Math.round((u-0.5)*48); return ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'][((st%12)+12)%12]+(3+Math.floor(st/12)); }],
     ['SCALE',0,u=>FX_SCALES[fxStep(u,FX_SCALES.length)][0],FX_SCALES.length],['DECAY',0.45,u=>fxMs(fxExp(u,0.05,10))],['WAVES',0.6,fxPc],['DETUNE',0,u=>'±'+Math.round(u*50)+' ct'],
     ['NOISE',0,fxPc],['TILT',0.5,fxBi],['WET',1,fxPc]],10,
-    'RING (the S-4’s filter): a filter that morphs from low-pass through band-pass to high-pass (<em>CUTOFF</em>, <em>RESO</em>, <em>SLOPE</em>), into a bank of 16 tuned resonators: <em>PITCH</em> and <em>SCALE</em> tune them, <em>DECAY</em> sets how long they ring, <em>WAVES</em> balances the plain filter against them, <em>DETUNE</em> spreads their tuning, <em>NOISE</em> excites them with noise that follows the sound, <em>TILT</em> leans them to the low or the high ones.'],
-  ['deform','DEFORM','Torso S-4',[['DRIVE',0.25,fxPc],['COMPRESS',0,fxPc],['CRUSH',0,fxPc],['CRUSH TYPE',0,u=>['BITS','REDUX','BOTH'][fxStep(u,3)],3],['TILT',0.5,fxBi],
+    'RING, filter and resonators: a filter that morphs from low-pass through band-pass to high-pass (<em>CUTOFF</em>, <em>RESO</em>, <em>SLOPE</em>), into a bank of 16 tuned resonators: <em>PITCH</em> and <em>SCALE</em> tune them, <em>DECAY</em> sets how long they ring, <em>WAVES</em> balances the plain filter against them, <em>DETUNE</em> spreads their tuning, <em>NOISE</em> excites them with noise that follows the sound, <em>TILT</em> leans them to the low or the high ones.'],
+  ['deform','DEFORM','drive · crush · noise',[['DRIVE',0.25,fxPc],['COMPRESS',0,fxPc],['CRUSH',0,fxPc],['CRUSH TYPE',0,u=>['BITS','REDUX','BOTH'][fxStep(u,3)],3],['TILT',0.5,fxBi],
     ['NOISE',0,fxPc],['N.DECAY',0.4,u=>fxMs(fxExp(u,0.005,2))],['N.TONE',0.5,fxBi],['WET',1,fxPc]],8,
-    'DEFORM (the S-4’s colour): <em>DRIVE</em> saturates, <em>COMPRESS</em> squeezes, <em>CRUSH</em> reduces the bits (BITS), the rate (REDUX) or both. <em>TILT</em> chooses whether the lows or the highs are coloured more. <em>NOISE</em> adds noise that follows the sound, with its own <em>N.DECAY</em> and <em>N.TONE</em> (dark … bright).'],
-  ['vast','VAST','Torso S-4',[['DELAY',0.3,fxPc],['TIME',0.55,u=>fxMs(fxExp(u,0.01,2))],['REVERB',0.3,fxPc],['SIZE',0.5,fxPc],['FEEDBACK',0.35,u=>Math.round(u*150)+'%'],
+    'DEFORM, colour: <em>DRIVE</em> saturates, <em>COMPRESS</em> squeezes, <em>CRUSH</em> reduces the bits (BITS), the rate (REDUX) or both. <em>TILT</em> chooses whether the lows or the highs are coloured more. <em>NOISE</em> adds noise that follows the sound, with its own <em>N.DECAY</em> and <em>N.TONE</em> (dark … bright).'],
+  ['vast','VAST','delay · reverb',[['DELAY',0.3,fxPc],['TIME',0.55,u=>fxMs(fxExp(u,0.01,2))],['REVERB',0.3,fxPc],['SIZE',0.5,fxPc],['FEEDBACK',0.35,u=>Math.round(u*150)+'%'],
     ['SPREAD',0.3,fxPc],['TONE',0.5,fxBi],['DECAY',0.45,u=>fxMs(fxExp(u,0.2,20))],['WET',1,fxPc]],8,
-    'VAST (the S-4’s space): a delay into a reverb. <em>DELAY</em> and <em>REVERB</em> are balances, as on the S-4: at 100% only the delayed or reverberated sound is left. <em>TIME</em> and <em>FEEDBACK</em> (up to 150%, saturating) shape the echoes, <em>SPREAD</em> turns them into ping-pong, <em>SIZE</em> and <em>DECAY</em> the room, <em>TONE</em> darkens or brightens both. In PARALLEL it sends only its echoes and reverb.'],
-  ['dj','DJ FILTER','Torso S-4 mixer',[['FILTER',0.5,u=>u<0.48?'LP '+fxHz(fxExp(u/0.48,80,20000)):u>0.52?'HP '+fxHz(fxExp((u-0.52)/0.48,20,8000)):'off'],['RESO',0.25,fxPc],['WET',1,fxPc]],2,
-    'DJ FILTER (from the S-4’s mixer): one knob, low-pass to the left of the middle, high-pass to the right, nothing in the middle; <em>RESO</em> adds a peak.'],
-  ['comp','COMPRESS','Torso S-4 mixer',[['AMOUNT',0.4,fxPc],['ATTACK',0.3,u=>fxMs(fxExp(u,0.0005,0.1))],['RELEASE',0.4,u=>fxMs(fxExp(u,0.02,1.5))],['WET',1,fxPc]],3,
-    'COMPRESS (from the S-4’s mixer): <em>AMOUNT</em> lowers the threshold and raises the ratio together, with make-up gain; <em>ATTACK</em> and <em>RELEASE</em> set how fast it acts. Lower <em>WET</em> for parallel compression.'],
-  ['cdelay','DELAY','Classic',[['TIME',0.4,u=>fxMs(0.01*Math.pow(200,u))],['FEEDBACK',0.4,fxPc],['WET',1,fxPc]],2,'The classic delay: <em>TIME</em> and <em>FEEDBACK</em>, darkened in the loop.'],
-  ['cdist','DISTORTION','Classic',[['TONE',0.4,fxPc],['DRIVE',0.4,fxPc],['WET',1,fxPc]],2,'The classic distortion: <em>DRIVE</em> and a low-pass <em>TONE</em>.'],
-  ['credux','REDUCER','Classic',[['BITS',0.4,u=>(16-15*u).toFixed(1)+' bit'],['HOLD',0.4,u=>'÷'+(1+63*u*u).toFixed(1)],['WET',1,fxPc]],2,'The classic reducer: fewer <em>BITS</em>, and every sample <em>HOLD</em> times as long.'],
-  ['creverb','REVERB','Classic',[['DECAY',0.4,u=>fxMs(0.3*Math.pow(60,u))],['AMOUNT',0.4,fxPc],['WET',1,fxPc]],2,'The classic reverb: eight damped delay lines; <em>DECAY</em> and <em>AMOUNT</em>.'],
+    'VAST, space: a delay into a reverb. <em>DELAY</em> and <em>REVERB</em> are balances: at 100% only the delayed or reverberated sound is left. <em>TIME</em> and <em>FEEDBACK</em> (up to 150%, saturating) shape the echoes, <em>SPREAD</em> turns them into ping-pong, <em>SIZE</em> and <em>DECAY</em> the room, <em>TONE</em> darkens or brightens both.'],
+  ['dj','DJ FILTER','one-knob filter',[['FILTER',0.5,u=>u<0.48?'LP '+fxHz(fxExp(u/0.48,80,20000)):u>0.52?'HP '+fxHz(fxExp((u-0.52)/0.48,20,8000)):'off'],['RESO',0.25,fxPc],['WET',1,fxPc]],2,
+    'DJ FILTER: one knob, low-pass to the left of the middle, high-pass to the right, nothing in the middle; <em>RESO</em> adds a peak.'],
+  ['comp','COMPRESS','compressor',[['AMOUNT',0.4,fxPc],['ATTACK',0.3,u=>fxMs(fxExp(u,0.0005,0.1))],['RELEASE',0.4,u=>fxMs(fxExp(u,0.02,1.5))],['WET',1,fxPc]],3,
+    'COMPRESS: <em>AMOUNT</em> lowers the threshold and raises the ratio together, with make-up gain; <em>ATTACK</em> and <em>RELEASE</em> set how fast it acts. Lower <em>WET</em> for parallel compression.'],
+  ['cdelay','DELAY','echo',[['TIME',0.4,u=>fxMs(0.01*Math.pow(200,u))],['FEEDBACK',0.4,fxPc],['WET',1,fxPc]],2,'DELAY: <em>TIME</em> and <em>FEEDBACK</em>, darkened in the loop.'],
+  ['cdist','DISTORTION','overdrive',[['TONE',0.4,fxPc],['DRIVE',0.4,fxPc],['WET',1,fxPc]],2,'DISTORTION: <em>DRIVE</em> and a low-pass <em>TONE</em>.'],
+  ['credux','REDUCER','bits · rate',[['BITS',0.4,u=>(16-15*u).toFixed(1)+' bit'],['HOLD',0.4,u=>'÷'+(1+63*u*u).toFixed(1)],['WET',1,fxPc]],2,'REDUCER: fewer <em>BITS</em>, and every sample <em>HOLD</em> times as long.'],
+  ['creverb','REVERB','room',[['DECAY',0.4,u=>fxMs(0.3*Math.pow(60,u))],['AMOUNT',0.4,fxPc],['WET',1,fxPc]],2,'REVERB: eight damped delay lines; <em>DECAY</em> and <em>AMOUNT</em>.'],
 ];
 const FX_BY={}; FX_DEFS.forEach(d=>{ FX_BY[d[0]]=d; });
 const FX_N=5, FX_P=12;
@@ -2994,42 +3045,79 @@ class FxClassic{
 class FxRack{
   constructor(sr){
     this.sr=sr; this.s=[];
-    for(let i=0;i<FX_N;i++) this.s.push({type:'none',dev:null,route:'ser',lv:0,u:new Float64Array(FX_P)});
-    this.dL=new Float32Array(128); this.dR=new Float32Array(128); this.pL=new Float32Array(128); this.pR=new Float32Array(128); this.aL=new Float32Array(128); this.aR=new Float32Array(128);
+    for(let i=0;i<FX_N;i++) this.s.push({type:'none',dev:null,lv:0,g:-1,u:new Float64Array(FX_P),bL:new Float32Array(128),bR:new Float32Array(128)});
+    for(const k of ['dL','dR','aL','aR','xL','xR']) this[k]=new Float32Array(128);
+    this.topo={order:[],src:[],out:[0]}; this.cur=new Int32Array(FX_N+1).fill(-2); this.gf=0;
   }
   static make(type,sr){
     if(type==='mosaic') return new FxMosaic(sr); if(type==='ring') return new FxRing(sr); if(type==='deform') return new FxDeform(sr);
     if(type==='vast') return new FxVast(sr); if(type==='dj') return new FxDJ(sr); if(type==='comp') return new FxComp(sr);
     if(FX_BY[type]) return new FxClassic(sr,type); return null;
   }
+  // a node's LEVEL: 0..1, 0.8 is 0 dB, the top +6 dB, the bottom off
+  static lvl(u){ if(!(u>0.005)) return 0; const dB=u<=0.8?-30*(0.8-u)/0.8:6*(u-0.8)/0.2; return Math.pow(10,dB/20); }
+  static on(P,k){ const t=P['x'+k+'T']; return typeof t==='string' && t!=='none'; }
+  // the patch as numbers: every node's inputs (-1: no device there) and OUT's
+  sigOf(P,k){ if(k===0){ const o=P.xOut; return typeof o==='number'?o|0:1; } return FxRack.on(P,k)?(P['x'+k+'I']|0):-1; }
+  changed(P){ for(let k=0;k<=FX_N;k++) if(this.cur[k]!==this.sigOf(P,k)) return true; return false; }
+  // the graph: the nodes OUT hears, each after everything that feeds it (a loop, which the page never makes, is left out)
+  static topo(P){
+    const src=[[]];
+    for(let k=1;k<=FX_N;k++){ const m=FxRack.on(P,k)?(P['x'+k+'I']|0):0, l=[]; for(let j=0;j<=FX_N;j++) if(j!==k && (m>>j&1) && (j===0 || FxRack.on(P,j))) l.push(j); src.push(l); }
+    const om=typeof P.xOut==='number'?P.xOut|0:1; let out=[]; for(let j=0;j<=FX_N;j++) if((om>>j&1) && (j===0 || FxRack.on(P,j))) out.push(j);
+    const need=new Array(FX_N+1).fill(false), st=out.filter(j=>j>0);
+    while(st.length){ const k=st.pop(); if(need[k]) continue; need[k]=true; for(const j of src[k]) if(j>0 && !need[j]) st.push(j); }
+    const order=[], done=new Array(FX_N+1).fill(false); done[0]=true;
+    for(let prog=true;prog;){ prog=false; for(let k=1;k<=FX_N;k++) if(need[k] && !done[k] && src[k].every(j=>done[j])){ done[k]=true; order.push(k); prog=true; } }
+    out=out.filter(j=>done[j]); if(!out.length) out=[0];
+    return {order,src,out};
+  }
   // how long the rack goes on sounding once its input is silent
-  tail(P){ let t=0; for(let i=0;i<FX_N;i++){ const s=this.s[i]; if(s.dev && s.type!=='none' && s.dev.tail) t=Math.max(t,s.dev.tail(s.u)); } return t; }
-  active(P){ for(let i=1;i<=FX_N;i++) if((P['x'+i+'T']||'none')!=='none') return true; for(const s of this.s) if(s.lv>0) return true; return false; }
+  tail(P){ let t=0; for(const k of this.topo.order){ const s=this.s[k-1]; if(s.dev && s.dev.tail) t=Math.max(t,s.dev.tail(s.u)); } return t; }
+  active(P){ if(this.gf<1 || this.changed(P)) return true; const T=this.topo; return T.order.length>0 || T.out.length!==1 || T.out[0]!==0; }
+  // the mix of what is wired into a node, or into OUT: sources mixed equally
+  mix(list,oL,oR,n){
+    if(!list.length){ oL.fill(0,0,n); oR.fill(0,0,n); return; }
+    const g=1/list.length;
+    for(let i=0;i<list.length;i++){
+      const j=list[i], a=j===0?this.dL:this.s[j-1].bL, b=j===0?this.dR:this.s[j-1].bR;
+      if(i===0){ if(g===1){ oL.set(a.subarray(0,n)); oR.set(b.subarray(0,n)); } else for(let t=0;t<n;t++){ oL[t]=a[t]*g; oR[t]=b[t]*g; } }
+      else for(let t=0;t<n;t++){ oL[t]+=a[t]*g; oR[t]+=b[t]*g; }
+    }
+  }
   effect(L,R,n,P){
     if(!this.active(P)) return;
-    if(this.dL.length<n){ for(const k of ['dL','dR','pL','pR','aL','aR']) this[k]=new Float32Array(n); }
-    const dL=this.dL, dR=this.dR, pL=this.pL, pR=this.pR, aL=this.aL, aR=this.aR, sr=this.sr, step=n/(0.015*sr);
-    dL.set(L.subarray(0,n)); dR.set(R.subarray(0,n)); let par=false;
-    for(let i=0;i<FX_N;i++){
-      const s=this.s[i], k='x'+(i+1), type=P[k+'T']||'none', on=type!=='none' && !P[k+'B'], route=P[k+'R']==='par'?'par':'ser';
-      // a new device, a new route or bypass: the slot fades out (15 ms), changes, and fades back in
-      const want=on && type===s.type && route===s.route ? 1 : 0;
-      const l0=s.lv, l1=want?Math.min(1,l0+step):Math.max(0,l0-step); s.lv=l1;
-      if(l1<=0 && l0<=0){ if(type!==s.type){ s.type=type; s.dev=type==='none'?null:FxRack.make(type,sr); } s.route=route; if(!on || type!==s.type) continue; }
-      if(!s.dev) continue;
-      // a device fading out because another takes its slot keeps its own settings until it is gone
-      const u=s.u; if(type===s.type) for(let j=0;j<FX_P;j++){ const v=P[k+'p'+j]; u[j]=typeof v==='number'?v:0.5; }
+    if(this.dL.length<n){ for(const k of ['dL','dR','aL','aR','xL','xR']) this[k]=new Float32Array(n); for(const s of this.s){ s.bL=new Float32Array(n); s.bR=new Float32Array(n); } }
+    const sr=this.sr, step=n/(0.015*sr), fstep=n/(0.008*sr), dL=this.dL, dR=this.dR, aL=this.aL, aR=this.aR, xL=this.xL, xR=this.xR;
+    // a new wire or a node added or taken away: the rack fades to the dry sound (8 ms), the new patch takes over, it fades back in
+    const ch=this.changed(P), gf0=this.gf;
+    if(ch && gf0<=0){
+      this.topo=FxRack.topo(P); for(let k=0;k<=FX_N;k++) this.cur[k]=this.sigOf(P,k);
+      const inT=new Set(this.topo.order); this.s.forEach((s,i)=>{ if(!inT.has(i+1)){ s.lv=0; s.g=-1; } });
+    }
+    const gf1=ch&&gf0>0?Math.max(0,gf0-fstep):Math.min(1,gf0+fstep); this.gf=gf1;
+    dL.set(L.subarray(0,n)); dR.set(R.subarray(0,n));
+    const T=this.topo;
+    for(const k of T.order){
+      const s=this.s[k-1], key='x'+k, type=P[key+'T']||'none', on=type!=='none' && !P[key+'B'];
+      this.mix(T.src[k],xL,xR,n);
+      // a new device or BYPASS: the node fades to its input (15 ms), changes, and fades back in
+      const want=on && type===s.type?1:0, l0=s.lv, l1=want?Math.min(1,l0+step):Math.max(0,l0-step); s.lv=l1;
+      if(l0<=0 && l1<=0 && type!==s.type){ s.type=type; s.dev=type==='none'?null:FxRack.make(type,sr); }
+      const bL=s.bL, bR=s.bR;
+      if(!s.dev || (l0<=0 && l1<=0)){ bL.set(xL.subarray(0,n)); bR.set(xR.subarray(0,n)); continue; }
+      // a device fading out because another takes its node keeps its own settings until it is gone
+      const u=s.u; if(type===s.type) for(let j=0;j<FX_P;j++){ const v=P[key+'p'+j]; u[j]=typeof v==='number'?v:0.5; }
       const def=FX_BY[s.type], wi=def?def[4]:-1, wet=wi>=0?u[wi]:1;
-      if(s.route==='par'){
-        aL.set(dL.subarray(0,n)); aR.set(dR.subarray(0,n)); s.dev.process(aL,aR,n,u,true);
-        if(!par){ pL.fill(0,0,n); pR.fill(0,0,n); par=true; }
-        for(let j=0;j<n;j++){ const g=wet*(l0+(l1-l0)*j/n); pL[j]+=aL[j]*g; pR[j]+=aR[j]*g; }
-      } else {
-        aL.set(L.subarray(0,n)); aR.set(R.subarray(0,n)); s.dev.process(aL,aR,n,u,false);
-        for(let j=0;j<n;j++){ const g=wet*(l0+(l1-l0)*j/n); L[j]+=(aL[j]-L[j])*g; R[j]+=(aR[j]-R[j])*g; }
+      const gu=P[key+'G'], g1=FxRack.lvl(typeof gu==='number'?gu:0.8), g0=s.g<0?g1:s.g; s.g=g1;
+      aL.set(xL.subarray(0,n)); aR.set(xR.subarray(0,n)); s.dev.process(aL,aR,n,u,false);
+      for(let j=0;j<n;j++){
+        const t=j/n, lv=l0+(l1-l0)*t, g=g0+(g1-g0)*t, x=xL[j], y=xR[j];
+        bL[j]=x+((x+(aL[j]-x)*wet)*g-x)*lv; bR[j]=y+((y+(aR[j]-y)*wet)*g-y)*lv;
       }
     }
-    if(par) for(let j=0;j<n;j++){ L[j]+=pL[j]; R[j]+=pR[j]; }
+    this.mix(T.out,L,R,n);
+    if(gf0<1 || gf1<1) for(let j=0;j<n;j++){ const g=gf0+(gf1-gf0)*j/n; L[j]=dL[j]+(L[j]-dL[j])*g; R[j]=dR[j]+(R[j]-dR[j])*g; }
   }
 }
 
@@ -4400,14 +4488,18 @@ const SPECS={
 };
 // the slot knobs: 0..1; their label, display and steps become the device's when the slot is shown
 for(let i=1;i<=FX_N;i++) for(let k=0;k<FX_P;k++) SPECS['x'+i+'p'+k]={label:'P'+(k+1),min:0,max:1,fmt:pct};
+// a node's LEVEL, and the patch: which wires go into each node and into OUT (bit masks)
+for(let i=1;i<=FX_N;i++){ SPECS['x'+i+'G']={label:'LEVEL',min:0,max:1,detent:0.8,fmt:u=>fdb(FxRack.lvl(u))}; SPECS['x'+i+'I']={label:'FX '+i+' inputs',min:0,max:63,int:1,fmt:String}; }
+SPECS.xOut={label:'OUT inputs',min:0,max:63,int:1,fmt:String};
 // ---- GRANULAR engine parameters (after the Tasty Chips GR-1); LFOs, modulation routes and FX for both engines ----
 Object.assign(DEFAULTS,{dec:0.5,sus:1,
   eng:'ws',grMode:'gran',grDens:20,grSize:0.15,grSpray:0.02,grScan:0,grTune:0,grDir:1,grPan:0,grPSpr:0.3,grSides:1,grTilt:0,grCurve:0.4,
   grSpawn:'gradual',grGlide:false,grKSync:true,grAA:false,grSteal:0,grSlew:0.2,grScanM:'loop',grSKSync:false,grKPos:0,grKPit:true,
   l1Freq:0.5,l1Wave:'sine',l1Key:false,l1Sync:false,l1Q:0,l2Freq:0.2,l2Wave:'sine',l2Key:false,l2Sync:false,l2Q:0,l2X:0,
   });
-// FX RACK: five slots, each a device, SERIES or PARALLEL, BYPASS, and twelve knobs whose meaning is the device's
-for(let i=1;i<=FX_N;i++){ DEFAULTS['x'+i+'T']='none'; DEFAULTS['x'+i+'R']='ser'; DEFAULTS['x'+i+'B']=false; for(let k=0;k<FX_P;k++) DEFAULTS['x'+i+'p'+k]=0.5; }
+// FX RACK: up to five devices, each a node of the patch with its wires, place, BYPASS, LEVEL and twelve knobs whose meaning is the device's
+for(let i=1;i<=FX_N;i++){ Object.assign(DEFAULTS,{['x'+i+'T']:'none',['x'+i+'B']:false,['x'+i+'G']:0.8,['x'+i+'I']:0,['x'+i+'X']:0.5,['x'+i+'Y']:0.5}); for(let k=0;k<FX_P;k++) DEFAULTS['x'+i+'p'+k]=0.5; }
+DEFAULTS.xOut=1;
 // LFO: RATE in CLOCK MAIN as cycles per MAIN; AUX: the drawn shape (64 points, -1..1) and how it is read
 const AUX_N=64, auxSine=()=>Array.from({length:AUX_N},(_,k)=>Math.round(Math.sin(2*Math.PI*k/AUX_N)*1000)/1000);
 Object.assign(DEFAULTS,{l1Div:1,l2Div:1,l1Aux:auxSine(),l2Aux:auxSine(),l1AuxM:'smooth',l2AuxM:'smooth'});
@@ -4424,7 +4516,7 @@ const MOD_GROUPS=[
   ['SHARED','',[['pos','POSITION'],['amp','LEVEL']]],
   ['VOICE','',[['atk','ATTACK'],['dec','DECAY'],['sus','SUSTAIN'],['rel','RELEASE']]],
   ['FILTER','',[['spCut','FREQ'],['spRes','RES'],['spDrive','DRIVE'],['spMorph','MORPH'],['spFEnv','ENV AMOUNT'],['spFA','F.ATTACK'],['spFD','F.DECAY'],['spFS','F.SUSTAIN'],['spFR','F.RELEASE']]],
-  ...Array.from({length:FX_N},(_,i)=>['FX '+(i+1),'',Array.from({length:FX_P},(_,k)=>['x'+(i+1)+'p'+k,'FX '+(i+1)+' · P'+(k+1)])]),
+  ...Array.from({length:FX_N},(_,i)=>['FX '+(i+1),'',[...Array.from({length:FX_P},(_,k)=>['x'+(i+1)+'p'+k,'FX '+(i+1)+' · P'+(k+1)]),['x'+(i+1)+'G','FX '+(i+1)+' · LEVEL']]]),
   ['TIME STRETCH','',[['pitch','PITCH'],['fmt','FORMANT'],['psWin','PITCHSHIFT WINDOW'],['w1Win','WARP1 WINDOW'],['w1Ovl','WARP1 OVERLAP'],['w1Rand','WARP1 RAND'],['tgWin','TGRAINS WINDOW'],['tgOvl','TGRAINS DENSITY'],['tgRand','TGRAINS SCATTER'],['smBins','SMEAR BINS'],['smFeed','SMEAR FEED'],['smFreeze','SMEAR FREEZE'],
     ['bSens','BEATS SENS'],['bEnv','BEATS ENVELOPE'],['txSize','TEXTURE GRAIN'],['txFlux','TEXTURE FLUX'],['txRev','TEXTURE REVERSE'],['txDet','TEXTURE DETUNE'],['txOct','TEXTURE SHIMMER'],
     ['sgPh','SPECTRAL PHASE'],['sgSpr','SPECTRAL SPREAD'],['sgHarm','SPECTRAL HARMONICS'],['sgHT','SPECTRAL H.TUNE'],['sgFrz','SPECTRAL FREEZE'],['prShift','PRISM SHIFT'],['prStr','PRISM STRETCH'],['prBlur','PRISM BLUR'],['hyT','HYBRID TONAL'],['hyN','HYBRID NOISE'],
@@ -4444,7 +4536,7 @@ Object.assign(CHOICES,{eng:['ws','gr','sp'],grMode:['gran','aud','tape'],grSpawn
   spMode:['classic','oneshot','slice'],spTrig:['trigger','gate'],spBy:['trans','beat','region','manual','loud','chroma','bright','timbre','noise'],spDiv:Object.keys(SL_DIV),
   spPlay:['mono','poly','thru'],spSlLoop:['off','fwd','bf'],spGlide:['off','glide','porta'],spFlt:['off','lp','hp','bp','notch','morph'],spSlope:['12','24'],spCirc:['clean','osr','ms2','smp','prd']});
 for(let i=0;i<NR;i++){ CHOICES['r'+i+'S']=['none',...ROUTE_SRC.map(s=>s[0])]; CHOICES['r'+i+'D']=['none',...Object.keys(MOD_ENG)]; }
-for(let i=1;i<=FX_N;i++){ CHOICES['x'+i+'T']=['none',...FX_DEFS.map(d=>d[0])]; CHOICES['x'+i+'R']=['ser','par']; }
+for(let i=1;i<=FX_N;i++) CHOICES['x'+i+'T']=['none',...FX_DEFS.map(d=>d[0])];
 const fsec=v=>v<1?fms(v):v<10?v.toFixed(2)+' s':v.toFixed(1)+' s';
 const fhz=v=>v<1000?Math.round(v)+' Hz':(v/1000).toFixed(v<10000?2:1)+' kHz';
 const fsgn=v=>Math.abs(v)<0.005?'0':(v>0?'+':'−')+Math.abs(v).toFixed(2);
@@ -4548,8 +4640,18 @@ function migrateP(p){
   // before v33 a player had one effect (fxT, FX 1, FX 2): it becomes FX slot 1, a classic device; routes follow it
   if(typeof p.fxT==='string' && !('x1T' in p)){
     p=Object.assign({},p); const t={delay:'cdelay',dist:'cdist',reduce:'credux',reverb:'creverb'}[p.fxT];
-    if(t){ p.x1T=t; p.x1R='ser'; p.x1B=false; p.x1p0=typeof p.fxA==='number'?p.fxA:0.4; p.x1p1=typeof p.fxB==='number'?p.fxB:0.4; p.x1p2=1; }
+    if(t){ p.x1T=t; p.x1B=false; p.x1I=1; p.xOut=2; p.x1X=0.5; p.x1Y=0.5; p.x1p0=typeof p.fxA==='number'?p.fxA:0.4; p.x1p1=typeof p.fxB==='number'?p.fxB:0.4; p.x1p2=1; }
     for(let i=0;i<NR;i++){ const d=p['r'+i+'D']; if(d==='fxA') p['r'+i+'D']='x1p0'; else if(d==='fxB') p['r'+i+'D']='x1p1'; }
+  }
+  // v33 had five slots, each SERIES or PARALLEL: the series ones become one chain, the parallel ones each its own
+  // branch from IN to OUT, laid out left to right
+  if(!('xOut' in p) && Array.from({length:FX_N},(_,i)=>p['x'+(i+1)+'T']).some(t=>typeof t==='string' && t!=='none')){
+    p=Object.assign({},p); const ser=[], par=[];
+    for(let k=1;k<=FX_N;k++){ const t=p['x'+k+'T']; if(typeof t!=='string' || t==='none') continue; (p['x'+k+'R']==='par'?par:ser).push(k); }
+    let prev=0; ser.forEach((k,i)=>{ p['x'+k+'I']=prev?1<<prev:1; prev=k; p['x'+k+'X']=ser.length>1?i/(ser.length-1):0.5; p['x'+k+'Y']=par.length?0.25:0.5; });
+    par.forEach((k,i)=>{ p['x'+k+'I']=1; p['x'+k+'X']=0.5; p['x'+k+'Y']=par.length>1?(ser.length?0.55:0.15)+(ser.length?0.45:0.7)*i/(par.length-1):(ser.length?0.8:0.5); });
+    p.xOut=(prev?1<<prev:(par.length?0:1))|par.reduce((m,k)=>m|1<<k,0)|(par.length && !ser.length?1:0);
+    for(let k=1;k<=FX_N;k++) delete p['x'+k+'R'];
   }
   // before v17, CLOCK MAIN read FREQ as a number of cycles per MAIN; it becomes RATE
   if(!('l1Div' in p) && ('l1Freq' in p || 'l2Freq' in p)){ p=Object.assign({},p); for(const j of [1,2]) if(typeof p['l'+j+'Freq']==='number') p['l'+j+'Div']=GrCloud.div(p['l'+j+'Freq']); }
@@ -4875,7 +4977,7 @@ function afterParam(J,key){
   if(key==='l1Sync'||key==='l2Sync'||key==='l1Wave'||key==='l2Wave') renderLfoUI();
   if(key==='eng'){ I.shapes=[]; renderEng(); }
   if(['grMode','l1Sync','l2Sync','loop','ls','le'].includes(key)) renderGrUI();
-  if(fxReady && /^x\d[TRB]$/.test(key)) renderFx();
+  if(fxReady && (/^x\d[TBI]$/.test(key) || key==='xOut')) renderFx();
   if(/^r\d+[SD]$/.test(key)) renderRoutes();
   if(key==='grSides'||key==='grTilt'||key==='grCurve') drawWinPic();
   if(key==='ts'||key==='bGrid'||key==='bLoop'||key==='tsTr') updateTS();
@@ -5677,53 +5779,166 @@ const fwTop=()=>{ const r=$('#rack').getBoundingClientRect(); return Math.max(60
 const fwLfo=makeFloat('fw-lfo',$('#open-lfo'),()=>[16,fwTop()]);
 const fwMx=makeFloat('fw-mx',$('#open-mx'),w=>[document.documentElement.clientWidth-w.getBoundingClientRect().width-16,fwTop()+24]);
 // ---------- FX RACK window ----------
-// Five slots per player. Each holds a device (the Torso S-4's MOSAIC, RING, DEFORM, VAST, its mixer's DJ FILTER and
-// COMPRESS, or a classic effect), runs in SERIES or in PARALLEL, can be bypassed and moved. The slot's twelve knobs
-// take the device's names, units and defaults; all of them can be modulated from the MATRIX and recorded in loops.
+// The patch: up to five devices per player, each a node you place where you like; wires run from IN through the
+// devices to OUT. Drag from a device's right-hand dot onto another device (or OUT) to wire it, or tap the dot and
+// then the device; tap a wire to cut it. Where wires meet, the sounds are mixed equally (each device's LEVEL sets its
+// share). CHAINS arranges the devices as one chain, all in parallel, two chains or a split. Every knob of every
+// device, and its LEVEL, can be modulated from the MATRIX and recorded in loops.
 const fwFx=makeFloat('fw-fx',$('#open-fx'),w=>[Math.max(16,(document.documentElement.clientWidth-w.getBoundingClientRect().width)/2),fwTop()]);
-let fxSel=1;
-const fxTypeSel=$('#fx-type');
-{ const groups={}; FX_DEFS.forEach(d=>{ (groups[d[2]]=groups[d[2]]||[]).push([d[0],d[1]]); });
-  const e=document.createElement('option'); e.value='none'; e.textContent='— empty —'; fxTypeSel.appendChild(e);
-  for(const [g,l] of Object.entries(groups)){ const og=document.createElement('optgroup'); og.label=g; for(const [v,t] of l){ const o=document.createElement('option'); o.value=v; o.textContent=t; og.appendChild(o); } fxTypeSel.appendChild(og); } }
-for(let i=1;i<=FX_N;i++) for(let k=0;k<FX_P;k++) makeKnob('x'+i+'p'+k,$('#k-fx'));
+const FXO=FX_N+1;                       // OUT, in the page's numbering (IN is 0)
+let fxSel=0, fxWire=null, fxPend=-1;    // the device shown below the patch, the wire picked to cut, the dot tapped to wire from
+const fxTypeSel=$('#fx-type'), FX_SORTED=FX_DEFS.slice().sort((a,b)=>a[1].localeCompare(b[1]));
+for(const d of FX_SORTED){ const o=document.createElement('option'); o.value=d[0]; o.textContent=d[1]; fxTypeSel.appendChild(o); }
+{ const pk=$('#fx-pick'); for(const d of FX_SORTED){ const b=document.createElement('button'); b.type='button'; b.className='fx-tile'; b.dataset.t=d[0]; b.innerHTML=d[1]+'<small>'+d[2]+'</small>'; pk.appendChild(b); } }
+for(let i=1;i<=FX_N;i++){ for(let k=0;k<FX_P;k++) makeKnob('x'+i+'p'+k,$('#k-fx')); makeKnob('x'+i+'G',$('#k-fx')); }
 const fxK=(n,s)=>'x'+n+s;
-function fxSlotName(n){ const d=FX_BY[P[fxK(n,'T')]]; return d?d[1]:'—'; }
-// a change of slot settings with one undo step, sent to the engine and recorded like a knob
+// ---- the patch as a graph (V: the parameters, or a working copy of them) ----
+const fxOn=(V,n)=>n>=1 && n<=FX_N && !!FX_BY[V[fxK(n,'T')]];
+const fxList=V=>{ const l=[]; for(let n=1;n<=FX_N;n++) if(fxOn(V,n)) l.push(n); return l; };
+const fxInK=t=>t===FXO?'xOut':fxK(t,'I');
+const fxIn=(V,t)=>(V[fxInK(t)]|0);
+const fxWired=(V,f,t)=>!!(fxIn(V,t)>>f&1) && (f===0 || fxOn(V,f));
+function fxSrcs(V,t){ const l=[]; for(let f=0;f<=FX_N;f++) if(f!==t && fxWired(V,f,t)) l.push(f); return l; }
+function fxOuts(V,f){ const l=[]; for(const t of [...fxList(V),FXO]) if(t!==f && fxWired(V,f,t)) l.push(t); return l; }
+function fxReach(V,a,b){ const seen=new Set([a]), st=[a]; while(st.length){ const x=st.pop(); if(x===b) return true; if(x===FXO) continue; for(const t of fxOuts(V,x)) if(!seen.has(t)){ seen.add(t); st.push(t); } } return false; }
+const fxCanWire=(V,f,t)=>f!==t && t!==0 && f!==FXO && (f===0 || fxOn(V,f)) && (t===FXO || fxOn(V,t)) && !fxWired(V,f,t) && !fxReach(V,t,f);
+const fxName=n=>n===0?'IN':n===FXO?'OUT':(FX_BY[P[fxK(n,'T')]]||[0,'—'])[1];
+// every way from IN to OUT through the devices (the dry wire, straight from IN to OUT, left out)
+function fxPaths(V){
+  const out=[];
+  const walk=(n,path)=>{ if(out.length>=24) return; for(const t of fxOuts(V,n)){ if(t===FXO){ if(path.length) out.push(path); } else if(!path.includes(t)) walk(t,[...path,t]); } };
+  walk(0,[]); return out;
+}
+// which ready-made arrangement the patch is, if any
+function fxShape(V){
+  const ns=fxList(V), k=ns.length; if(!k) return '';
+  const ps=fxPaths(V), on=new Set(ps.flat()); if(ns.some(n=>!on.has(n))) return '';
+  let wires=0; for(const t of [...ns,FXO]) wires+=fxSrcs(V,t).filter(f=>!(f===0 && t===FXO)).length;
+  const simple=ps.every(p=>p.every(n=>fxSrcs(V,n).length===1 && fxOuts(V,n).length===1));
+  if(ps.length===1 && ps[0].length===k && simple && wires===k+1) return 'ser';
+  if(ps.length===k && ps.every(p=>p.length===1) && wires===2*k) return 'par';
+  if(ps.length===2 && ps[0].length+ps[1].length===k && simple && wires===k+2) return 'two';
+  if(k>=4 && ps.length===k-2 && ps.every(p=>p.length===3 && p[0]===ps[0][0] && p[2]===ps[0][2]) && new Set(ps.map(p=>p[1])).size===k-2 && wires===2*(k-2)+2) return 'split';
+  if(k===3 && ps.length===2 && ps.every(p=>p.length===2 && p[0]===ps[0][0]) && ps[0][1]!==ps[1][1] && wires===5) return 'split';
+  return '';
+}
+// ---- geometry: IN on the left, OUT on the right, the devices where they were put (0..1 across the space between) ----
+function fxGeo(W,H,mini){
+  const nar=W<520, NW=mini?Math.min(78,W/6):nar?92:108, NH=mini?24:nar?50:54, IO=mini?26:44, IH=mini?20:40, gap=mini?10:28;
+  return {W,H,NW,NH,IO,IH,x0:6+IO+gap+NW/2,x1:W-6-IO-gap-NW/2,y0:(mini?6:10)+NH/2,y1:H-(mini?6:10)-NH/2};
+}
+function fxPos(G,n,V){
+  V=V||P; if(n===0) return {x:6+G.IO/2,y:G.H/2}; if(n===FXO) return {x:G.W-6-G.IO/2,y:G.H/2};
+  return {x:G.x0+(G.x1-G.x0)*V[fxK(n,'X')],y:G.y0+(G.y1-G.y0)*V[fxK(n,'Y')]};
+}
+const fxOutPt=(G,n)=>{ const c=fxPos(G,n); return {x:c.x+(n===0?G.IO:G.NW)/2,y:c.y}; };
+const fxInPt=(G,n)=>{ const c=fxPos(G,n); return {x:c.x-(n===FXO?G.IO:G.NW)/2,y:c.y}; };
+const fxCurve=(a,b)=>{ const dx=Math.max(30,Math.abs(b.x-a.x)*0.5); return {d:`M${a.x.toFixed(1)},${a.y.toFixed(1)} C${(a.x+dx).toFixed(1)},${a.y.toFixed(1)} ${(b.x-dx).toFixed(1)},${b.y.toFixed(1)} ${b.x.toFixed(1)},${b.y.toFixed(1)}`,mx:(a.x+3*(a.x+dx)+3*(b.x-dx)+b.x)/8,my:(a.y+b.y)/2}; };
+// the arrangements: wires and places for the devices, in the order they sit (left to right, top to bottom)
+function fxOrder(V){
+  const byPlace=fxList(V).sort((a,b)=>(V[fxK(a,'X')]-V[fxK(b,'X')])||(V[fxK(a,'Y')]-V[fxK(b,'Y')])), sh=fxShape(V);
+  if(!sh) return byPlace;
+  const ps=fxPaths(V);
+  if(sh==='par') return ps.map(p=>p[0]).sort((a,b)=>V[fxK(a,'Y')]-V[fxK(b,'Y')]);
+  if(sh==='two') return ps.sort((a,b)=>V[fxK(a[0],'Y')]-V[fxK(b[0],'Y')]).flat();
+  if(sh==='split') return [ps[0][0],...ps.map(p=>p[1]).sort((a,b)=>V[fxK(a,'Y')]-V[fxK(b,'Y')]),...(ps[0].length>2?[ps[0][2]]:[])];
+  return ps[0];
+}
+function fxPlan(kind,V,W){
+  const ns=fxOrder(V), k=ns.length, p={}, dry=fxIn(V,FXO)&1;
+  const G=fxGeo(W||640,250,false), per=Math.max(1,Math.floor((G.x1-G.x0)/(G.NW+10))+1);
+  const at=(n,x,y)=>{ p[fxK(n,'X')]=Math.round(Math.min(1,Math.max(0,x))*1000)/1000; p[fxK(n,'Y')]=Math.round(Math.min(1,Math.max(0,y))*1000)/1000; };
+  const row=(l,y)=>l.forEach((n,i)=>at(n,l.length>1?i/(l.length-1):0.5,y));
+  const chain=l=>{ l.forEach((n,i)=>{ p[fxK(n,'I')]=i?1<<l[i-1]:1; }); return 1<<l[l.length-1]; };
+  let out=0;
+  if(kind==='par' || (kind==='split' && k<3) || (kind==='two' && k<2)){
+    ns.forEach((n,i)=>{ p[fxK(n,'I')]=1; out|=1<<n; at(n,k>3?(i%2?0.7:0.3):0.5,k>1?i/(k-1):0.5); }); kind='par';
+  } else if(kind==='two'){
+    const a=ns.slice(0,Math.ceil(k/2)), b=ns.slice(a.length); out=chain(a)|chain(b); row(a,0.12); row(b,0.88);
+  } else if(kind==='split'){
+    // one device, the next ones in parallel after it, and (with four or more) the last one where they meet again
+    const a=ns[0], z=k>=4?ns[k-1]:0, mid=k>=4?ns.slice(1,k-1):ns.slice(1); p[fxK(a,'I')]=1; at(a,0,0.5);
+    mid.forEach((n,i)=>{ p[fxK(n,'I')]=1<<a; at(n,z?0.5:0.85,mid.length>1?i/(mid.length-1):0.5); });
+    if(z){ p[fxK(z,'I')]=mid.reduce((m,n)=>m|1<<n,0); out=1<<z; at(z,1,0.5); } else out=mid.reduce((m,n)=>m|1<<n,0);
+  } else {
+    out=chain(ns); const rows=Math.ceil(k/per);
+    ns.forEach((n,i)=>{ const r=Math.floor(i/per), c=i%per, m=Math.min(per,k-r*per), cc=r%2?m-1-c:c; at(n,m>1?cc/(m-1):0.5,rows>1?r/(rows-1):0.5); });
+  }
+  p.xOut=out|dry; return p;
+}
+// ---- changes: one undo step, sent to the engine and recorded like a knob (where a device sits only redraws) ----
 function fxSet(patch,undoKey){
   undoPoint(undoKey||'');
-  Object.assign(P,patch); send({type:'params',p:patch});
-  for(const k in patch) gRecord(I,{k:'p',key:k,v:patch[k]});
+  if(fxList(Object.assign({},P,patch)).length===0 && !((patch.xOut!==undefined?patch.xOut:P.xOut)&1)) patch.xOut=1;   // OUT always hears something
+  Object.assign(P,patch);
+  const e={}; let any=false; for(const k in patch) if(!/^x\d[XY]$/.test(k)){ e[k]=patch[k]; any=true; }
+  if(any){ send({type:'params',p:e}); for(const k in e) gRecord(I,{k:'p',key:k,v:e[k]}); }
   renderFx(); markState();
 }
-// a new device: its own defaults in the slot's knobs
-function fxSetType(n,t){
-  const d=FX_BY[t], patch={[fxK(n,'T')]:t};
-  for(let k=0;k<FX_P;k++) patch[fxK(n,'p'+k)]=d&&k<d[3].length?d[3][k][1]:0.5;
-  fxSet(patch);
-  msg(t==='none'?`FX slot ${n} emptied.`:`FX slot ${n}: ${d[1]}.`,1600);
+const fxWork=()=>{ const V=Object.assign({},P), p={}; return {V,p,set:(k,v)=>{ V[k]=v; p[k]=v; }}; };
+// if the patch was one of the arrangements, it stays tidy as devices come and go
+function fxTidy(w){ const k=fxShape(w.V); if(k){ const q=fxPlan(k,w.V,$('#fx-graph').clientWidth); for(const x in q) if(/[XY]$/.test(x)) w.set(x,q[x]); } }
+function fxConnect(f,t){
+  if(!fxCanWire(P,f,t)){ if(fxWired(P,f,t)) return; msg(fxReach(P,t,f)?`${fxName(t)} already feeds ${fxName(f)}: that wire would make a loop.`:'Those two cannot be wired.',2200); return; }
+  const w=fxWork(); w.set(fxInK(t),fxIn(P,t)|1<<f); fxSet(w.p); msg(`Wired ${fxName(f)} → ${fxName(t)}.`,1400);
 }
-function fxMove(n,dir){
-  const m=n+dir; if(m<1 || m>FX_N) return;
-  const patch={}, keys=['T','R','B',...Array.from({length:FX_P},(_,k)=>'p'+k)];
-  for(const k of keys){ patch[fxK(n,k)]=P[fxK(m,k)]; patch[fxK(m,k)]=P[fxK(n,k)]; }
-  fxSel=m; fxSet(patch);
+function fxCut(f,t){
+  const w=fxWork(); w.set(fxInK(t),fxIn(P,t)&~(1<<f));
+  if(t===FXO && !fxIn(w.V,FXO)){ w.set('xOut',1); msg('OUT needs a wire: IN goes straight to OUT now.',2400); } else msg(`Cut ${fxName(f)} → ${fxName(t)}.`,1400);
+  fxWire=null; fxSet(w.p);
 }
-function fxChainHTML(){
-  let h='<span class="fx-io">IN</span>';
-  for(let n=1;n<=FX_N;n++){
-    const t=P[fxK(n,'T')], d=FX_BY[t], par=P[fxK(n,'R')]==='par', byp=!!P[fxK(n,'B')];
-    h+=`<span class="fx-arr" aria-hidden="true">${par?'∥':'→'}</span><button class="fx-slot${d?'':' empty'}${par?' par':''}${byp?' byp':''}${n===fxSel?' sel':''}" type="button" data-n="${n}" aria-label="FX slot ${n}: ${d?d[1]:'empty'}${par?', parallel':''}${byp?', bypassed':''}"><small>${n} · ${par?'PARALLEL':'SERIES'}${byp?' · OFF':''}</small>${d?d[1]:'—'}</button>`;
+function fxFree(G,x,y,V,self){
+  const ns=fxList(V).filter(n=>n!==self), cand=[[0,0],[0,-0.35],[0,0.35],[0.18,0],[-0.18,0],[0.18,-0.35],[0.18,0.35],[-0.18,-0.35],[-0.18,0.35],[0,-0.7],[0,0.7],[0.36,0],[-0.36,0]];
+  for(const [dx,dy] of cand){
+    const cx=Math.min(1,Math.max(0,x+dx)), cy=Math.min(1,Math.max(0,y+dy)), px=G.x0+(G.x1-G.x0)*cx, py=G.y0+(G.y1-G.y0)*cy;
+    if(ns.every(n=>{ const q=fxPos(G,n,V); return Math.abs(q.x-px)>G.NW+6 || Math.abs(q.y-py)>G.NH+6; })) return [cx,cy];
   }
-  return h+'<span class="fx-arr" aria-hidden="true">→</span><span class="fx-io">OUT</span>';
+  return [Math.min(1,Math.max(0,x)),Math.min(1,Math.max(0,y))];
 }
-function fxSummary(){
-  const ser=[], par=[];
-  for(let n=1;n<=FX_N;n++){ const d=FX_BY[P[fxK(n,'T')]]; if(!d || P[fxK(n,'B')]) continue; (P[fxK(n,'R')]==='par'?par:ser).push(d[1]); }
-  if(!ser.length && !par.length) return 'No effects. Tap a slot to put a device in it. A player’s effects work on everything it plays, after the voices and their filters.';
-  return 'IN → '+(ser.length?ser.join(' → ')+' → ':'')+'OUT'+(par.length?' · in parallel, fed from IN and added at OUT: '+par.join(', '):'')+'.';
+// a new device: after the one shown, into the wire picked, or at the end of the chain that reaches OUT
+function fxAdd(t){
+  const n=[1,2,3,4,5].find(i=>!fxOn(P,i)); if(!n){ msg('Five devices is the most a player has. Remove one to add another.',2400); return; }
+  const d=FX_BY[t], w=fxWork(), G=fxGeo($('#fx-graph').clientWidth||640,$('#fx-graph').clientHeight||250,false);
+  w.set(fxK(n,'T'),t); w.set(fxK(n,'B'),false); w.set(fxK(n,'G'),0.8);
+  for(let k=0;k<FX_P;k++) w.set(fxK(n,'p'+k),d&&k<d[3].length?d[3][k][1]:0.5);
+  let a, b=null, x=0.5, y=0.5;
+  if(fxSel && fxOn(P,fxSel)){ a=fxSel; }
+  else if(fxWire){ a=fxWire[0]; b=fxWire[1]; }
+  else { const srcs=fxSrcs(P,FXO).filter(f=>f>0).sort((p,q)=>P[fxK(q,'X')]-P[fxK(p,'X')]); a=srcs.length?srcs[0]:0; b=FXO; }
+  w.set(fxK(n,'I'),1<<a);
+  const targets=b!==null?[b]:fxOuts(P,a);
+  if(!targets.length) w.set('xOut',fxIn(w.V,FXO)|1<<n);
+  for(const q of targets) w.set(fxInK(q),fxIn(w.V,q)&~(1<<a)|1<<n);
+  if(a>0){ x=P[fxK(a,'X')]+0.22; y=P[fxK(a,'Y')]; if(b && b!==FXO){ x=(P[fxK(a,'X')]+P[fxK(b,'X')])/2; y=(P[fxK(a,'Y')]+P[fxK(b,'Y')])/2; } }
+  else if(b && b!==FXO){ x=P[fxK(b,'X')]-0.22; y=P[fxK(b,'Y')]; }
+  else if(fxList(P).length){ x=0.5; y=0.85; }
+  const [fx,fy]=fxFree(G,x,y,w.V,n); w.set(fxK(n,'X'),fx); w.set(fxK(n,'Y'),fy);
+  fxTidy(w); fxSel=n; fxWire=null; fxPend=-1; $('#fx-pick').hidden=true; $('#fx-add').setAttribute('aria-expanded','false');
+  fxSet(w.p); msg(`${d[1]} added as FX ${n}${a?' after '+fxName(a):''}.`,1800);
 }
-// the slot knobs show the device's names, units, steps and defaults; the matrix names follow
+// taking a device away: what fed it now feeds what it fed, so the chain stays whole
+function fxRemove(n){
+  if(!fxOn(P,n)) return;
+  const w=fxWork(), ins=fxIn(P,n)&~(1<<n), name=fxName(n);
+  for(const t of fxOuts(P,n)){ let m=fxIn(w.V,t)&~(1<<n)|ins; if(t===FXO && !m) m=1; w.set(fxInK(t),m); }
+  for(const t of [...fxList(P),FXO]) if(fxIn(w.V,t)>>n&1) w.set(fxInK(t),fxIn(w.V,t)&~(1<<n));
+  w.set(fxK(n,'T'),'none'); w.set(fxK(n,'I'),0); w.set(fxK(n,'B'),false); w.set(fxK(n,'G'),0.8); for(let k=0;k<FX_P;k++) w.set(fxK(n,'p'+k),0.5);
+  if(!fxIn(w.V,FXO)) w.set('xOut',1);
+  fxTidy(w); if(fxSel===n) fxSel=0; fxWire=null; fxPend=-1;
+  fxSet(w.p); msg(`${name} removed; the wires around it were joined.`,1800);
+}
+// another device in a node: its own defaults in the knobs, the wires stay
+function fxSetType(n,t){
+  const d=FX_BY[t]; if(!d){ fxRemove(n); return; }
+  const patch={[fxK(n,'T')]:t}; for(let k=0;k<FX_P;k++) patch[fxK(n,'p'+k)]=k<d[3].length?d[3][k][1]:0.5;
+  fxSet(patch); msg(`FX ${n}: ${d[1]}.`,1600);
+}
+function fxArrange(kind){
+  if(!fxList(P).length){ msg('Add a device first: + ADD FX.',1800); return; }
+  const k=fxList(P).length; if((kind==='split' && k<3) || (kind==='two' && k<2)) msg(kind==='split'?'SPLIT needs three devices or more: in parallel for now.':'Two chains need two devices: in parallel for now.',2400);
+  fxWire=null; fxPend=-1; fxSet(fxPlan(kind,P,$('#fx-graph').clientWidth));
+}
+// ---- the knobs of the device shown take its names, units, steps and defaults; the matrix names follow ----
 function fxKnobs(n){
   for(let i=1;i<=FX_N;i++){
     const d=FX_BY[P[fxK(i,'T')]];
@@ -5735,33 +5950,166 @@ function fxKnobs(n){
       kn.el.hidden=!(i===n && q);
       if(i===n){ kn.el.querySelector('.kl').textContent=s.label; kn.el.setAttribute('aria-label',`FX ${i} ${s.label}`); kn.render(); }
     }
+    const g=knobs[fxK(i,'G')]; g.el.hidden=!(i===n && d); MOD_LBL[fxK(i,'G')]=`FX ${i} · LEVEL${d?' ('+d[1]+')':''}`; if(i===n) g.render();
   }
-  // the matrix menus name the FX knobs by what they are now
-  document.querySelectorAll('#rt-list .rt-d option').forEach(o=>{ if(/^x\dp\d+$/.test(o.value)) o.textContent=MOD_LBL[o.value]; });
-  document.querySelectorAll('#rt-list .rt-d optgroup').forEach(g=>{ const m=/^FX (\d)/.exec(g.label); if(m) g.label='FX '+m[1]+' · '+fxSlotName(+m[1]); });
+  document.querySelectorAll('#rt-list .rt-d option').forEach(o=>{ if(/^x\d(p\d+|G)$/.test(o.value)) o.textContent=MOD_LBL[o.value]; });
+  document.querySelectorAll('#rt-list .rt-d optgroup').forEach(g=>{ const m=/^FX (\d)/.exec(g.label); if(m) g.label='FX '+m[1]+' · '+(FX_BY[P[fxK(+m[1],'T')]]||[0,'empty'])[1]; });
+}
+// ---- drawing ----
+const fxHeard=()=>{ const T=FxRack.topo(P); return new Set(T.order); };
+function fxDrawWires(tmp){
+  const g=$('#fx-graph'), W=g.clientWidth, H=g.clientHeight; if(!W) return;
+  const G=fxGeo(W,H,false), heard=fxHeard(), cut=$('#fx-cut'); let h='', sel=null;
+  for(const t of [...fxList(P),FXO]) for(const f of fxSrcs(P,t)){
+    const c=fxCurve(fxOutPt(G,f),fxInPt(G,t)), live=(f===0||heard.has(f)) && (t===FXO||heard.has(t)), on=fxWire && fxWire[0]===f && fxWire[1]===t;
+    if(on) sel=c;
+    h+=`<path class="w${live?'':' dead'}${on?' sel':''}" d="${c.d}"/><path class="hit" data-f="${f}" data-t="${t}" d="${c.d}"/>`;
+  }
+  if(tmp) h+=`<path class="tmp" d="${fxCurve(fxOutPt(G,tmp.f),{x:tmp.x,y:tmp.y}).d}"/>`;
+  $('#fx-wires').innerHTML=h;
+  cut.hidden=!sel; if(sel){ cut.style.left=sel.mx+'px'; cut.style.top=sel.my+'px'; cut.setAttribute('aria-label',`Cut the wire ${fxName(fxWire[0])} → ${fxName(fxWire[1])}`); }
+}
+function fxDrawNodes(){
+  const g=$('#fx-graph'), W=g.clientWidth, H=g.clientHeight; if(!W) return;
+  const G=fxGeo(W,H,false), heard=fxHeard(); let h='';
+  const box=(n,c,w,hh)=>`left:${(c.x-w/2).toFixed(1)}px;top:${(c.y-hh/2).toFixed(1)}px;width:${w}px;height:${hh}px`;
+  const can=n=>fxPend>=0 && fxCanWire(P,fxPend,n);
+  h+=`<div class="fx-node io" data-n="0" style="${box(0,fxPos(G,0),G.IO,G.IH)}"><b>IN</b><span class="fx-port o${fxPend===0?' on':''}" data-o="0" role="button" tabindex="0" aria-label="Wire from IN"></span></div>`;
+  h+=`<div class="fx-node io${can(FXO)?' can':''}" data-n="${FXO}" style="${box(FXO,fxPos(G,FXO),G.IO,G.IH)}" role="button" tabindex="-1" aria-label="OUT"><span class="fx-port i" aria-hidden="true"></span><b>OUT</b></div>`;
+  for(const n of fxList(P)){
+    const d=FX_BY[P[fxK(n,'T')]], byp=!!P[fxK(n,'B')], dead=!heard.has(n);
+    h+=`<div class="fx-node${n===fxSel?' cur':''}${byp?' byp':''}${dead?' dead':''}${can(n)?' can':''}" data-n="${n}" style="${box(n,fxPos(G,n),G.NW,G.NH)}" role="button" tabindex="0" aria-pressed="${n===fxSel}" aria-label="FX ${n}: ${d[1]}${byp?', bypassed':''}${dead?', not heard':''}">`+
+      `<span class="fx-port i" aria-hidden="true"></span><small>FX ${n}${byp?' · OFF':dead?' · NOT HEARD':''}</small><b>${d[1]}</b><span class="fx-port o${fxPend===n?' on':''}" data-o="${n}" role="button" tabindex="0" aria-label="Wire from ${d[1]}"></span></div>`;
+  }
+  $('#fx-nodes').innerHTML=h; fxDrawWires();
+}
+function fxDrawMini(){
+  const el=$('#fx-mini'), W=el.clientWidth, H=el.clientHeight; if(!W) return;
+  const G=fxGeo(W,H,true), heard=fxHeard(); let h='';
+  for(const t of [...fxList(P),FXO]) for(const f of fxSrcs(P,t)){ const live=(f===0||heard.has(f)) && (t===FXO||heard.has(t)); h+=`<path class="w${live?'':' dead'}" d="${fxCurve(fxOutPt(G,f),fxInPt(G,t)).d}"/>`; }
+  for(const n of [0,FXO]){ const c=fxPos(G,n); h+=`<rect class="io" x="${c.x-G.IO/2}" y="${c.y-G.IH/2}" width="${G.IO}" height="${G.IH}" rx="3"/><text class="io" x="${c.x}" y="${c.y+3}" text-anchor="middle">${n?'OUT':'IN'}</text>`; }
+  for(const n of fxList(P)){ const c=fxPos(G,n), d=FX_BY[P[fxK(n,'T')]], nm=d[1].length*6.2>G.NW-6?d[1].slice(0,Math.max(3,Math.floor((G.NW-6)/6.2))):d[1];
+    h+=`<rect class="${P[fxK(n,'B')]?'byp':''}" x="${(c.x-G.NW/2).toFixed(1)}" y="${(c.y-G.NH/2).toFixed(1)}" width="${G.NW.toFixed(1)}" height="${G.NH}" rx="4"/><text x="${c.x.toFixed(1)}" y="${(c.y+3.5).toFixed(1)}" text-anchor="middle">${nm}</text>`; }
+  const s=$('#fx-mini-svg'); s.setAttribute('viewBox',`0 0 ${W} ${H}`); s.innerHTML=h;
+}
+function fxSummary(){
+  const ns=fxList(P); if(!ns.length) return 'No effects yet. Open the FX RACK and tap + ADD FX. A player’s effects work on everything it plays, after the voices and their filters.';
+  const ps=fxPaths(P), dry=fxIn(P,FXO)&1, heard=fxHeard(), deaf=ns.filter(n=>!heard.has(n)).map(fxName);
+  const line=p=>['IN',...p.map(n=>fxName(n)+(P[fxK(n,'B')]?' (off)':'')),'OUT'].join(' → ');
+  const nm=n=>fxName(n)+(P[fxK(n,'B')]?' (off)':'');
+  // what all the ways share at the start and at the end, and the branches between: IN → A → (B ∥ C → D) → E → OUT
+  let pre=0, suf=0; if(ps.length>1){ const mn=Math.min(...ps.map(p=>p.length));
+    while(pre<mn && ps.every(p=>p[pre]===ps[0][pre])) pre++; while(suf<mn-pre && ps.every(p=>p[p.length-1-suf]===ps[0][ps[0].length-1-suf])) suf++; }
+  const mids=ps.map(p=>p.slice(pre,p.length-suf)), squeeze=ps.length>1 && mids.every(m=>m.length) && (pre||suf||mids.every(m=>m.length===1));
+  let s=ps.length===1?line(ps[0]):
+    squeeze?(pre||suf?'':'In parallel: ')+['IN',...ps[0].slice(0,pre).map(nm),'('+mids.map(m=>m.map(nm).join(' → ')).join(' ∥ ')+')',...ps[0].slice(ps[0].length-suf).map(nm),'OUT'].join(' → '):
+    ps.length>1?ps.length+' chains, mixed at OUT: '+ps.slice(0,4).map(line).join(' · ')+(ps.length>4?' …':''):'Nothing reaches OUT through the devices';
+  if(dry) s+=ps.length?' · with the dry sound':' · the dry sound only';
+  if(deaf.length) s+=' · not heard: '+deaf.join(', ');
+  return s+'.';
 }
 function renderFx(){
-  if(fxSel<1 || fxSel>FX_N) fxSel=1;
-  const html=fxChainHTML(); $('#fx-chain-p').innerHTML=html; $('#fx-chain-w').innerHTML=html;
-  $('#fx-sum').textContent=fxSummary();
+  if(!fxOn(P,fxSel)) fxSel=0;
+  if(fxWire && !fxWired(P,fxWire[0],fxWire[1])) fxWire=null;
+  if(fxPend>0 && !fxOn(P,fxPend)) fxPend=-1;
   $('#wf-h').textContent='FX · Player '+pnum(I);
-  const n=fxSel, t=P[fxK(n,'T')], d=FX_BY[t];
-  $('#fx-n').textContent=n; fxTypeSel.value=t;
-  $('#fx-route').querySelectorAll('button').forEach(b=>{ b.setAttribute('aria-pressed',String((P[fxK(n,'R')]||'ser')===b.dataset.r)); b.disabled=!d; });
-  $('#fx-byp').setAttribute('aria-pressed',String(!!P[fxK(n,'B')])); $('#fx-byp').disabled=!d;
-  $('#fx-left').disabled=n<=1; $('#fx-right').disabled=n>=FX_N;
-  fxKnobs(n);
-  $('#fx-desc').innerHTML=d?d[5]+(P[fxK(n,'R')]==='par'?' <em>In PARALLEL</em> it is fed what reaches the rack, and WET is how much of it is added at the end.':' <em>In SERIES</em> WET mixes it into the chain.'):'An empty slot. Pick a device: MOSAIC, RING, DEFORM and VAST are the Torso S-4’s, DJ FILTER and COMPRESS its mixer’s; the classic four are the effects CRGT had before.';
+  const k=fxList(P).length, shape=fxShape(P);
+  $('#fx-add').disabled=k>=FX_N; $('#fx-add').textContent=k>=FX_N?'5 / 5 DEVICES':'+ ADD FX';
+  if(k>=FX_N && !$('#fx-pick').hidden){ $('#fx-pick').hidden=true; $('#fx-add').setAttribute('aria-expanded','false'); }
+  $('#fx-lay').querySelectorAll('button').forEach(b=>{ b.setAttribute('aria-pressed',String(!!k && shape===b.dataset.l)); b.disabled=!k; });
+  $('#fx-dry').setAttribute('aria-pressed',String(!!(fxIn(P,FXO)&1)));
+  $('#fx-hint').textContent=fxPend>=0?`Now tap where ${fxName(fxPend)} goes (a dashed device, or OUT); tap the empty space to stop.`:
+    fxWire?`Tap × to cut ${fxName(fxWire[0])} → ${fxName(fxWire[1])}. With a wire picked, + ADD FX puts the new device on it.`:
+    k?'Drag a device to move it. Drag from its right-hand dot to another device or OUT to wire it (or tap the dot, then the device); tap a wire to cut it. Where wires meet, the sounds mix equally.':
+    'An empty rack: IN goes straight to OUT. Tap + ADD FX to put a device in.';
+  $('#fx-sum').textContent=fxSummary();
+  fxDrawNodes(); fxDrawMini();
+  // the device shown: its menu, BYPASS, wires and knobs
+  const n=fxSel, d=n?FX_BY[P[fxK(n,'T')]]:null;
+  $('#fx-ed').hidden=!d;
+  fxKnobs(d?n:0);
+  if(!d) return;
+  $('#fx-n').textContent='FX '+n; fxTypeSel.value=P[fxK(n,'T')];
+  $('#fx-byp').setAttribute('aria-pressed',String(!!P[fxK(n,'B')]));
+  const chip=(id,a,b,lbl,data)=>{ const on=fxWired(P,a,b); return `<button class="btn sm" type="button" ${data} aria-pressed="${on}"${on||fxCanWire(P,a,b)?'':' disabled'}>${lbl}</button>`; };
+  $('#fx-from').innerHTML=[0,...fxList(P).filter(m=>m!==n)].map(f=>chip('f',f,n,f?fxName(f)+' '+f:'IN',`data-f="${f}"`)).join('');
+  $('#fx-to').innerHTML=[...fxList(P).filter(m=>m!==n),FXO].map(t=>chip('t',n,t,t===FXO?'OUT':fxName(t)+' '+t,`data-t="${t}"`)).join('');
+  $('#fx-desc').innerHTML=d[5]+' <em>WET</em> (where it has one) mixes it with what reaches it; <em>LEVEL</em> sets how loud it comes out, its share where wires meet.';
 }
-// the device menu edits the slot shown (a select with its own key, kept out of the parameters)
-fxTypeSel.addEventListener('change',()=>{ const t=fxTypeSel.value; if(P[fxK(fxSel,'T')]===t) return; fxSetType(fxSel,t); });
-function fxSlotClick(e){ const b=e.target.closest('.fx-slot'); if(!b) return; fxSel=+b.dataset.n; if(fwFx.w.hidden) fwFx.open(true); renderFx(); }
-$('#fx-chain-p').addEventListener('click',fxSlotClick); $('#fx-chain-w').addEventListener('click',fxSlotClick);
-$('#fx-route').addEventListener('click',e=>{ const b=e.target.closest('button[data-r]'); if(!b || b.disabled) return; if(P[fxK(fxSel,'R')]!==b.dataset.r) fxSet({[fxK(fxSel,'R')]:b.dataset.r}); });
-$('#fx-byp').addEventListener('click',()=>fxSet({[fxK(fxSel,'B')]:!P[fxK(fxSel,'B')]}));
-$('#fx-left').addEventListener('click',()=>fxMove(fxSel,-1)); $('#fx-right').addEventListener('click',()=>fxMove(fxSel,1));
-$('#fx-all-ser').addEventListener('click',()=>{ const p={}; for(let n=1;n<=FX_N;n++) p[fxK(n,'R')]='ser'; fxSet(p); });
-$('#fx-all-par').addEventListener('click',()=>{ const p={}; for(let n=1;n<=FX_N;n++) p[fxK(n,'R')]='par'; fxSet(p); });
+// ---- touch: drag devices, drag or tap to wire, tap a wire to cut it ----
+{
+  const gEl=$('#fx-graph'); let D=null;
+  const at=e=>{ const r=gEl.getBoundingClientRect(); return [e.clientX-r.left,e.clientY-r.top]; };
+  const targetAt=(cx,cy)=>{ const el=document.elementFromPoint(cx,cy), nd=el && el.closest('#fx-graph .fx-node'); return nd?+nd.dataset.n:null; };
+  gEl.addEventListener('pointerdown',e=>{
+    if(e.button>0 || e.target.closest('#fx-cut')) return;
+    const [x,y]=at(e), port=e.target.closest('.fx-port.o'), hit=e.target.closest('.hit'), node=e.target.closest('.fx-node');
+    if(port) D={k:'wire',f:+port.dataset.o};
+    else if(hit) D={k:'pick',f:+hit.dataset.f,t:+hit.dataset.t};
+    else if(node){ const n=+node.dataset.n, G=fxGeo(gEl.clientWidth,gEl.clientHeight,false), c=fxPos(G,n); D={k:'node',n,el:node,dx:c.x-x,dy:c.y-y}; }
+    else D={k:'bg'};
+    Object.assign(D,{x0:x,y0:y,moved:false,id:e.pointerId});
+    try{ gEl.setPointerCapture(e.pointerId); }catch(err){}
+    e.preventDefault();
+  });
+  gEl.addEventListener('pointermove',e=>{
+    if(!D || e.pointerId!==D.id) return; const [x,y]=at(e);
+    if(!D.moved && Math.hypot(x-D.x0,y-D.y0)>6) D.moved=true;
+    if(!D.moved) return;
+    if(D.k==='wire'){
+      fxDrawWires({f:D.f,x,y}); const t=targetAt(e.clientX,e.clientY);
+      gEl.querySelectorAll('.fx-node').forEach(el=>el.classList.toggle('over',+el.dataset.n===t && fxCanWire(P,D.f,t)));
+    } else if(D.k==='node' && D.n>0 && D.n<FXO){
+      const G=fxGeo(gEl.clientWidth,gEl.clientHeight,false);
+      if(!D.started){ undoPoint(''); D.started=true; D.el.classList.add('drag'); }
+      const cx=Math.min(1,Math.max(0,(x+D.dx-G.x0)/Math.max(1,G.x1-G.x0))), cy=Math.min(1,Math.max(0,(y+D.dy-G.y0)/Math.max(1,G.y1-G.y0)));
+      P[fxK(D.n,'X')]=Math.round(cx*1000)/1000; P[fxK(D.n,'Y')]=Math.round(cy*1000)/1000;
+      const c=fxPos(G,D.n); D.el.style.left=(c.x-G.NW/2).toFixed(1)+'px'; D.el.style.top=(c.y-G.NH/2).toFixed(1)+'px'; fxDrawWires();
+    }
+  });
+  const end=e=>{
+    if(!D || e.pointerId!==D.id) return; const d=D; D=null;
+    if(e.type==='pointercancel'){ renderFx(); return; }
+    if(d.k==='wire'){
+      if(d.moved){ const t=targetAt(e.clientX,e.clientY); fxPend=-1; if(t!==null && t!==d.f && t!==0) fxConnect(d.f,t); else renderFx(); }
+      else { fxPend=fxPend===d.f?-1:d.f; fxWire=null; renderFx(); }
+    } else if(d.k==='node'){
+      if(d.moved && d.started){ markState(); fxDrawMini(); D=null; d.el.classList.remove('drag'); return; }
+      if(d.moved) return;
+      if(fxPend>=0){ const f=fxPend; fxPend=-1; if(d.n!==0 && d.n!==f) fxConnect(f,d.n); else renderFx(); return; }
+      fxWire=null; if(d.n>0 && d.n<FXO) fxSel=d.n; renderFx();
+    } else if(d.k==='pick'){ if(!d.moved){ fxPend=-1; fxWire=[d.f,d.t]; renderFx(); } }
+    else if(!d.moved){ fxPend=-1; fxWire=null; renderFx(); }
+  };
+  gEl.addEventListener('pointerup',end); gEl.addEventListener('pointercancel',end);
+  $('#fx-cut').addEventListener('click',()=>{ if(fxWire) fxCut(fxWire[0],fxWire[1]); });
+  // keys: arrows move the device in focus, Delete cuts the picked wire or removes the device
+  gEl.addEventListener('keydown',e=>{
+    const nd=e.target.closest('.fx-node'), n=nd?+nd.dataset.n:0;
+    if((e.key==='Enter'||e.key===' ') && e.target.closest('.fx-port.o')){ e.preventDefault(); const f=+e.target.dataset.o; fxPend=fxPend===f?-1:f; renderFx(); return; }
+    if((e.key==='Enter'||e.key===' ') && nd){ e.preventDefault(); if(fxPend>=0){ const f=fxPend; fxPend=-1; if(n!==0 && n!==f) fxConnect(f,n); else renderFx(); } else if(n>0 && n<FXO){ fxSel=n; renderFx(); } return; }
+    if((e.key==='Delete'||e.key==='Backspace') && fxWire){ e.preventDefault(); fxCut(fxWire[0],fxWire[1]); return; }
+    const mv={ArrowLeft:[-0.04,0],ArrowRight:[0.04,0],ArrowUp:[0,-0.08],ArrowDown:[0,0.08]}[e.key];
+    if(mv && n>0 && n<FXO){ e.preventDefault(); fxSet({[fxK(n,'X')]:Math.min(1,Math.max(0,P[fxK(n,'X')]+mv[0])),[fxK(n,'Y')]:Math.min(1,Math.max(0,P[fxK(n,'Y')]+mv[1]))},'fxpos'+n);
+      requestAnimationFrame(()=>{ const el=gEl.querySelector(`.fx-node[data-n="${n}"]`); if(el) el.focus(); }); }
+  });
+  if(window.ResizeObserver){ new ResizeObserver(()=>{ if(fxReady){ fxDrawNodes(); } }).observe(gEl); new ResizeObserver(()=>{ if(fxReady) fxDrawMini(); }).observe($('#fx-mini')); }
+}
+$('#fx-add').addEventListener('click',()=>{ const p=$('#fx-pick'); p.hidden=!p.hidden; $('#fx-add').setAttribute('aria-expanded',String(!p.hidden)); });
+$('#fx-pick').addEventListener('click',e=>{ const b=e.target.closest('.fx-tile'); if(b) fxAdd(b.dataset.t); });
+$('#fx-lay').addEventListener('click',e=>{ const b=e.target.closest('button[data-l]'); if(b && !b.disabled) fxArrange(b.dataset.l); });
+$('#fx-dry').addEventListener('click',()=>{
+  const m=fxIn(P,FXO);
+  if((m&1) && !(m&~1)){ msg('OUT hears only IN now: add a device or wire one to OUT before taking the dry wire away.',2600); return; }
+  fxSet({xOut:m^1}); msg(m&1?'Dry wire off.':'Dry wire on: IN mixed straight into OUT.',1400);
+});
+$('#fx-mini').addEventListener('click',()=>{ if(fwFx.w.hidden) fwFx.open(true); else fwFx.front(); requestAnimationFrame(renderFx); });
+$('#open-fx').addEventListener('click',()=>requestAnimationFrame(()=>{ if(!fwFx.w.hidden) renderFx(); }));
+fxTypeSel.addEventListener('change',()=>{ const t=fxTypeSel.value; if(fxSel && P[fxK(fxSel,'T')]!==t) fxSetType(fxSel,t); });
+$('#fx-byp').addEventListener('click',()=>{ if(fxSel) fxSet({[fxK(fxSel,'B')]:!P[fxK(fxSel,'B')]}); });
+$('#fx-del').addEventListener('click',()=>{ if(fxSel) fxRemove(fxSel); });
+$('#fx-from').addEventListener('click',e=>{ const b=e.target.closest('button[data-f]'); if(!b || b.disabled || !fxSel) return; const f=+b.dataset.f; if(fxWired(P,f,fxSel)) fxCut(f,fxSel); else fxConnect(f,fxSel); });
+$('#fx-to').addEventListener('click',e=>{ const b=e.target.closest('button[data-t]'); if(!b || b.disabled || !fxSel) return; const t=+b.dataset.t; if(fxWired(P,fxSel,t)) fxCut(fxSel,t); else fxConnect(fxSel,t); });
 fxReady=true; renderFx();
 document.addEventListener('keydown',e=>{
   if(e.key!=='Escape' || !sheetsClosed()) return;
