@@ -1,6 +1,6 @@
 // CRGT offline: everything the app needs is kept on the device at install, and served from there first,
 // so it opens and plays with no connection. A new version replaces it on the first launch while online.
-const CACHE='crgt-v26-2a3086ab43';
+const CACHE='crgt-v27-656b332213';
 const FILES=['./','index.html','manifest.webmanifest','icon-180.png','icon-192.png','icon-512.png'];
 self.addEventListener('install',e=>{ e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting())); });
 self.addEventListener('activate',e=>{ e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE && k.startsWith('crgt-')).map(k=>caches.delete(k)))).then(()=>self.clients.claim())); });
