@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>CRGT Sample Workstation</title>
-<meta name="crgt-offline" content="v27">
+<meta name="crgt-offline" content="v28">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -399,6 +399,9 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
 .tabs{display:flex;flex-wrap:wrap;gap:8px 10px;margin-top:10px;align-items:stretch}
 .tab-list{flex:1 1 600px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;min-width:0}
 .tab{position:relative;display:flex;min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.tab-list{touch-action:none;-webkit-user-select:none;user-select:none}   /* tabs can be dragged to a new place */
+.tab.lift{z-index:6;border-color:var(--accent);box-shadow:var(--lift);transition:none!important;cursor:grabbing}
+.tab-list.dragging .tab-sel{cursor:grabbing}
 .tab.cur{border-color:var(--accent);box-shadow:inset 0 3px 0 var(--accent)}
 .tab-sel{appearance:none;flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:9px;background:transparent;border:0;padding:9px 8px 11px 11px;text-align:left;min-height:54px}
 .tn{font:800 20px/1 var(--f-display);font-stretch:75%;color:var(--dim);flex:0 0 auto}
@@ -894,7 +897,7 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
     </section>
   </main>
 
-  <p class="foot"><b>Full screen:</b> the corner button (where the browser allows it) fills the whole display and hides the viewer’s bar; tap it again or press Esc to leave. <b>Sections:</b> every part of the page has an icon in the bar above the panels (it stays at the top while you scroll). Tap an icon to fold that section away or bring it back; a folded section shows just its icon. Double-tap an icon to keep only that panel open, and double-tap it again for the ones you had; ALL shows everything. The icon beside each panel’s title folds it too. The panels left open widen into the space. Each player keeps its own panels, so switching player switches the view (players, clock and keys are the same for all of them), and the whole view is saved with the session and inside its exported .zip: you keep just what you are playing with on screen, player by player. <b>Players:</b> eight, each with its own sample, engine, settings, loop region and gesture loop; all eight sound together. The tab you pick receives the knobs, the waveform and the keys (1–8 on a computer keyboard switch tabs). M mutes a player. <b>Touch:</b> drag a knob up or right to raise it, double-tap to reset. Drag across the waveform to move the position; the blue handle is where you send it, each thin line is a read position you hear. <b>Several fingers:</b> every extra finger on the waveform (up to four in all) adds a read position for as long as it stays down, marked by a blue ring; each note plays all of them, so three notes with two fingers sound six streams. Lift the first finger and the next one takes over the blue handle. Gesture loops record and replay these fingers too (violet rings). <b>Scrub:</b> SKIP jumps to where your finger is; FLUID glides there through the wavesets in between, in order (backwards like tape when you drag left), as fast as GLIDE allows; while your finger moves the sound follows it, and when it rests the unit loops there. <b>Granular:</b> ENGINE above the waveform switches the player between WAVESET and GRANULAR, an engine modelled on the Tasty Chips GR-1. Only the engine's own panels change (GRAIN, GRAIN WINDOW and SCAN · KEYS take the place of WAVESET, INTERPOLATION, JITTER and PROCESS); the sample, position, loop, keys, voices, output, time stretch, filter, sub · fx, LFOs, matrix, presets and gesture loops stay. Grains: DENSITY 0.1–1000 a second, SIZE 5 ms–5 s, SPRAY, SCAN −2×…+2×, TUNE, DIRECTION, PAN and PAN SPRAY; a window shaped by SIDES, TILT and CURVE; four spawn modes, granular glide, key sync, anti-aliasing and up to 128 grains per voice. Sample modes GRANULAR, AUDITION and TAPE; scan modes LOOP, ONE SHOT and PING PONG; KEY→POS and KEY PITCH. With LOOP on, the scan pointer, spray, grains and position offsets all stay inside the loop and scale with it, as in the waveset engine. With time stretch on, the grains keep TUNE and the stretch mode transposes to the key. <b>Simpler:</b> the third ENGINE plays the sample as Ableton's Simpler does. CLASSIC: notes start at the blue handle and play S LENGTH of the region (the LOOP region, or the file), pitched by the key, through the ADSR, with a sustain LOOP (LOOP LEN, LOOP FADE). ONE-SHOT: one note at a time, TRIGGER or GATE, FADE IN and FADE OUT. SLICE: one slice per key from ROOT, sliced by TRANSIENT, BEAT (DIVISION of the sample's tempo, found or typed), REGION (equal parts), MANUAL, or by spectral features: LOUDNESS, CHROMA (harmony), BRIGHTNESS, TIMBRE (MFCC) and NOISINESS; SENSITIVITY sets how many. Drag markers in the band at the top of the waveform, double-tap the band to add one, double-tap a marker to remove it; ◀ ▶ nudge, SPLIT and DELETE act on the selected slice; MONO, POLY and THRU playback. Every mode has SNAP, REVERSE, GAIN, TRANSPOSE, DETUNE, a pitch envelope, GLIDE and PORTA, SPREAD, PAN, VEL→VOL, RETRIG, WARP AS (bars of the BPM, with the TIME STRETCH mode as warp mode) and the FILTER (shared with the other engines). <b>LFO and MATRIX:</b> the buttons next to ENGINE open them as floating windows; drag a window by its title bar, × or Esc closes it. Two LFOs (sine, square, saw, S&amp;H and AUX, a shape you draw in the LFO SHAPE window opened by ✎ DRAW) with key sync, MAIN clock, quantize and cross-modulation; with CLOCK MAIN, RATE divides or multiplies MAIN, whether MAIN came from a take, was typed in or comes from the BPM. The matrix holds up to 16 routes from the LFOs, velocity, key, pressure or a random value per note; its menu lists the controls of the engine in use and the shared ones (envelope, filter, sub, effect, time stretch); every note is modulated on its own. <b>Filter:</b> in every engine each note has its own filter, the one from SIMPLER: LP, HP, BP, NOTCH or MORPH, 12 or 24 dB, five circuits with DRIVE, an envelope (F.ATTACK … F.RELEASE, ENV), KEY and VEL tracking; sessions with the old 12 dB player filter open with it set the same. <b>Sub · fx:</b> a sub oscillator and one effect (delay, distortion, reducer or reverb) per player, in every engine. <b>Time stretch:</b> besides the four modes from the SuperCollider patch, MODE has Max stretch~’s modes (BASIC, MONOPHONIC, RHYTHMIC, GENERAL, POLYPHONIC, PADS, EXTREMESTRETCH, EFFICIENT), made here for this engine, with QUALITY and formant control. <b>Loop:</b> drag on the ruler under the waveform to draw a loop; drag its edges or its middle to change it. Edges always land on a zero crossing. ◀ ▶ move an edge by one waveset; SET IN / SET OUT place it at the playhead you hear. Pinch on the ruler (or ctrl + scroll) to zoom down to single samples; the strip below shows the whole file, tap it to move the view. <b>Keys:</b> C4 (red mark) is the original pitch; press lower on a key to play louder. With time stretch OFF a key changes speed and pitch together; with any other mode it changes pitch only. On a computer keyboard, A–K play and Z/X change octave. <b>FREE:</b> the keyboard becomes a continuous surface; each finger glides on its own. <b>Process:</b> the PROCESS menu above the waveform runs Trevor Wishart’s CDP DISTORT waveset processes live (MULTIPLY, DIVIDE, HARMONIC, FRACTAL, REFORM, PITCH, QUIRK, AVERAGE, TELESCOPE, REPLACE, DELETE, OMIT, REVERSE, SHUFFLE, ENVEL); their settings are in the PROCESS panel. Group processes work inside each unit, so raise SIZE to give them wavecycles to group. ORDER reads the file in time, by waveset length or by waveset power. <b>Gesture loops:</b> each player loops what your hands do on it, in up to four layers (A–D) that play together. REC arms the selected layer; the take starts with your next move and ends when you press REC or PLAY. + adds a new layer and arms it while the other layers keep playing: give it its own LENGTH first, say MAIN ×2 for a position sweep twice as long as the notes in A. LENGTH decides what a layer plays: FREE plays the take as it is; a multiple or division of MAIN cuts the take to that length, or repeats it until it is filled. Each layer keeps its take, so its LENGTH can be changed at any time: shorter cuts, longer brings the cut part back or repeats it. MAIN is set by the first MAIN-length take, or type it in (÷2 and ×2 halve and double it), or let the tempo set it: SYNC makes MAIN a number of BARS of the signature at the BPM (type it or TAP it), CLICK ticks every beat (it is not recorded), free takes become whole beats and stay on the beat grid, and QUANT gives new takes a QUANTIZE of 1/4 … 1/32 notes (kept with the layer: change or remove it in ✎ EDIT); MAIN-length layers stay in time with it and with each other, and the lanes under the layer buttons show their lengths side by side. Notes and fingers of all layers sound together; a knob, a switch or the position follows the layer that recorded it last, so a new layer takes it over. Tap a layer to select it, tap it again to mute it: it keeps its place and comes back in time, and its controls go back to the layer below. While the layers play, REC overdubs into the selected one; a control you hold is yours. CLEAR empties the selected layer. <b>Fix a take:</b> ✎ EDIT opens the gesture editor on the selected layer, in every engine. Notes are bars (in SIMPLER SLICE the rows are slices, each drawn with its sound): drag one to move it in time, snapped to GRID, or up and down to another note or slice; drag its right end to change the length; drag its stem in VEL for how hard. POSITION shows where in the sample you played on the waveform, against the sample drawn top to bottom on the left: drag a point, or a whole jump or drag by its line, in time or to another part of the sample; it snaps to the sample's onsets (by transient, loudness, chroma, brightness, timbre or noisiness, as SLICE finds them), to zero crossings or to the loop's edges. Violet bars are extra fingers; THIN keeps the shape of long drags with fewer points. CONTROL shows a recorded knob or switch. Notes: tap one to select it and its tools appear beside it (DUPLICATE, LENGTH − +, ◀ ▶ ▲ ▼, DELETE); drag it to move it, drag the grips at either end to make it longer or shorter. Double-tap empty space to add a note and keep your finger down to drag out its length; with DRAW on, a single tap or drag on empty space draws one and a tap on a note removes it. New notes take the length and velocity of the last note you touched. DUPLICATE puts a copy right after the selection, so pressing it again builds a run. To work on several notes, hold your finger still on empty space for a moment and then drag a box around them (with a mouse just drag; ⇧-click adds or removes one); dragging, resizing, the velocity, the arrows, DUPLICATE and DELETE then act on all of them. With a keyboard: ⌫ deletes, ⌘D duplicates, ⌘A selects every note, ← → move, ⇧← ⇧→ shorter and longer, ↑ ↓ change the note, and ⌥-drag copies. Points on the waveform and in the control lane: double-tap to add or remove, the arrows move the selected one (◀ ▶ a grid step, 10 ms with GRID OFF; ▲ ▼ to the next onset or step). ▶ PLAY plays the loops while you edit. Zoom in time and in each lane (notes or slices, the position in the sample, the control): pinch with the fingers side by side to zoom time, one above the other to zoom the lane under them, and move them together to scroll; drag empty space to scroll; drag the ruler sideways to scroll and down to zoom in on the moment you hold; drag a lane's left edge up and down to scroll it, sideways to zoom it; ↔ − + zoom time around the selection, ↕ − + the lane you last touched (marked at its left edge). FIT frames the selection (or everything you played) in time and in every lane, and ALL shows the whole take again; double-tap the ruler or a lane's edge for the same on just that. Zoomed in, ◀ ▶ without GRID and ▲ ▼ between onsets or control values take finer steps, and an edit dragged to the edge scrolls the view. Drag between two lanes to give one more room (double-tap there to reset). On a trackpad: pinch or ⌘-scroll zooms time, ⌥-scroll zooms the lane, scrolling moves it. Each layer keeps its own view. QUANTIZE pulls the layer's notes and fingers (with + POSITION the jumps on the waveform too) to GRID by STRENGTH, with SWING; it keeps what you played, so it can be changed or turned off at any time, and whatever you moved by hand stays where you put it. Every change is one undo step, is saved with the session and is heard from the next cycle. LAT COMP (on unless you turn it off) puts new takes and overdubs where you heard them, moving them back by the output latency the browser reports; the button shows how much. <b>Undo:</b> ↶ and ↷ (or ⌘Z, ⇧⌘Z) step back and forward through changes to settings, samples, loop regions, gesture buffers, LENGTH, MAIN and mutes; a knob drag counts as one step. <b>Engine rate:</b> tap the audio pill at the top right (AUDIOWORKLET · 48.0 kHz) to choose the rate everything plays and records at: AUTO (your device’s own), 44.1, 48, 88.2 or 96 kHz. Higher rates leave less aliasing when you pitch up, drive or REDUCE, and take about twice the processing. Changing it restarts the sound for a moment with every sample, setting and loop kept; notes sounding at that moment stop. It is locked while a take is recording, and kept on this device. <b>Sound that keeps going:</b> there is no PLAY / STOP; the players sound from the keys, the FREE surface, the waveform and their loops. In the same AUDIO window, KEEP SCREEN ON stops the iPad locking by itself while CRGT is open, and PLAY WHEN LOCKED keeps the sound going if you lock it anyway, the way a music player does (CRGT shows on the lock screen); loops wait while it is locked and carry on in step when you unlock. If the iPad pauses the sound all the same (a call, another app, a long lock), the pill turns red and reads SOUND PAUSED: the next tap or key anywhere brings it back, with a fresh engine if the old one will not wake, keeping every sample, setting and loop. <b>Record:</b> REC captures the master (the mix you hear) as 24-bit WAV; with STEMS on it also records every player on its own track, sample-aligned with the master, and the takes sheet saves master and stems as separate files. Every joint between wavesets is spliced with a 1.5 ms crossfade from the sound's own continuation, and wavesets are cut from a DC-blocked copy of the file, so jumps, short units and fast scrubbing stay free of clicks. <b>Sessions:</b> everything is saved in this browser as you play and comes back when you reopen the page; SESSION saves named copies and exports them as .zip files with their samples.</p>
+  <p class="foot"><b>Full screen:</b> the corner button (where the browser allows it) fills the whole display and hides the viewer’s bar; tap it again or press Esc to leave. <b>Sections:</b> every part of the page has an icon in the bar above the panels (it stays at the top while you scroll). Tap an icon to fold that section away or bring it back; a folded section shows just its icon. Double-tap an icon to keep only that panel open, and double-tap it again for the ones you had; ALL shows everything. The icon beside each panel’s title folds it too. The panels left open widen into the space. Each player keeps its own panels, so switching player switches the view (players, clock and keys are the same for all of them), and the whole view is saved with the session and inside its exported .zip: you keep just what you are playing with on screen, player by player. <b>Players:</b> drag a tab to move the player to another place (or hold it a moment, then drag); the others slide aside. A player keeps its sound, loops and view when it moves; its number is its place, and the keys 1–8 follow the places. The order is saved with the session. eight, each with its own sample, engine, settings, loop region and gesture loop; all eight sound together. The tab you pick receives the knobs, the waveform and the keys (1–8 on a computer keyboard switch tabs). M mutes a player. <b>Touch:</b> drag a knob up or right to raise it, double-tap to reset. Drag across the waveform to move the position; the blue handle is where you send it, each thin line is a read position you hear. <b>Several fingers:</b> every extra finger on the waveform (up to four in all) adds a read position for as long as it stays down, marked by a blue ring; each note plays all of them, so three notes with two fingers sound six streams. Lift the first finger and the next one takes over the blue handle. Gesture loops record and replay these fingers too (violet rings). <b>Scrub:</b> SKIP jumps to where your finger is; FLUID glides there through the wavesets in between, in order (backwards like tape when you drag left), as fast as GLIDE allows; while your finger moves the sound follows it, and when it rests the unit loops there. <b>Granular:</b> ENGINE above the waveform switches the player between WAVESET and GRANULAR, an engine modelled on the Tasty Chips GR-1. Only the engine's own panels change (GRAIN, GRAIN WINDOW and SCAN · KEYS take the place of WAVESET, INTERPOLATION, JITTER and PROCESS); the sample, position, loop, keys, voices, output, time stretch, filter, sub · fx, LFOs, matrix, presets and gesture loops stay. Grains: DENSITY 0.1–1000 a second, SIZE 5 ms–5 s, SPRAY, SCAN −2×…+2×, TUNE, DIRECTION, PAN and PAN SPRAY; a window shaped by SIDES, TILT and CURVE; four spawn modes, granular glide, key sync, anti-aliasing and up to 128 grains per voice. Sample modes GRANULAR, AUDITION and TAPE; scan modes LOOP, ONE SHOT and PING PONG; KEY→POS and KEY PITCH. With LOOP on, the scan pointer, spray, grains and position offsets all stay inside the loop and scale with it, as in the waveset engine. With time stretch on, the grains keep TUNE and the stretch mode transposes to the key. <b>Simpler:</b> the third ENGINE plays the sample as Ableton's Simpler does. CLASSIC: notes start at the blue handle and play S LENGTH of the region (the LOOP region, or the file), pitched by the key, through the ADSR, with a sustain LOOP (LOOP LEN, LOOP FADE). ONE-SHOT: one note at a time, TRIGGER or GATE, FADE IN and FADE OUT. SLICE: one slice per key from ROOT, sliced by TRANSIENT, BEAT (DIVISION of the sample's tempo, found or typed), REGION (equal parts), MANUAL, or by spectral features: LOUDNESS, CHROMA (harmony), BRIGHTNESS, TIMBRE (MFCC) and NOISINESS; SENSITIVITY sets how many. Drag markers in the band at the top of the waveform, double-tap the band to add one, double-tap a marker to remove it; ◀ ▶ nudge, SPLIT and DELETE act on the selected slice; MONO, POLY and THRU playback. Every mode has SNAP, REVERSE, GAIN, TRANSPOSE, DETUNE, a pitch envelope, GLIDE and PORTA, SPREAD, PAN, VEL→VOL, RETRIG, WARP AS (bars of the BPM, with the TIME STRETCH mode as warp mode) and the FILTER (shared with the other engines). <b>LFO and MATRIX:</b> the buttons next to ENGINE open them as floating windows; drag a window by its title bar, × or Esc closes it. Two LFOs (sine, square, saw, S&amp;H and AUX, a shape you draw in the LFO SHAPE window opened by ✎ DRAW) with key sync, MAIN clock, quantize and cross-modulation; with CLOCK MAIN, RATE divides or multiplies MAIN, whether MAIN came from a take, was typed in or comes from the BPM. The matrix holds up to 16 routes from the LFOs, velocity, key, pressure or a random value per note; its menu lists the controls of the engine in use and the shared ones (envelope, filter, sub, effect, time stretch); every note is modulated on its own. <b>Filter:</b> in every engine each note has its own filter, the one from SIMPLER: LP, HP, BP, NOTCH or MORPH, 12 or 24 dB, five circuits with DRIVE, an envelope (F.ATTACK … F.RELEASE, ENV), KEY and VEL tracking; sessions with the old 12 dB player filter open with it set the same. <b>Sub · fx:</b> a sub oscillator and one effect (delay, distortion, reducer or reverb) per player, in every engine. <b>Time stretch:</b> besides the four modes from the SuperCollider patch, MODE has Max stretch~’s modes (BASIC, MONOPHONIC, RHYTHMIC, GENERAL, POLYPHONIC, PADS, EXTREMESTRETCH, EFFICIENT), made here for this engine, with QUALITY and formant control. <b>Loop:</b> drag on the ruler under the waveform to draw a loop; drag its edges or its middle to change it. Edges always land on a zero crossing. ◀ ▶ move an edge by one waveset; SET IN / SET OUT place it at the playhead you hear. Pinch on the ruler (or ctrl + scroll) to zoom down to single samples; the strip below shows the whole file, tap it to move the view. <b>Keys:</b> C4 (red mark) is the original pitch; press lower on a key to play louder. With time stretch OFF a key changes speed and pitch together; with any other mode it changes pitch only. On a computer keyboard, A–K play and Z/X change octave. <b>FREE:</b> the keyboard becomes a continuous surface; each finger glides on its own. <b>Process:</b> the PROCESS menu above the waveform runs Trevor Wishart’s CDP DISTORT waveset processes live (MULTIPLY, DIVIDE, HARMONIC, FRACTAL, REFORM, PITCH, QUIRK, AVERAGE, TELESCOPE, REPLACE, DELETE, OMIT, REVERSE, SHUFFLE, ENVEL); their settings are in the PROCESS panel. Group processes work inside each unit, so raise SIZE to give them wavecycles to group. ORDER reads the file in time, by waveset length or by waveset power. <b>Gesture loops:</b> each player loops what your hands do on it, in up to four layers (A–D) that play together. REC arms the selected layer; the take starts with your next move and ends when you press REC or PLAY. + adds a new layer and arms it while the other layers keep playing: give it its own LENGTH first, say MAIN ×2 for a position sweep twice as long as the notes in A. LENGTH decides what a layer plays: FREE plays the take as it is; a multiple or division of MAIN cuts the take to that length, or repeats it until it is filled. Each layer keeps its take, so its LENGTH can be changed at any time: shorter cuts, longer brings the cut part back or repeats it. MAIN is set by the first MAIN-length take, or type it in (÷2 and ×2 halve and double it), or let the tempo set it: SYNC makes MAIN a number of BARS of the signature at the BPM (type it or TAP it), CLICK ticks every beat (it is not recorded), free takes become whole beats and stay on the beat grid, and QUANT gives new takes a QUANTIZE of 1/4 … 1/32 notes (kept with the layer: change or remove it in ✎ EDIT); MAIN-length layers stay in time with it and with each other, and the lanes under the layer buttons show their lengths side by side. Notes and fingers of all layers sound together; a knob, a switch or the position follows the layer that recorded it last, so a new layer takes it over. Tap a layer to select it, tap it again to mute it: it keeps its place and comes back in time, and its controls go back to the layer below. While the layers play, REC overdubs into the selected one; a control you hold is yours. CLEAR empties the selected layer. <b>Fix a take:</b> ✎ EDIT opens the gesture editor on the selected layer, in every engine. Notes are bars (in SIMPLER SLICE the rows are slices, each drawn with its sound): drag one to move it in time, snapped to GRID, or up and down to another note or slice; drag its right end to change the length; drag its stem in VEL for how hard. POSITION shows where in the sample you played on the waveform, against the sample drawn top to bottom on the left: drag a point, or a whole jump or drag by its line, in time or to another part of the sample; it snaps to the sample's onsets (by transient, loudness, chroma, brightness, timbre or noisiness, as SLICE finds them), to zero crossings or to the loop's edges. Violet bars are extra fingers; THIN keeps the shape of long drags with fewer points. CONTROL shows a recorded knob or switch. Notes: tap one to select it and its tools appear beside it (DUPLICATE, LENGTH − +, ◀ ▶ ▲ ▼, DELETE); drag it to move it, drag the grips at either end to make it longer or shorter. Double-tap empty space to add a note and keep your finger down to drag out its length; with DRAW on, a single tap or drag on empty space draws one and a tap on a note removes it. New notes take the length and velocity of the last note you touched. DUPLICATE puts a copy right after the selection, so pressing it again builds a run. To work on several notes, hold your finger still on empty space for a moment and then drag a box around them (with a mouse just drag; ⇧-click adds or removes one); dragging, resizing, the velocity, the arrows, DUPLICATE and DELETE then act on all of them. With a keyboard: ⌫ deletes, ⌘D duplicates, ⌘A selects every note, ← → move, ⇧← ⇧→ shorter and longer, ↑ ↓ change the note, and ⌥-drag copies. Points on the waveform and in the control lane: double-tap to add or remove, the arrows move the selected one (◀ ▶ a grid step, 10 ms with GRID OFF; ▲ ▼ to the next onset or step). ▶ PLAY plays the loops while you edit. Zoom in time and in each lane (notes or slices, the position in the sample, the control): pinch with the fingers side by side to zoom time, one above the other to zoom the lane under them, and move them together to scroll; drag empty space to scroll; drag the ruler sideways to scroll and down to zoom in on the moment you hold; drag a lane's left edge up and down to scroll it, sideways to zoom it; ↔ − + zoom time around the selection, ↕ − + the lane you last touched (marked at its left edge). FIT frames the selection (or everything you played) in time and in every lane, and ALL shows the whole take again; double-tap the ruler or a lane's edge for the same on just that. Zoomed in, ◀ ▶ without GRID and ▲ ▼ between onsets or control values take finer steps, and an edit dragged to the edge scrolls the view. Drag between two lanes to give one more room (double-tap there to reset). On a trackpad: pinch or ⌘-scroll zooms time, ⌥-scroll zooms the lane, scrolling moves it. Each layer keeps its own view. QUANTIZE pulls the layer's notes and fingers (with + POSITION the jumps on the waveform too) to GRID by STRENGTH, with SWING; it keeps what you played, so it can be changed or turned off at any time, and whatever you moved by hand stays where you put it. Every change is one undo step, is saved with the session and is heard from the next cycle. LAT COMP (on unless you turn it off) puts new takes and overdubs where you heard them, moving them back by the output latency the browser reports; the button shows how much. <b>Undo:</b> ↶ and ↷ (or ⌘Z, ⇧⌘Z) step back and forward through changes to settings, samples, loop regions, gesture buffers, LENGTH, MAIN and mutes; a knob drag counts as one step. <b>Engine rate:</b> tap the audio pill at the top right (AUDIOWORKLET · 48.0 kHz) to choose the rate everything plays and records at: AUTO (your device’s own), 44.1, 48, 88.2 or 96 kHz. Higher rates leave less aliasing when you pitch up, drive or REDUCE, and take about twice the processing. Changing it restarts the sound for a moment with every sample, setting and loop kept; notes sounding at that moment stop. It is locked while a take is recording, and kept on this device. <b>Sound that keeps going:</b> there is no PLAY / STOP; the players sound from the keys, the FREE surface, the waveform and their loops. In the same AUDIO window, KEEP SCREEN ON stops the iPad locking by itself while CRGT is open, and PLAY WHEN LOCKED keeps the sound going if you lock it anyway, the way a music player does (CRGT shows on the lock screen); loops wait while it is locked and carry on in step when you unlock. If the iPad pauses the sound all the same (a call, another app, a long lock), the pill turns red and reads SOUND PAUSED: the next tap or key anywhere brings it back, with a fresh engine if the old one will not wake, keeping every sample, setting and loop. <b>Record:</b> REC captures the master (the mix you hear) as 24-bit WAV; with STEMS on it also records every player on its own track, sample-aligned with the master, and the takes sheet saves master and stems as separate files. Every joint between wavesets is spliced with a 1.5 ms crossfade from the sound's own continuation, and wavesets are cut from a DC-blocked copy of the file, so jumps, short units and fast scrubbing stay free of clicks. <b>Sessions:</b> everything is saved in this browser as you play and comes back when you reopen the page; SESSION saves named copies and exports them as .zip files with their samples.</p>
 </div>
 
 <div class="fwin" id="fw-lfo" hidden role="dialog" aria-labelledby="wl-h">
@@ -3705,6 +3708,8 @@ function newG(sync){ return {layers:[],sel:0,play:false,rs:'',rl:null,rec:[],t0:
 const inst=[];
 for(let i=0;i<NI;i++) inst.push({i,P:Object.assign({},DEFAULTS),sample:null,sampleId:null,sampleName:'',st:null,stHist:[],shapes:[],view:{v0:0,v1:1},playing:false,G:newG(),mute:false,curSlot:-1,on:false,el:null,taps:new Map(),spSel:0,spBpmEst:0,detT:0});   // taps: extra finger positions shown on the waveform
 let cur=0, I=inst[0], P=I.P;
+let tabOrder=inst.map(J=>J.i);   // the players left to right (drag a tab to move it); the number shown is the place
+const pnumI=i=>tabOrder.indexOf(i)+1, pnum=J=>pnumI(J.i);
 for(const J of inst){ J.secs=new Set(); J.secSolo=null; }   // the panels folded on this player (sections, below)
 let secReady=false;
 // MAIN: the first locked gesture loop sets a grid (length + origin); later locked loops follow it
@@ -4087,7 +4092,7 @@ async function audioFromGesture(){
   return true;
 }
 let emptyHintAt=0;
-function emptyHint(J){ const now=performance.now(); if(now-emptyHintAt>1500){ emptyHintAt=now; msg(`Player ${J.i+1} has no sample yet. Tap LOAD SAMPLE or DEMO.`,3500); } }
+function emptyHint(J){ const now=performance.now(); if(now-emptyHintAt>1500){ emptyHintAt=now; msg(`Player ${pnum(J)} has no sample yet. Tap LOAD SAMPLE or DEMO.`,3500); } }
 // There is no PLAY / STOP: the players sound only from the keys, the FREE surface, the waveform and their loops.
 function renderPlay(){}
 
@@ -4157,7 +4162,7 @@ async function hashBytes(ab){
 }
 const fileIn=$('#file');
 $('#load').addEventListener('click',()=>fileIn.click());
-$('#demo').addEventListener('click',()=>{ undoPoint(''); loadDemo(I,false); msg('Demo sample loaded into player '+(I.i+1)+'.',2500); });
+$('#demo').addEventListener('click',()=>{ undoPoint(''); loadDemo(I,false); msg('Demo sample loaded into player '+(pnum(I))+'.',2500); });
 fileIn.addEventListener('change',()=>{ const f=fileIn.files&&fileIn.files[0]; fileIn.value=''; if(f) loadFile(f); });
 document.addEventListener('dragover',e=>e.preventDefault());
 document.addEventListener('drop',e=>{
@@ -4180,7 +4185,7 @@ async function loadFile(f){
     bytesById.set(id,{name:f.name,type:f.type||'',bytes:ab});
     undoPoint(''); setSample(J,S,id,f.name,false);
     storeSample(id,{name:f.name,type:f.type||'',bytes:ab});
-    msg('Loaded '+f.name+' into player '+(J.i+1)+'.',3000);
+    msg('Loaded '+f.name+' into player '+(pnum(J))+'.',3000);
   }catch(e){ msg('Could not read '+f.name+'. Try WAV, AIFF, CAF, MP3 or M4A.'); }
 }
 
@@ -4249,7 +4254,7 @@ function drawBase(){
   if(!S){
     geo={sorted:false,mainH:H-rh,ry:H-rh,rh};
     g.fillStyle=C.muted; g.textAlign='center';
-    g.fillText(`PLAYER ${I.i+1} IS EMPTY`,W/2,H/2-16*d); g.fillStyle=C.dim; g.fillText('LOAD SAMPLE, DEMO, or drop a file here',W/2,H/2);
+    g.fillText(`PLAYER ${pnum(I)} IS EMPTY`,W/2,H/2-16*d); g.fillStyle=C.dim; g.fillText('LOAD SAMPLE, DEMO, or drop a file here',W/2,H/2);
     g.textAlign='left'; return;
   }
   if(P.order==='orig' || P.eng!=='ws'){
@@ -4575,7 +4580,7 @@ function renderRoutes(){
   });
   rtEmpty.hidden=n>0; rtAdd.disabled=n>=NR;
   mxBtn.textContent=n?'MATRIX · '+n:'MATRIX';
-  $('#wm-h').textContent='Matrix · Player '+(I.i+1); $('#wl-h').textContent='LFO · Player '+(I.i+1); $('#wa-h').textContent='LFO shape · Player '+(I.i+1);
+  $('#wm-h').textContent='Matrix · Player '+(pnum(I)); $('#wl-h').textContent='LFO · Player '+(pnum(I)); $('#wa-h').textContent='LFO shape · Player '+(pnum(I));
 }
 function setRoute(i,s,d,a,say){
   undoPoint('');
@@ -4592,7 +4597,7 @@ $('#rt-clr').addEventListener('click',()=>{
   if(!Object.keys(ch).length){ msg('No routes to clear.',1500); return; }
   undoPoint(''); Object.assign(P,ch); send({type:'params',p:ch});
   for(const k in ch){ if(segs[k]) segs[k].render(); if(knobs[k]) knobs[k].render(); }
-  renderRoutes(); markState(); msg('All routes cleared on player '+(I.i+1)+'.',2000);
+  renderRoutes(); markState(); msg('All routes cleared on player '+(pnum(I))+'.',2000);
 });
 // ---- floating windows: drag them by their title bar; they remember where they were and whether they were open ----
 const floats=[];
@@ -4835,7 +4840,7 @@ function detectSlices(J){
   const sl=r.marks.slice(1).map(s=>s/S.len);
   Q.spSl=sl; Q.spEd=false; sendTo(J.i,{type:'params',p:{spSl:sl,spEd:false}});
   if(J===I){ I.spSel=Math.min(I.spSel||0,sl.length); renderSpUI(); dirty=true; if(!dock.hidden) buildKeys(); }
-  if(performance.now()-t>400) msg(`Player ${J.i+1}: ${sl.length+1} slices.`,2000);
+  if(performance.now()-t>400) msg(`Player ${pnum(J)}: ${sl.length+1} slices.`,2000);
   markState();
 }
 function detectSoon(J){ clearTimeout(J.detT); J.detT=setTimeout(()=>detectSlices(J),140); }
@@ -5264,13 +5269,11 @@ wave.addEventListener('keydown',e=>{
 const tabList=$('#tab-list'), rackEl=$('#rack');
 function buildTabs(){
   tabList.textContent='';
-  for(const J of inst){
+  for(const J of tabOrder.map(i=>inst[i])){
     const el=document.createElement('div'); el.className='tab';
     el.innerHTML='<button class="tab-sel" type="button" role="tab"><span class="tn"></span><span class="tt"><span class="tname"></span><span class="tstate"></span></span><i class="tact" aria-hidden="true"></i></button><button class="tab-mute" type="button" aria-pressed="false">M</button><span class="tbar" aria-hidden="true"><i></i></span>';
     const sel=el.querySelector('.tab-sel'), mute=el.querySelector('.tab-mute');
     sel.id='tab-'+J.i; sel.setAttribute('aria-controls','rack');
-    el.querySelector('.tn').textContent=String(J.i+1);
-    mute.setAttribute('aria-label','Mute player '+(J.i+1));
     sel.addEventListener('click',()=>selectInst(J.i));
     mute.addEventListener('click',()=>{ undoPoint(''); J.mute=!J.mute; post({type:'mute',inst:J.i,on:J.mute}); renderTabs(); markState(); });
     J.el=el; J.tabBar=el.querySelector('.tbar'); J.tabState=el.querySelector('.tstate');
@@ -5302,8 +5305,9 @@ function renderTabs(){
     sel.setAttribute('aria-selected',String(isCur)); sel.tabIndex=isCur?0:-1;
     el.querySelector('.tname').textContent=J.sample?J.sampleName:'empty';
     J.tabState.textContent=tabStateText(J);
-    const mute=el.querySelector('.tab-mute'); mute.setAttribute('aria-pressed',String(J.mute)); mute.textContent='M';
-    sel.setAttribute('aria-label',`Player ${J.i+1}: ${J.sample?J.sampleName:'empty'}${J.mute?', muted':''}`);
+    const mute=el.querySelector('.tab-mute'); mute.setAttribute('aria-pressed',String(J.mute)); mute.textContent='M'; mute.setAttribute('aria-label','Mute player '+pnum(J));
+    el.querySelector('.tn').textContent=String(pnum(J));
+    sel.setAttribute('aria-label',`Player ${pnum(J)}: ${J.sample?J.sampleName:'empty'}${J.mute?', muted':''}`);
   }
   rackEl.setAttribute('aria-labelledby','tab-'+cur);
   renderLoopsAll();
@@ -5311,12 +5315,55 @@ function renderTabs(){
 tabList.addEventListener('keydown',e=>{
   if(e.key!=='ArrowRight' && e.key!=='ArrowLeft') return;
   if(!(e.target.classList && e.target.classList.contains('tab-sel'))) return;
-  e.preventDefault(); const i=(cur+(e.key==='ArrowRight'?1:NI-1))%NI; selectInst(i); inst[i].el.querySelector('.tab-sel').focus();
+  e.preventDefault(); const k=(tabOrder.indexOf(cur)+(e.key==='ArrowRight'?1:NI-1))%NI, i=tabOrder[k]; selectInst(i); inst[i].el.querySelector('.tab-sel').focus();
 });
+// drag a tab to another place: the players keep their sound, loops and views, only their place (and number) changes.
+// A finger or mouse that moves a tab a little lifts it (so does holding it still for a moment); a tap still selects.
+let tabDrag=null, tabSwallow=false;
+function applyOrder(){ for(const i of tabOrder) tabList.appendChild(inst[i].el); selectInst(cur,true); }
+function tabLift(D){
+  clearTimeout(D.hold); D.on=true; D.wo=tabOrder.slice(); D.slots=tabOrder.map(i=>inst[i].el.getBoundingClientRect());
+  const r=D.tab.getBoundingClientRect(); D.gx=D.x0-r.left; D.gy=D.y0-r.top;
+  D.tab.classList.add('lift'); tabList.classList.add('dragging'); try{ D.tab.setPointerCapture(D.id); }catch(e){}
+}
+function tabMove(D,x,y){
+  let best=0, bd=Infinity; D.slots.forEach((r,k)=>{ const d=Math.hypot(x-(r.left+r.width/2),y-(r.top+r.height/2)); if(d<bd){ bd=d; best=k; } });
+  const from=D.wo.indexOf(D.J.i);
+  if(best!==from){
+    const before=new Map(inst.map(J=>[J,J.el.getBoundingClientRect()]));
+    D.wo.splice(from,1); D.wo.splice(best,0,D.J.i);
+    for(const i of D.wo) tabList.appendChild(inst[i].el);
+    for(const J of inst){ if(J===D.J) continue; const a=before.get(J), b=J.el.getBoundingClientRect(), dx=a.left-b.left, dy=a.top-b.top;   // the others glide aside
+      if(dx||dy){ J.el.style.transition='none'; J.el.style.transform=`translate(${dx}px,${dy}px)`; J.el.getBoundingClientRect(); J.el.style.transition='transform .16s ease'; J.el.style.transform=''; } }
+    D.wo.forEach((i,k)=>{ inst[i].el.querySelector('.tn').textContent=String(k+1); });
+  }
+  const slot=D.slots[D.wo.indexOf(D.J.i)]; D.tab.style.transform=`translate(${x-D.gx-slot.left}px,${y-D.gy-slot.top}px)`;
+}
+function tabEnd(e){
+  const D=tabDrag; if(!D || e.pointerId!==D.id) return; tabDrag=null; clearTimeout(D.hold);
+  if(!D.on) return;
+  D.tab.classList.remove('lift'); tabList.classList.remove('dragging'); D.tab.style.transform=''; inst.forEach(J=>{ J.el.style.transition=''; J.el.style.transform=''; });
+  tabSwallow=true; setTimeout(()=>{ tabSwallow=false; },350);
+  const moved=D.wo.join()!==tabOrder.join(); tabOrder=D.wo; applyOrder();
+  if(moved){ markState(); msg((D.J.sample?D.J.sampleName:'The empty player')+' is now player '+pnum(D.J)+'.',2200); }
+}
+tabList.addEventListener('pointerdown',e=>{
+  const tab=e.target.closest('.tab'); if(!tab || e.target.closest('.tab-mute') || e.button>0 || tabDrag) return;
+  const J=inst.find(x=>x.el===tab); if(!J) return;
+  const D={id:e.pointerId,J,tab,x0:e.clientX,y0:e.clientY,on:false}; tabDrag=D;
+  D.hold=setTimeout(()=>{ if(tabDrag===D && !D.on){ tabLift(D); tabMove(D,D.x0,D.y0); } },380);
+});
+window.addEventListener('pointermove',e=>{
+  const D=tabDrag; if(!D || e.pointerId!==D.id) return;
+  if(!D.on){ if(Math.hypot(e.clientX-D.x0,e.clientY-D.y0)>8) tabLift(D); else return; }
+  tabMove(D,e.clientX,e.clientY);
+});
+window.addEventListener('pointerup',tabEnd); window.addEventListener('pointercancel',tabEnd);
+tabList.addEventListener('click',e=>{ if(tabSwallow){ e.stopPropagation(); e.preventDefault(); tabSwallow=false; } },true);   // the tap that ends a drag does not select
 function renderMeta(){
   const S=I.sample;
-  if(!S){ $('#m-name').textContent=`Player ${I.i+1} · empty`; $('#m-facts').textContent='LOAD SAMPLE, DEMO, or drop an audio file'; segs.chan.disable(true); return; }
-  $('#m-name').textContent=`${I.i+1} · ${I.sampleName}`;
+  if(!S){ $('#m-name').textContent=`Player ${pnum(I)} · empty`; $('#m-facts').textContent='LOAD SAMPLE, DEMO, or drop an audio file'; segs.chan.disable(true); return; }
+  $('#m-name').textContent=`${pnum(I)} · ${I.sampleName}`;
   $('#m-facts').textContent=`${S.chans.length} ch · ${(S.len/S.sr).toFixed(2)} s · ${(S.sr/1000).toFixed(1)} kHz · ${S.an.map(x=>x.n.toLocaleString('en-US')).join(' / ')} wavesets`;
   segs.chan.disable(S.chans.length<2);
 }
@@ -5340,7 +5387,7 @@ function selectInst(i,force){
 }
 document.addEventListener('keydown',e=>{
   if(e.repeat || e.metaKey || e.ctrlKey || e.altKey || !sheetsClosed() || (e.target.closest && e.target.closest('input,select'))) return;
-  if(/^[1-8]$/.test(e.key)){ selectInst(+e.key-1); }
+  if(/^[1-8]$/.test(e.key)){ selectInst(tabOrder[+e.key-1]); }
 });
 
 // ---------- presets (a shared library; recalling one sets the selected player) ----------
@@ -5379,10 +5426,10 @@ function slotTap(i){
   }
   const s=slots[i];
   if(!s){ msg('P'+(i+1)+' is empty. Tap STORE, then this slot, to save the current sound.',4000); return; }
-  undoPoint(''); applyParams(Object.assign({},DEFAULTS,cleanP(s.p),keepRegion())); I.curSlot=i; renderSlots(); msg('Recalled '+s.name+' on player '+(I.i+1)+'.',2000);
+  undoPoint(''); applyParams(Object.assign({},DEFAULTS,cleanP(s.p),keepRegion())); I.curSlot=i; renderSlots(); msg('Recalled '+s.name+' on player '+(pnum(I))+'.',2000);
 }
 storeBtn.addEventListener('click',()=>{ armed=!armed; storeBtn.setAttribute('aria-pressed',String(armed)); renderSlots(); if(armed) msg('Tap a slot to store the current sound.'); else msg('Ready.'); });
-$('#init').addEventListener('click',()=>{ undoPoint(''); applyParams(Object.assign({},DEFAULTS,{eng:P.eng},keepRegion())); I.curSlot=-1; renderSlots(); msg('Sound reset on player '+(I.i+1)+' (the loop region stays).',2500); });
+$('#init').addEventListener('click',()=>{ undoPoint(''); applyParams(Object.assign({},DEFAULTS,{eng:P.eng},keepRegion())); I.curSlot=-1; renderSlots(); msg('Sound reset on player '+(pnum(I))+' (the loop region stays).',2500); });
 
 // ---------- recorder: master + stems ----------
 // The engine posts the final mix (master) and, with STEMS on, each player on its own, in 8192-frame chunks.
@@ -5480,7 +5527,7 @@ function renderTakes(freshId){
     const meta=row.querySelector('.take-meta');
     meta.children[0].textContent='Take '+t.id;
     meta.children[1].textContent=fmtClock(t.frames/t.sr)+' · '+(t.sr/1000).toFixed(1)+' kHz · 24-bit stereo';
-    const sz=()=>{ meta.children[2].textContent='master '+fmtMB(t.master.bytes+44)+(t.saved.m?' (saved)':'')+(t.stems.length?' · stems '+t.stems.map(T=>T.i+1).join(' ')+(t.saved.s?' (saved)':''):' · no stems'); };
+    const sz=()=>{ meta.children[2].textContent='master '+fmtMB(t.master.bytes+44)+(t.saved.m?' (saved)':'')+(t.stems.length?' · stems '+t.stems.map(T=>pnumI(T.i)).join(' ')+(t.saved.s?' (saved)':''):' · no stems'); };
     sz();
     const inp=row.querySelector('input'); inp.id='take-name-'+t.id; inp.value=t.name; inp.setAttribute('aria-label','File name for take '+t.id);
     inp.addEventListener('input',()=>{ t.name=inp.value; });
@@ -5524,7 +5571,7 @@ function wavEntry(name,T,frames,sr){
 function takeZip(t,which){
   const base=t.name;
   if(which==='m') return {file:base+' master.zip',blob:new Blob(zipMulti([wavEntry(base+' master.wav',t.master,t.frames,t.sr)],t.date),{type:'application/zip'})};
-  const files=t.stems.map(T=>wavEntry(cleanName(base+' '+(T.i+1)+(T.name?' '+T.name.replace(/\.[a-z0-9]{1,5}$/i,''):''))+'.wav',T,t.frames,t.sr));
+  const files=t.stems.map(T=>wavEntry(cleanName(base+' '+(pnumI(T.i))+(T.name?' '+T.name.replace(/\.[a-z0-9]{1,5}$/i,''):''))+'.wav',T,t.frames,t.sr));
   return {file:base+' stems.zip',blob:new Blob(zipMulti(files,t.date),{type:'application/zip'})};
 }
 async function saveTake(t,row,which,sz){
@@ -5909,7 +5956,7 @@ function gBeginRec(J){
   G.rs='rec'; G.t0=now; G.rec=[]; G.pend.clear(); G.claim.clear();
   G.ph0r=M.on && M.len>0 ? now-M.origin : null;   // LAT COMP is taken off when the take closes (the audio may only start with it)
   gEnsure(); gUI(); renderTabs();
-  msg(`Recording layer ${gName(J,G.rl)} of player ${J.i+1}. REC or PLAY stops the take.`);
+  msg(`Recording layer ${gName(J,G.rl)} of player ${pnum(J)}. REC or PLAY stops the take.`);
 }
 function gRecord(J,e){
   const G=J.G;
@@ -6066,7 +6113,7 @@ function gFinishRec(J){
   if(G.play){ gStartLayer(L,now); gOwn(J,false); gChaseIn(J,[L],now); } else gStartLoop(J,now);
   gEnsure(); gUI(); renderTabs(); markState();
   const n=G.layers.length;
-  msg(`Player ${J.i+1}, layer ${gName(J,L)}: take of ${(S/1000).toFixed(2)} s → ${(L.len/1000).toFixed(2)} s (${fitText(L)}).${note} ${n<G_LAYERS?'+ adds a layer with its own LENGTH.':''}`,5000);
+  msg(`Player ${pnum(J)}, layer ${gName(J,L)}: take of ${(S/1000).toFixed(2)} s → ${(L.len/1000).toFixed(2)} s (${fitText(L)}).${note} ${n<G_LAYERS?'+ adds a layer with its own LENGTH.':''}`,5000);
 }
 function gDub(J,on){
   const G=J.G;
@@ -6106,7 +6153,7 @@ function gAddLayer(J){
   const G=J.G;
   if(G.rs==='armed' || G.rs==='rec') return;
   if(G.rs==='dub') gDub(J,false);
-  if(G.layers.length>=G_LAYERS){ msg(`Player ${J.i+1} has ${G_LAYERS} layers; CLEAR one to make room.`,2500); return; }
+  if(G.layers.length>=G_LAYERS){ msg(`Player ${pnum(J)} has ${G_LAYERS} layers; CLEAR one to make room.`,2500); return; }
   const cur=gLayer(J), first=!G.layers.length, L=newLayer({sync:cur?cur.sync:G.sync});
   G.layers.push(L); gArm(J,L);
   msg(first?'Armed: recording starts with your next move.'
@@ -6119,7 +6166,7 @@ function gClear(J){
   if(L.src) undoPoint('');
   gDrop(J,L);
   gCheckMain(); gEnsure(); gUI(); renderTabs(); markState();
-  msg(`Layer ${nm} of player ${J.i+1} cleared.`,2000);
+  msg(`Layer ${nm} of player ${pnum(J)} cleared.`,2000);
 }
 // a tap on a layer selects it; a tap on the selected one mutes it (it keeps its place and comes back in time)
 function gChip(J,i){
@@ -6241,7 +6288,7 @@ loopsAll.addEventListener('click',()=>{
 const syncLbl=v=>v==='free'?'FREE':+v>=1?'×'+v:'÷'+Math.round(1/+v);
 function gUI(){
   const J=I, G=J.G, s=gState(G), L=gLayer(J), dub=G.rs==='dub', canDub=G.play && L && L.len;
-  gLbl.textContent='GESTURE '+(J.i+1);
+  gLbl.textContent='GESTURE '+(pnum(J));
   gSync.value=L?L.sync:G.sync;
   gRecBtn.classList.toggle('blink',s==='armed');
   gRecBtn.setAttribute('aria-pressed',String(s==='armed'||s==='rec'||dub));
@@ -6648,7 +6695,7 @@ function renderEd(){
   if(fwEd.w.hidden) return;
   edPlay.disabled=gPlayBtn.disabled; edPlay.setAttribute('aria-pressed',String(I.G.play)); edPlay.textContent=gPlayBtn.textContent;
   const L=edLayer(), q=L&&L.src.q;
-  $('#we-h').textContent='Gesture editor · Player '+(I.i+1)+' · '+(L?'layer '+gName(I,L):'no take');
+  $('#we-h').textContent='Gesture editor · Player '+(pnum(I))+' · '+(L?'layer '+gName(I,L):'no take');
   if(q) ED.grid=q.g;
   edGrid.value=ED.grid; edQ.setAttribute('aria-pressed',String(!!q)); edQ.disabled=!L; edQ.textContent=q?'QUANTIZE ON':'QUANTIZE';
   edStr.value=String(q?q.str:1); edSw.value=String(q?q.sw:0); edStr.disabled=!q; edSw.disabled=!q; edQpos.disabled=!q;
@@ -7176,7 +7223,7 @@ function cleanEv(e){ const o={}; for(const k in e) if(k!=='pass' && k!=='dead' &
 function snapshot(name){
   return {v:3,app:'waveset-player',name:name||'',date:Date.now(),cur,
     kb:{mode:kbMode,oct:octBase,round:roundOn},
-    ui:{page:secReady?[...secGlobal]:[],keys:!dock.hidden},
+    ui:{page:secReady?[...secGlobal]:[],keys:!dock.hidden,order:tabOrder.slice()},
     main:{len:M.len,manual:M.manual,bpm:M.bpm,sig:M.sig,bars:M.bars,sync:M.sync,click:M.click,q:M.q,lat:M.lat},
     inst:inst.map(J=>({
       P:Object.assign({},J.P),
@@ -7275,6 +7322,8 @@ async function restoreSession(s,getBytes){
     const ui=s.ui&&typeof s.ui==='object'?s.ui:{};
     secGlobal=new Set((Array.isArray(ui.page)?ui.page:secLegacy).filter(id=>SEC_PAGE.has(id)));
     if(typeof ui.keys==='boolean' && ui.keys===dock.hidden) setKeys(ui.keys);
+    const ord=Array.isArray(ui.order)&&ui.order.length===NI&&ui.order.slice().sort((a,b)=>a-b).every((v,k)=>v===k)?ui.order.slice():inst.map(J=>J.i);
+    tabOrder=ord; for(const i of tabOrder) if(inst[i].el) tabList.appendChild(inst[i].el);
     const kb=s.kb||{};
     if(Number.isInteger(kb.oct)) octBase=Math.max(12,Math.min(96,kb.oct));
     if(typeof kb.round==='boolean'){ roundOn=kb.round; renderRound(); }
@@ -7520,37 +7569,53 @@ SECS.forEach(s=>{
       m.setAttribute('aria-label','Fold '+s.name+' away'); m.title='Fold away (its icon stays in the bar above)'; t.append(m,h2); m.addEventListener('click',()=>secSet(s,false,true)); } }
 });
 // the open panels share out the row space the folded ones leave (12 columns on a wide screen, 2 on a narrow one)
+const secBase=new Map();
 function secPack(){
   const panels=SECS.filter(s=>s.panel && s.node);
-  panels.forEach(s=>{ s.node.style.gridColumn=''; });
-  if(!panels.some(s=>I.secs.has(s.id) && secHere(s))) return;
-  const cols=getComputedStyle(secRack).gridTemplateColumns.split(' ').filter(Boolean).length; if(cols<2) return;
-  const vis=panels.filter(s=>secHere(s) && !I.secs.has(s.id)).map((s,i)=>{ const cs=getComputedStyle(s.node), m=/span\s+(\d+)/.exec(cs.gridColumnEnd)||/span\s+(\d+)/.exec(cs.gridColumnStart);
-    return {s,ord:+cs.order||0,i,span:Math.min(cols,m?+m[1]:1)}; }).sort((a,b)=>a.ord-b.ord||a.i-b.i);
-  let row=[], used=0; const rows=[];
-  for(const v of vis){ if(used+v.span>cols && row.length){ rows.push(row); row=[]; used=0; } row.push(v); used+=v.span; }
-  if(row.length) rows.push(row);
-  for(const r of rows){ const sum=r.reduce((a,v)=>a+v.span,0); let left=cols-sum; if(left<=0) continue;
-    r.forEach((v,k)=>{ const add=k===r.length-1?left:Math.round((cols-sum)*v.span/sum); const a=Math.min(add,left); left-=a; v.s.node.style.gridColumn='span '+(v.span+a); }); }
+  const want=new Map();
+  if(panels.some(s=>I.secs.has(s.id) && secHere(s))){
+    const de=document.documentElement, key=(de.classList.contains('gr')?'gr':de.classList.contains('sp')?'sp':'ws')+'|'+innerWidth;
+    let base=secBase.get(key);
+    if(!base){ panels.forEach(s=>{ s.node.style.gridColumn=''; });
+      const cols=getComputedStyle(secRack).gridTemplateColumns.split(' ').filter(Boolean).length; base={cols,p:new Map()};
+      panels.forEach((s,i)=>{ const cs=getComputedStyle(s.node), m=/span\s+(\d+)/.exec(cs.gridColumnEnd)||/span\s+(\d+)/.exec(cs.gridColumnStart); base.p.set(s.id,{ord:+cs.order||0,i,span:Math.min(cols,m?+m[1]:1)}); });
+      secBase.clear(); secBase.set(key,base); }
+    const cols=base.cols;
+    if(cols>=2){
+      const vis=panels.filter(s=>secHere(s) && !I.secs.has(s.id)).map(s=>Object.assign({s},base.p.get(s.id))).sort((a,b)=>a.ord-b.ord||a.i-b.i);
+      let row=[], used=0; const rows=[];
+      for(const v of vis){ if(used+v.span>cols && row.length){ rows.push(row); row=[]; used=0; } row.push(v); used+=v.span; }
+      if(row.length) rows.push(row);
+      for(const r of rows){ const sum=r.reduce((a,v)=>a+v.span,0); let left=cols-sum; if(left<=0) continue;
+        r.forEach((v,k)=>{ const add=k===r.length-1?left:Math.round((cols-sum)*v.span/sum); const a=Math.min(add,left); left-=a; want.set(v.s.id,'span '+(v.span+a)); }); }
+    }
+  }
+  for(const s of panels){ const g=want.get(s.id)||''; if(s.node.style.gridColumn!==g) s.node.style.gridColumn=g; }
 }
-function secApply(){
+// the icons answer at once; the panels (a big relayout on the iPad) follow in the next frame, several quick taps in one go
+let secRAF=0;
+function secApply(){ secChips(); if(!secRAF) secRAF=requestAnimationFrame(()=>{ secRAF=0; secLayout(); }); }
+function secChips(){
   for(const s of SECS){
     const here=secHere(s), open=secOpen(s);
-    s.chip.hidden=!here; s.chip.setAttribute('aria-pressed',String(open));
-    s.chip.title=s.name+(open?': tap to fold away':': tap to show')+' · double-tap: only this one';
-    if(s.node && s.id!=='keys') s.node.classList.toggle('sec-min',secFolded(s.id));
+    if(s.chip.hidden!==!here) s.chip.hidden=!here;
+    const pr=String(open); if(s.chip.getAttribute('aria-pressed')!==pr){ s.chip.setAttribute('aria-pressed',pr); s.chip.title=s.name+(open?': tap to fold away':': tap to show')+' · double-tap: only this one'; }
+  }
+  viewsAll.disabled=SECS.every(s=>!secHere(s) || secOpen(s));
+}
+function secLayout(){
+  for(const s of SECS){
+    if(s.node && s.id!=='keys'){ const f=secFolded(s.id); if(s.node.classList.contains('sec-min')!==f) s.node.classList.toggle('sec-min',f); }
   }
   const nav=$('#tabs-nav'); if(nav) nav.classList.toggle('sec-min',secGlobal.has('players') && secGlobal.has('clock'));
-  viewsIn.setAttribute('aria-label','Sections of player '+(I.i+1)+': tap to show or hide, double-tap to show only that one');
-  viewsAll.disabled=SECS.every(s=>!secHere(s) || secOpen(s));
-  secPack();
-  window.dispatchEvent(new Event('resize'));   // canvases and the keys measure themselves again
+  viewsIn.setAttribute('aria-label','Sections of player '+(pnum(I))+': tap to show or hide, double-tap to show only that one');
+  secPack();   // canvases and the keys follow by themselves (they watch their own size)
 }
 function secSet(s,open,say){
   if(s.id==='keys'){ setKeys(open); }
   else secFold(s.id,!open);
   if(s.panel) I.secSolo=null; secSave(); secApply();
-  if(say && !open) msg(s.name+' folded away on player '+(I.i+1)+': its icon is in the bar above the panels.',2000);
+  if(say && !open) msg(s.name+' folded away on player '+(pnum(I))+': its icon is in the bar above the panels.',2000);
 }
 let secTap={id:'',t:0};
 viewsIn.addEventListener('click',e=>{
@@ -7560,18 +7625,18 @@ viewsIn.addEventListener('click',e=>{
   if(dbl){ if(secTap.inst===I.i){ I.secs=new Set(secTap.min); I.secSolo=secTap.solo; } secTap={id:'',t:0}; }   // a double-tap acts on how things were before its first tap
   else secTap={id:s.id,t:now,inst:I.i,min:[...I.secs],solo:I.secSolo};
   if(dbl){   // only this panel (double-tap it again for the panels you had)
-    if(I.secSolo && I.secSolo.id===s.id){ I.secs=new Set(I.secSolo.prev); I.secSolo=null; msg('Back to the panels you had on player '+(I.i+1)+'.',1400); }
-    else { const prev=new Set(I.secs); prev.delete(s.id); SECS.forEach(x=>{ if(x.panel){ if(x.id===s.id) I.secs.delete(x.id); else I.secs.add(x.id); } }); I.secSolo={id:s.id,prev:[...prev]}; msg('Only '+s.name+' on player '+(I.i+1)+'. Double-tap its icon again to get the others back.',2400); }
+    if(I.secSolo && I.secSolo.id===s.id){ I.secs=new Set(I.secSolo.prev); I.secSolo=null; msg('Back to the panels you had on player '+(pnum(I))+'.',1400); }
+    else { const prev=new Set(I.secs); prev.delete(s.id); SECS.forEach(x=>{ if(x.panel){ if(x.id===s.id) I.secs.delete(x.id); else I.secs.add(x.id); } }); I.secSolo={id:s.id,prev:[...prev]}; msg('Only '+s.name+' on player '+(pnum(I))+'. Double-tap its icon again to get the others back.',2400); }
     secSave(); secApply(); return; }
   secSet(s,!secOpen(s),false);
 });
-viewsAll.addEventListener('click',()=>{ I.secs.clear(); I.secSolo=null; secGlobal.clear(); if(dock.hidden) setKeys(true); secSave(); secApply(); msg('Every section is showing on player '+(I.i+1)+'.',1400); });
-new MutationObserver(()=>secApply()).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+viewsAll.addEventListener('click',()=>{ I.secs.clear(); I.secSolo=null; secGlobal.clear(); if(dock.hidden) setKeys(true); secSave(); secApply(); msg('Every section is showing on player '+(pnum(I))+'.',1400); });
+new MutationObserver(()=>secApply()).observe(document.documentElement,{attributes:true,attributeFilter:['class']});   // engine changed
 keysBtn.addEventListener('click',()=>setTimeout(secApply,0));
-let secCols=0; window.addEventListener('resize',()=>{ const c=getComputedStyle(secRack).gridTemplateColumns.split(' ').length; if(c!==secCols){ secCols=c; secPack(); } });
+let secW=innerWidth; window.addEventListener('resize',()=>{ if(innerWidth!==secW){ secW=innerWidth; secBase.clear(); secApply(); } });
 secReady=true; secApply();
 
-window.__ws={get secAll(){ return {inst:inst.map(J=>[...J.secs].sort()),page:[...secGlobal].sort(),keys:!dock.hidden}; },get aud(){ return {AUD,broken:audioBroken,wake:!!wakeLock,bg:!!(bgEl&&!bgEl.paused)}; },heal:()=>audioHeal(),breakAudio:()=>{ audioBroken=true; renderAudioState(); },get secs(){ return {min:[...I.secs,...secGlobal],solo:I.secSolo}; },get ctx(){ return ctx; },get nodeReady(){ return nodeReady; },inst,M,ed:{ED,EL,model:()=>{ const L=edLayer(); return L?edModel(L):null; },geo:()=>edGeo(),rows:()=>{ const L=edLayer(); return L?edRows(edModel(L)):null; },posRange:()=>edPosRange(),ctlRange:()=>edCtlRange(),targets:()=>edTargets(),tx:(t)=>{ const L=edLayer(); return edTX(edGeo(),t,L.src.S); },yv:v=>edYV(edGeo(),v),yu:u=>edYU(edGeo(),u)},get cur(){ return cur; },snapshot,selectInst,restoreSession,sessionZip,unzip,undo,redo,get undoN(){ return undoStack.length; },takeZip,get takes(){ return takes; }};
+window.__ws={get tabOrder(){ return tabOrder.slice(); },get secAll(){ return {inst:inst.map(J=>[...J.secs].sort()),page:[...secGlobal].sort(),keys:!dock.hidden}; },get aud(){ return {AUD,broken:audioBroken,wake:!!wakeLock,bg:!!(bgEl&&!bgEl.paused)}; },heal:()=>audioHeal(),breakAudio:()=>{ audioBroken=true; renderAudioState(); },get secs(){ return {min:[...I.secs,...secGlobal],solo:I.secSolo}; },get ctx(){ return ctx; },get nodeReady(){ return nodeReady; },inst,M,ed:{ED,EL,model:()=>{ const L=edLayer(); return L?edModel(L):null; },geo:()=>edGeo(),rows:()=>{ const L=edLayer(); return L?edRows(edModel(L)):null; },posRange:()=>edPosRange(),ctlRange:()=>edCtlRange(),targets:()=>edTargets(),tx:(t)=>{ const L=edLayer(); return edTX(edGeo(),t,L.src.S); },yv:v=>edYV(edGeo(),v),yu:u=>edYU(edGeo(),u)},get cur(){ return cur; },snapshot,selectInst,restoreSession,sessionZip,unzip,undo,redo,get undoN(){ return undoStack.length; },takeZip,get takes(){ return takes; }};
 })();
 // ==/UI==
 </script>
