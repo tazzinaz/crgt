@@ -106,6 +106,21 @@ button:focus-visible,.knob:focus-visible,.wave-box:focus-visible{outline:2px sol
 .rate-pop .rp-l{font:500 10px/1 var(--f-mono);letter-spacing:.08em;color:var(--dim)}
 .rate-pop .rp-row{display:flex;align-items:center;gap:10px}
 .rate-pop .rp-st{font:500 10px/1.3 var(--f-mono);color:var(--muted)}
+.rate-pop{max-height:calc(100vh - 90px);overflow-y:auto;overscroll-behavior:contain}
+.rate-pop>*{flex-shrink:0}   /* it scrolls; its rows keep their height */
+/* CPU: the engine's load against the time each block of sound is allowed; the mark is the busiest block */
+.cpu-meter{position:relative;height:8px;border-radius:4px;background:var(--inset);border:1px solid var(--line);overflow:hidden}
+.cpu-meter i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--accent);transition:width .2s}
+.cpu-meter i.hot{background:var(--hot)}
+.cpu-meter b{position:absolute;top:0;bottom:0;width:2px;left:0;background:var(--ink);opacity:.7}
+.cpu-list{display:flex;flex-direction:column;gap:4px}
+.cpu-row{display:grid;grid-template-columns:22px minmax(0,1fr) 44px;gap:8px;align-items:center;font:500 10px/1.2 var(--f-mono);color:var(--muted)}
+.cpu-row .cb{height:5px;border-radius:3px;background:var(--inset);position:relative;overflow:hidden}
+.cpu-row .cb i{position:absolute;left:0;top:0;bottom:0;background:var(--dim)}
+.cpu-row .cn{grid-column:2/4;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:-2px}
+.cpu-row b{color:var(--ink);font-weight:600;text-align:right}
+.pill.cpu{font-variant-numeric:tabular-nums;min-width:76px;text-align:center}
+.pill.cpu.warn{color:var(--accent);border-color:var(--accent)}
 .pill-btn.bad{color:var(--on-hot);background:var(--hot);border-color:var(--hot)}
 .aud-back{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 10px);transform:translateX(-50%);z-index:70;appearance:none;cursor:pointer;
   padding:12px 18px;border-radius:999px;border:1px solid var(--hot);background:var(--hot);color:var(--on-hot);font:600 13px/1 var(--f-sans);letter-spacing:.02em;box-shadow:var(--lift)}
@@ -641,6 +656,8 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
     <button class="btn icon" id="redo" type="button" disabled title="Redo (⇧⌘Z / Ctrl+Y)" aria-label="Redo">↷</button>
     <button class="btn" id="load" type="button">LOAD SAMPLE</button>
     <button class="btn" id="demo" type="button">DEMO</button>
+    <button class="btn" id="pl-copy" type="button" title="Copy this player: its sample, every setting, its gesture loops and its panels">COPY</button>
+    <button class="btn" id="pl-paste" type="button" disabled title="Make this player a copy of the one you copied">PASTE</button>
     <button class="btn" id="sess-btn" type="button">SESSION</button>
     <button class="btn" id="keys-btn" type="button" aria-pressed="true">KEYS</button>
     <button class="btn" id="help" type="button" aria-pressed="true">HELP</button>
@@ -653,6 +670,7 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
     </div>
     <div class="status">
       <span class="msg" id="msg" role="status">Starting…</span>
+      <button class="pill pill-btn cpu" id="cpu" type="button" aria-haspopup="dialog" aria-controls="rate-pop" title="How busy the sound engine is">CPU —</button>
       <button class="pill pill-btn" id="eng" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="rate-pop" title="Engine sample rate">AUDIO OFF ▾</button>
     </div>
   </header>
@@ -899,7 +917,7 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
     </section>
   </main>
 
-  <p class="foot"><b>Full screen:</b> the corner button (where the browser allows it) fills the whole display and hides the viewer’s bar; tap it again or press Esc to leave. <b>Sections:</b> every part of the page has an icon in the bar above the panels (it stays at the top while you scroll). Tap an icon to fold that section away or bring it back; a folded section shows just its icon. Double-tap an icon to keep only that panel open, and double-tap it again for the ones you had; ALL shows everything. The icon beside each panel’s title folds it too. The panels left open widen into the space. Each player keeps its own panels, so switching player switches the view (players, clock and keys are the same for all of them), and the whole view is saved with the session and inside its exported .zip: you keep just what you are playing with on screen, player by player. <b>Players:</b> drag a tab to move the player to another place (or hold it a moment, then drag); the others slide aside. A player keeps its sound, loops and view when it moves; its number is its place, and the keys 1–8 follow the places. The order is saved with the session. eight, each with its own sample, engine, settings, loop region and gesture loop; all eight sound together. The tab you pick receives the knobs, the waveform and the keys (1–8 on a computer keyboard switch tabs). M mutes a player. <b>Touch:</b> drag a knob up or right to raise it, double-tap to reset. Touch the waveform to play the sample from there, at the pitch it was recorded (C4), as long as your finger stays; drag to move through it. While keys are sounding the touch does not play by itself: it moves the position the notes play from, and the touch sound comes back 120 ms after you let go of the keys. The blue handle is where you send it, each thin line is a read position you hear. <b>Several fingers:</b> every extra finger on the waveform (up to four in all) adds a read position for as long as it stays down, marked by a blue ring; each note plays all of them, so three notes with two fingers sound six streams. Lift the first finger and the next one takes over the blue handle. Gesture loops record and replay these fingers too (violet rings). <b>Scrub:</b> SKIP jumps to where your finger is; FLUID glides there through the wavesets in between, in order (backwards like tape when you drag left), as fast as GLIDE allows; while your finger moves the sound follows it, and when it rests the unit loops there. <b>Granular:</b> ENGINE above the waveform switches the player between WAVESET and GRANULAR, an engine modelled on the Tasty Chips GR-1. Only the engine's own panels change (GRAIN, GRAIN WINDOW and SCAN · KEYS take the place of WAVESET, INTERPOLATION, JITTER and PROCESS); the sample, position, loop, keys, voices, output, time stretch, filter, fx, LFOs, matrix, presets and gesture loops stay. Grains: DENSITY 0.1–1000 a second, SIZE 5 ms–5 s, SPRAY, SCAN −2×…+2×, TUNE, DIRECTION, PAN and PAN SPRAY; a window shaped by SIDES, TILT and CURVE; four spawn modes, granular glide, key sync, anti-aliasing and up to 128 grains per voice. Sample modes GRANULAR, AUDITION and TAPE; scan modes LOOP, ONE SHOT and PING PONG; KEY→POS and KEY PITCH. With LOOP on, the scan pointer, spray, grains and position offsets all stay inside the loop and scale with it, as in the waveset engine. With time stretch on, the grains keep TUNE and the stretch mode transposes to the key. <b>Simpler:</b> the third ENGINE plays the sample as Ableton's Simpler does. CLASSIC: notes start at the blue handle and play S LENGTH of the region (the LOOP region, or the file), pitched by the key, through the ADSR, with a sustain LOOP (LOOP LEN, LOOP FADE). ONE-SHOT: one note at a time, TRIGGER or GATE, FADE IN and FADE OUT. SLICE: one slice per key from ROOT, sliced by TRANSIENT, BEAT (DIVISION of the sample's tempo, found or typed), REGION (equal parts), MANUAL, or by spectral features: LOUDNESS, CHROMA (harmony), BRIGHTNESS, TIMBRE (MFCC) and NOISINESS; SENSITIVITY sets how many. Drag markers in the band at the top of the waveform, double-tap the band to add one, double-tap a marker to remove it; ◀ ▶ nudge, SPLIT and DELETE act on the selected slice; MONO, POLY and THRU playback. Every mode has SNAP, REVERSE, GAIN, TRANSPOSE, DETUNE, a pitch envelope, GLIDE and PORTA, SPREAD, PAN, VEL→VOL, RETRIG, WARP AS (bars of the BPM, with the TIME STRETCH mode as warp mode) and the FILTER (shared with the other engines). <b>LFO and MATRIX:</b> the buttons next to ENGINE open them as floating windows; drag a window by its title bar, × or Esc closes it. Two LFOs (sine, square, saw, S&amp;H and AUX, a shape you draw in the LFO SHAPE window opened by ✎ DRAW) with key sync, MAIN clock, quantize and cross-modulation; with CLOCK MAIN, RATE divides or multiplies MAIN, whether MAIN came from a take, was typed in or comes from the BPM. The matrix holds up to 16 routes from the LFOs, velocity, key, pressure or a random value per note; its menu lists the controls of the engine in use and the shared ones (envelope, filter, effect, time stretch); every note is modulated on its own. <b>Filter:</b> in every engine each note has its own filter, the one from SIMPLER: LP, HP, BP, NOTCH or MORPH, 12 or 24 dB, five circuits with DRIVE, an envelope (F.ATTACK … F.RELEASE, ENV), KEY and VEL tracking; sessions with the old 12 dB player filter open with it set the same. <b>FX:</b> one effect (delay, distortion, reducer or reverb) per player, in every engine. <b>Time stretch:</b> besides the four modes from the SuperCollider patch, MODE has Max stretch~’s modes (BASIC, MONOPHONIC, RHYTHMIC, GENERAL, POLYPHONIC, PADS, EXTREMESTRETCH, EFFICIENT), made here for this engine, with QUALITY and formant control, and five creative modes: BEATS and TEXTURE after Ableton Live’s warp modes, SPECTRAL after PaulXStretch (random phase, spread, harmonics tuned to the key, freeze), PRISM after CDP’s spectral shift, stretch and blur, and HYBRID after the noise-morphing method from Aalto University (sines and noise stretched apart). TRANSIENTS, after Rubber Band, chooses how GENERAL, POLYPHONIC, PADS and HYBRID treat hits. Every mode but OFF has controls of its own beyond PITCH, shown when it is chosen and described under the panel: from SuperCollider’s PitchShift P.DISP and T.DISP, Warp1’s window SHAPE, TGrains’ random rate and reverse; for the Max modes GRAIN, SEARCH, JITTER, SENS, PUNCH, FORMANT, ROUGH, DRIFT and SMOOTH; PaulXStretch’s ONSETS and octave mixer (OCT −1, OCT +1); CDP’s TRACE; and LOOP SIZE, FADE, SWING, DENSITY, WIDTH and SPLIT. All of them can be modulated from the MATRIX. <b>Loop:</b> drag on the ruler under the waveform to draw a loop; drag its edges or its middle to change it. Edges always land on a zero crossing. ◀ ▶ move an edge by one waveset; SET IN / SET OUT place it at the playhead you hear. Pinch on the ruler (or ctrl + scroll) to zoom down to single samples; the strip below shows the whole file, tap it to move the view. <b>Keys:</b> C4 (red mark) is the original pitch; press lower on a key to play louder. With time stretch OFF a key changes speed and pitch together; with any other mode it changes pitch only. On a computer keyboard, A–K play and Z/X change octave. <b>FREE:</b> the keyboard becomes a continuous surface; each finger glides on its own. <b>Process:</b> the PROCESS menu above the waveform runs Trevor Wishart’s CDP DISTORT waveset processes live (MULTIPLY, DIVIDE, HARMONIC, FRACTAL, REFORM, PITCH, QUIRK, AVERAGE, TELESCOPE, REPLACE, DELETE, OMIT, REVERSE, SHUFFLE, ENVEL); their settings are in the PROCESS panel. Group processes work inside each unit, so raise SIZE to give them wavecycles to group. ORDER reads the file in time, by waveset length or by waveset power. <b>Gesture loops:</b> each player loops what your hands do on it, in up to four layers (A–D) that play together. REC arms the selected layer; the take starts with your next move and ends when you press REC or PLAY. + adds a new layer and arms it while the other layers keep playing: give it its own LENGTH first, say MAIN ×2 for a position sweep twice as long as the notes in A. LENGTH decides what a layer plays: FREE plays the take as it is; a multiple or division of MAIN cuts the take to that length, or repeats it until it is filled. Each layer keeps its take, so its LENGTH can be changed at any time: shorter cuts, longer brings the cut part back or repeats it. MAIN is set by the first MAIN-length take, or type it in (÷2 and ×2 halve and double it), or let the tempo set it: SYNC makes MAIN a number of BARS of the signature at the BPM (type it or TAP it), CLICK ticks every beat (it is not recorded), free takes become whole beats and stay on the beat grid, and QUANT gives new takes a QUANTIZE of 1/4 … 1/32 notes (kept with the layer: change or remove it in ✎ EDIT); MAIN-length layers stay in time with it and with each other, and the lanes under the layer buttons show their lengths side by side. Notes and fingers of all layers sound together; a knob, a switch or the position follows the layer that recorded it last, so a new layer takes it over. Tap a layer to select it, tap it again to mute it: it keeps its place and comes back in time, and its controls go back to the layer below. While the layers play, REC overdubs into the selected one; a control you hold is yours. CLEAR empties the selected layer. <b>Fix a take:</b> ✎ EDIT opens the gesture editor on the selected layer, in every engine. Notes are bars (in SIMPLER SLICE the rows are slices, each drawn with its sound): drag one to move it in time, snapped to GRID, or up and down to another note or slice; drag its right end to change the length; drag its stem in VEL for how hard. POSITION shows where in the sample you played on the waveform, against the sample drawn top to bottom on the left: drag a point, or a whole jump or drag by its line, in time or to another part of the sample; it snaps to the sample's onsets (by transient, loudness, chroma, brightness, timbre or noisiness, as SLICE finds them), to zero crossings or to the loop's edges. Violet bars are extra fingers; THIN keeps the shape of long drags with fewer points. CONTROL shows a recorded knob or switch. Notes: tap one to select it and its tools appear beside it (DUPLICATE, LENGTH − +, ◀ ▶ ▲ ▼, DELETE); drag it to move it, drag the grips at either end to make it longer or shorter. Double-tap empty space to add a note and keep your finger down to drag out its length; with DRAW on, a single tap or drag on empty space draws one and a tap on a note removes it. New notes take the length and velocity of the last note you touched. DUPLICATE puts a copy right after the selection, so pressing it again builds a run. To work on several notes, hold your finger still on empty space for a moment and then drag a box around them (with a mouse just drag; ⇧-click adds or removes one); dragging, resizing, the velocity, the arrows, DUPLICATE and DELETE then act on all of them. With a keyboard: ⌫ deletes, ⌘D duplicates, ⌘A selects every note, ← → move, ⇧← ⇧→ shorter and longer, ↑ ↓ change the note, and ⌥-drag copies. Points on the waveform and in the control lane: double-tap to add or remove, the arrows move the selected one (◀ ▶ a grid step, 10 ms with GRID OFF; ▲ ▼ to the next onset or step). ▶ PLAY plays the loops while you edit. Zoom in time and in each lane (notes or slices, the position in the sample, the control): pinch with the fingers side by side to zoom time, one above the other to zoom the lane under them, and move them together to scroll; drag empty space to scroll; drag the ruler sideways to scroll and down to zoom in on the moment you hold; drag a lane's left edge up and down to scroll it, sideways to zoom it; ↔ − + zoom time around the selection, ↕ − + the lane you last touched (marked at its left edge). FIT frames the selection (or everything you played) in time and in every lane, and ALL shows the whole take again; double-tap the ruler or a lane's edge for the same on just that. Zoomed in, ◀ ▶ without GRID and ▲ ▼ between onsets or control values take finer steps, and an edit dragged to the edge scrolls the view. Drag between two lanes to give one more room (double-tap there to reset). On a trackpad: pinch or ⌘-scroll zooms time, ⌥-scroll zooms the lane, scrolling moves it. Each layer keeps its own view. QUANTIZE pulls the layer's notes and fingers (with + POSITION the jumps on the waveform too) to GRID by STRENGTH, with SWING; it keeps what you played, so it can be changed or turned off at any time, and whatever you moved by hand stays where you put it. Every change is one undo step, is saved with the session and is heard from the next cycle. LAT COMP (on unless you turn it off) puts new takes and overdubs where you heard them, moving them back by the output latency the browser reports; the button shows how much. <b>Undo:</b> ↶ and ↷ (or ⌘Z, ⇧⌘Z) step back and forward through changes to settings, samples, loop regions, gesture buffers, LENGTH, MAIN and mutes; a knob drag counts as one step. <b>Engine rate:</b> tap the audio pill at the top right (AUDIOWORKLET · 48.0 kHz) to choose the rate everything plays and records at: AUTO (your device’s own), 44.1, 48, 88.2 or 96 kHz. Higher rates leave less aliasing when you pitch up, drive or REDUCE, and take about twice the processing. Changing it restarts the sound for a moment with every sample, setting and loop kept; notes sounding at that moment stop. It is locked while a take is recording, and kept on this device. <b>Sound that keeps going:</b> there is no PLAY / STOP; the players sound from the keys, the FREE surface, the waveform and their loops. In the same AUDIO window, KEEP SCREEN ON stops the iPad locking by itself while CRGT is open, and PLAY WHEN LOCKED keeps the sound going if you lock it anyway, the way a music player does (CRGT shows on the lock screen); loops wait while it is locked and carry on in step when you unlock. If the iPad pauses the sound all the same (a call, another app, a long lock), the pill turns red and reads SOUND PAUSED: the next tap or key anywhere brings it back, with a fresh engine if the old one will not wake, keeping every sample, setting and loop. <b>Record:</b> REC captures the master (the mix you hear) as 24-bit WAV; with STEMS on it also records every player on its own track, sample-aligned with the master, and the takes sheet saves master and stems as separate files. Every joint between wavesets is spliced with a 1.5 ms crossfade from the sound's own continuation, and wavesets are cut from a DC-blocked copy of the file, so jumps, short units and fast scrubbing stay free of clicks. <b>Sessions:</b> everything is saved in this browser as you play and comes back when you reopen the page; SESSION saves named copies and exports them as .zip files with their samples.</p>
+  <p class="foot"><b>Full screen:</b> the corner button (where the browser allows it) fills the whole display and hides the viewer’s bar; tap it again or press Esc to leave. <b>Sections:</b> every part of the page has an icon in the bar above the panels (it stays at the top while you scroll). Tap an icon to fold that section away or bring it back; a folded section shows just its icon. Double-tap an icon to keep only that panel open, and double-tap it again for the ones you had; ALL shows everything. The icon beside each panel’s title folds it too. The panels left open widen into the space. Each player keeps its own panels, so switching player switches the view (players, clock and keys are the same for all of them), and the whole view is saved with the session and inside its exported .zip: you keep just what you are playing with on screen, player by player. <b>Players:</b> drag a tab to move the player to another place (or hold it a moment, then drag); the others slide aside. A player keeps its sound, loops and view when it moves; its number is its place, and the keys 1–8 follow the places. The order is saved with the session. eight, each with its own sample, engine, settings, loop region and gesture loop; all eight sound together. The tab you pick receives the knobs, the waveform and the keys (1–8 on a computer keyboard switch tabs). M mutes a player. <b>Copy a player:</b> COPY takes the selected player as it is (sample, every setting, gesture loops, panels); pick another player and tap PASTE to make it a copy, then change what you like: the two are separate, and UNDO brings back what the player had. The copy can be pasted into several players. <b>CPU:</b> the pill shows how busy the sound engine is; tap it for each player’s share, how many blocks ran late in the last minute (each may be heard as a click), PROTECT (when the engine is over 85% busy, notes that are only fading out end quickly) and LATENCY (MEDIUM and SAFE give the device a longer buffer, so busy moments do not break the sound). <b>Touch:</b> drag a knob up or right to raise it, double-tap to reset. Touch the waveform to play the sample from there, at the pitch it was recorded (C4), as long as your finger stays; drag to move through it. While keys are sounding the touch does not play by itself: it moves the position the notes play from, and the touch sound comes back 120 ms after you let go of the keys. The blue handle is where you send it, each thin line is a read position you hear. <b>Several fingers:</b> every extra finger on the waveform (up to four in all) adds a read position for as long as it stays down, marked by a blue ring; each note plays all of them, so three notes with two fingers sound six streams. Lift the first finger and the next one takes over the blue handle. Gesture loops record and replay these fingers too (violet rings). <b>Scrub:</b> SKIP jumps to where your finger is; FLUID glides there through the wavesets in between, in order (backwards like tape when you drag left), as fast as GLIDE allows; while your finger moves the sound follows it, and when it rests the unit loops there. <b>Granular:</b> ENGINE above the waveform switches the player between WAVESET and GRANULAR, an engine modelled on the Tasty Chips GR-1. Only the engine's own panels change (GRAIN, GRAIN WINDOW and SCAN · KEYS take the place of WAVESET, INTERPOLATION, JITTER and PROCESS); the sample, position, loop, keys, voices, output, time stretch, filter, fx, LFOs, matrix, presets and gesture loops stay. Grains: DENSITY 0.1–1000 a second, SIZE 5 ms–5 s, SPRAY, SCAN −2×…+2×, TUNE, DIRECTION, PAN and PAN SPRAY; a window shaped by SIDES, TILT and CURVE; four spawn modes, granular glide, key sync, anti-aliasing and up to 128 grains per voice. Sample modes GRANULAR, AUDITION and TAPE; scan modes LOOP, ONE SHOT and PING PONG; KEY→POS and KEY PITCH. With LOOP on, the scan pointer, spray, grains and position offsets all stay inside the loop and scale with it, as in the waveset engine. With time stretch on, the grains keep TUNE and the stretch mode transposes to the key. <b>Simpler:</b> the third ENGINE plays the sample as Ableton's Simpler does. CLASSIC: notes start at the blue handle and play S LENGTH of the region (the LOOP region, or the file), pitched by the key, through the ADSR, with a sustain LOOP (LOOP LEN, LOOP FADE). ONE-SHOT: one note at a time, TRIGGER or GATE, FADE IN and FADE OUT. SLICE: one slice per key from ROOT, sliced by TRANSIENT, BEAT (DIVISION of the sample's tempo, found or typed), REGION (equal parts), MANUAL, or by spectral features: LOUDNESS, CHROMA (harmony), BRIGHTNESS, TIMBRE (MFCC) and NOISINESS; SENSITIVITY sets how many. Drag markers in the band at the top of the waveform, double-tap the band to add one, double-tap a marker to remove it; ◀ ▶ nudge, SPLIT and DELETE act on the selected slice; MONO, POLY and THRU playback. Every mode has SNAP, REVERSE, GAIN, TRANSPOSE, DETUNE, a pitch envelope, GLIDE and PORTA, SPREAD, PAN, VEL→VOL, RETRIG, WARP AS (bars of the BPM, with the TIME STRETCH mode as warp mode) and the FILTER (shared with the other engines). <b>LFO and MATRIX:</b> the buttons next to ENGINE open them as floating windows; drag a window by its title bar, × or Esc closes it. Two LFOs (sine, square, saw, S&amp;H and AUX, a shape you draw in the LFO SHAPE window opened by ✎ DRAW) with key sync, MAIN clock, quantize and cross-modulation; with CLOCK MAIN, RATE divides or multiplies MAIN, whether MAIN came from a take, was typed in or comes from the BPM. The matrix holds up to 16 routes from the LFOs, velocity, key, pressure or a random value per note; its menu lists the controls of the engine in use and the shared ones (envelope, filter, effect, time stretch); every note is modulated on its own. <b>Filter:</b> in every engine each note has its own filter, the one from SIMPLER: LP, HP, BP, NOTCH or MORPH, 12 or 24 dB, five circuits with DRIVE, an envelope (F.ATTACK … F.RELEASE, ENV), KEY and VEL tracking; sessions with the old 12 dB player filter open with it set the same. <b>FX:</b> one effect (delay, distortion, reducer or reverb) per player, in every engine. <b>Time stretch:</b> besides the four modes from the SuperCollider patch, MODE has Max stretch~’s modes (BASIC, MONOPHONIC, RHYTHMIC, GENERAL, POLYPHONIC, PADS, EXTREMESTRETCH, EFFICIENT), made here for this engine, with QUALITY and formant control, and five creative modes: BEATS and TEXTURE after Ableton Live’s warp modes, SPECTRAL after PaulXStretch (random phase, spread, harmonics tuned to the key, freeze), PRISM after CDP’s spectral shift, stretch and blur, and HYBRID after the noise-morphing method from Aalto University (sines and noise stretched apart). TRANSIENTS, after Rubber Band, chooses how GENERAL, POLYPHONIC, PADS and HYBRID treat hits. Every mode but OFF has controls of its own beyond PITCH, shown when it is chosen and described under the panel: from SuperCollider’s PitchShift P.DISP and T.DISP, Warp1’s window SHAPE, TGrains’ random rate and reverse; for the Max modes GRAIN, SEARCH, JITTER, SENS, PUNCH, FORMANT, ROUGH, DRIFT and SMOOTH; PaulXStretch’s ONSETS and octave mixer (OCT −1, OCT +1); CDP’s TRACE; and LOOP SIZE, FADE, SWING, DENSITY, WIDTH and SPLIT. All of them can be modulated from the MATRIX. <b>Loop:</b> drag on the ruler under the waveform to draw a loop; drag its edges or its middle to change it. Edges always land on a zero crossing. ◀ ▶ move an edge by one waveset; SET IN / SET OUT place it at the playhead you hear. Pinch on the ruler (or ctrl + scroll) to zoom down to single samples; the strip below shows the whole file, tap it to move the view. <b>Keys:</b> C4 (red mark) is the original pitch; press lower on a key to play louder. With time stretch OFF a key changes speed and pitch together; with any other mode it changes pitch only. On a computer keyboard, A–K play and Z/X change octave. <b>FREE:</b> the keyboard becomes a continuous surface; each finger glides on its own. <b>Process:</b> the PROCESS menu above the waveform runs Trevor Wishart’s CDP DISTORT waveset processes live (MULTIPLY, DIVIDE, HARMONIC, FRACTAL, REFORM, PITCH, QUIRK, AVERAGE, TELESCOPE, REPLACE, DELETE, OMIT, REVERSE, SHUFFLE, ENVEL); their settings are in the PROCESS panel. Group processes work inside each unit, so raise SIZE to give them wavecycles to group. ORDER reads the file in time, by waveset length or by waveset power. <b>Gesture loops:</b> each player loops what your hands do on it, in up to four layers (A–D) that play together. REC arms the selected layer; the take starts with your next move and ends when you press REC or PLAY. + adds a new layer and arms it while the other layers keep playing: give it its own LENGTH first, say MAIN ×2 for a position sweep twice as long as the notes in A. LENGTH decides what a layer plays: FREE plays the take as it is; a multiple or division of MAIN cuts the take to that length, or repeats it until it is filled. Each layer keeps its take, so its LENGTH can be changed at any time: shorter cuts, longer brings the cut part back or repeats it. MAIN is set by the first MAIN-length take, or type it in (÷2 and ×2 halve and double it), or let the tempo set it: SYNC makes MAIN a number of BARS of the signature at the BPM (type it or TAP it), CLICK ticks every beat (it is not recorded), free takes become whole beats and stay on the beat grid, and QUANT gives new takes a QUANTIZE of 1/4 … 1/32 notes (kept with the layer: change or remove it in ✎ EDIT); MAIN-length layers stay in time with it and with each other, and the lanes under the layer buttons show their lengths side by side. Notes and fingers of all layers sound together; a knob, a switch or the position follows the layer that recorded it last, so a new layer takes it over. Tap a layer to select it, tap it again to mute it: it keeps its place and comes back in time, and its controls go back to the layer below. While the layers play, REC overdubs into the selected one; a control you hold is yours. CLEAR empties the selected layer. <b>Fix a take:</b> ✎ EDIT opens the gesture editor on the selected layer, in every engine. Notes are bars (in SIMPLER SLICE the rows are slices, each drawn with its sound): drag one to move it in time, snapped to GRID, or up and down to another note or slice; drag its right end to change the length; drag its stem in VEL for how hard. POSITION shows where in the sample you played on the waveform, against the sample drawn top to bottom on the left: drag a point, or a whole jump or drag by its line, in time or to another part of the sample; it snaps to the sample's onsets (by transient, loudness, chroma, brightness, timbre or noisiness, as SLICE finds them), to zero crossings or to the loop's edges. Violet bars are extra fingers; THIN keeps the shape of long drags with fewer points. CONTROL shows a recorded knob or switch. Notes: tap one to select it and its tools appear beside it (DUPLICATE, LENGTH − +, ◀ ▶ ▲ ▼, DELETE); drag it to move it, drag the grips at either end to make it longer or shorter. Double-tap empty space to add a note and keep your finger down to drag out its length; with DRAW on, a single tap or drag on empty space draws one and a tap on a note removes it. New notes take the length and velocity of the last note you touched. DUPLICATE puts a copy right after the selection, so pressing it again builds a run. To work on several notes, hold your finger still on empty space for a moment and then drag a box around them (with a mouse just drag; ⇧-click adds or removes one); dragging, resizing, the velocity, the arrows, DUPLICATE and DELETE then act on all of them. With a keyboard: ⌫ deletes, ⌘D duplicates, ⌘A selects every note, ← → move, ⇧← ⇧→ shorter and longer, ↑ ↓ change the note, and ⌥-drag copies. Points on the waveform and in the control lane: double-tap to add or remove, the arrows move the selected one (◀ ▶ a grid step, 10 ms with GRID OFF; ▲ ▼ to the next onset or step). ▶ PLAY plays the loops while you edit. Zoom in time and in each lane (notes or slices, the position in the sample, the control): pinch with the fingers side by side to zoom time, one above the other to zoom the lane under them, and move them together to scroll; drag empty space to scroll; drag the ruler sideways to scroll and down to zoom in on the moment you hold; drag a lane's left edge up and down to scroll it, sideways to zoom it; ↔ − + zoom time around the selection, ↕ − + the lane you last touched (marked at its left edge). FIT frames the selection (or everything you played) in time and in every lane, and ALL shows the whole take again; double-tap the ruler or a lane's edge for the same on just that. Zoomed in, ◀ ▶ without GRID and ▲ ▼ between onsets or control values take finer steps, and an edit dragged to the edge scrolls the view. Drag between two lanes to give one more room (double-tap there to reset). On a trackpad: pinch or ⌘-scroll zooms time, ⌥-scroll zooms the lane, scrolling moves it. Each layer keeps its own view. QUANTIZE pulls the layer's notes and fingers (with + POSITION the jumps on the waveform too) to GRID by STRENGTH, with SWING; it keeps what you played, so it can be changed or turned off at any time, and whatever you moved by hand stays where you put it. Every change is one undo step, is saved with the session and is heard from the next cycle. LAT COMP (on unless you turn it off) puts new takes and overdubs where you heard them, moving them back by the output latency the browser reports; the button shows how much. <b>Undo:</b> ↶ and ↷ (or ⌘Z, ⇧⌘Z) step back and forward through changes to settings, samples, loop regions, gesture buffers, LENGTH, MAIN and mutes; a knob drag counts as one step. <b>Engine rate:</b> tap the audio pill at the top right (AUDIOWORKLET · 48.0 kHz) to choose the rate everything plays and records at: AUTO (your device’s own), 44.1, 48, 88.2 or 96 kHz. Higher rates leave less aliasing when you pitch up, drive or REDUCE, and take about twice the processing. Changing it restarts the sound for a moment with every sample, setting and loop kept; notes sounding at that moment stop. It is locked while a take is recording, and kept on this device. <b>Sound that keeps going:</b> there is no PLAY / STOP; the players sound from the keys, the FREE surface, the waveform and their loops. In the same AUDIO window, KEEP SCREEN ON stops the iPad locking by itself while CRGT is open, and PLAY WHEN LOCKED keeps the sound going if you lock it anyway, the way a music player does (CRGT shows on the lock screen); loops wait while it is locked and carry on in step when you unlock. If the iPad pauses the sound all the same (a call, another app, a long lock), the pill turns red and reads SOUND PAUSED: the next tap or key anywhere brings it back, with a fresh engine if the old one will not wake, keeping every sample, setting and loop. <b>Record:</b> REC captures the master (the mix you hear) as 24-bit WAV; with STEMS on it also records every player on its own track, sample-aligned with the master, and the takes sheet saves master and stems as separate files. Every joint between wavesets is spliced with a 1.5 ms crossfade from the sound's own continuation, and wavesets are cut from a DC-blocked copy of the file, so jumps, short units and fast scrubbing stay free of clicks. <b>Sessions:</b> everything is saved in this browser as you play and comes back when you reopen the page; SESSION saves named copies and exports them as .zip files with their samples.</p>
 </div>
 
 <div class="fwin" id="fw-lfo" hidden role="dialog" aria-labelledby="wl-h">
@@ -1037,6 +1055,14 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
 
 <div class="rate-pop" id="rate-pop" role="dialog" aria-label="Engine sample rate" hidden>
   <div class="ph"><h2>AUDIO</h2><span class="rp-now" id="sr-now"></span></div>
+  <div class="rp-l">CPU <span id="cpu-now"></span></div>
+  <div class="cpu-meter" id="cpu-meter" aria-hidden="true"><i id="cpu-bar"></i><b id="cpu-pk"></b></div>
+  <div class="cpu-list" id="cpu-list"></div>
+  <p class="desc" id="cpu-desc"></p>
+  <div class="rp-row"><button class="btn sm" id="aud-guard" type="button" aria-pressed="true">PROTECT</button><span class="rp-st" id="aud-guard-st"></span></div>
+  <div class="rp-l">LATENCY</div>
+  <div class="seg" id="seg-lat" role="group" aria-label="Audio latency"><button type="button" data-lat="low">LOW</button><button type="button" data-lat="mid">MEDIUM</button><button type="button" data-lat="safe">SAFE</button></div>
+  <p class="desc" id="lat-desc"></p>
   <div class="rp-l">ENGINE RATE</div>
   <div class="seg" id="seg-sr" role="group" aria-label="Engine sample rate"><button type="button" data-sr="0">AUTO</button><button type="button" data-sr="44100">44.1</button><button type="button" data-sr="48000">48</button><button type="button" data-sr="88200">88.2</button><button type="button" data-sr="96000">96</button></div>
   <p class="desc" id="sr-desc"></p>
@@ -1075,6 +1101,25 @@ class WsFFT{
     let lv=0; while((1<<lv)<n) lv++;
     this.rev=new Uint32Array(n);
     for(let i=0;i<n;i++){ let r=0,x=i; for(let b=0;b<lv;b++){ r=(r<<1)|(x&1); x>>=1; } this.rev[i]=r; }
+  }
+  // the same transform in parts, so a big one can be spread over several audio blocks: st.s=0 starts it; each call
+  // runs up to k steps (the bit reversal is one, then one per butterfly stage) and returns how many it ran;
+  // it is done when st.s > n
+  part(re,im,inv,st,k){
+    const n=this.n, rev=this.rev, C=this.c, S=this.s, sg=inv?1:-1; let r=0;
+    if(st.s===0){ for(let i=0;i<n;i++){ const j=rev[i]; if(j>i){ let t=re[i]; re[i]=re[j]; re[j]=t; t=im[i]; im[i]=im[j]; im[j]=t; } } st.s=2; r++; }
+    while(r<k && st.s<=n){
+      const size=st.s, half=size>>1, step=n/size;
+      for(let i=0;i<n;i+=size){
+        for(let j=0,q=0;j<half;j++,q+=step){
+          const a=i+j, b=a+half, c=C[q], s=sg*S[q];
+          const tr=re[b]*c-im[b]*s, ti=re[b]*s+im[b]*c;
+          re[b]=re[a]-tr; im[b]=im[a]-ti; re[a]+=tr; im[a]+=ti;
+        }
+      }
+      st.s<<=1; r++;
+    }
+    return r;
   }
   transform(re,im,inv){
     const n=this.n, rev=this.rev, C=this.c, S=this.s, sg=inv?1:-1;
@@ -1235,11 +1280,12 @@ class WsSmear{
   reset(){
     this.inL.fill(0); this.inR.fill(0); this.olaL.fill(0); this.olaR.fill(0); this.fbL.fill(0); this.fbR.fill(0); this.dL=0; this.dR=0;
     for(const c of this.ch){ c.prev.fill(0); c.oph.fill(0); c.fM.fill(0); c.fP.fill(0); c.held=false; }
-    this.hc=(Math.random()*this.H)|0;  // stagger FFT frames across voices so they don't all land in one block
+    this.hc=WsPV.stagger(this.H);  // stagger FFT frames across voices so they don't all land in one block
   }
   process(L,R,n,P,shift){
     const mask=this.mask, feed=P.smFeed, FM=this.FB-1, D=Math.max(16,Math.min(FM-256,Math.round((P.smFT||0.093)*this.sr)-this.N));
     const dm=P.smDmp||0, a=dm<0.001?1:1-Math.exp(-2*Math.PI*20000*Math.pow(300/20000,dm)/this.sr);
+    if(Math.abs(this.dL)<1e-20) this.dL=0; if(Math.abs(this.dR)<1e-20) this.dR=0;
     for(let i=0;i<n;i++){
       const fi=(this.fp-D)&FM;
       this.dL+=(this.fbL[fi]-this.dL)*a; this.dR+=(this.fbR[fi]-this.dR)*a;
@@ -1417,6 +1463,7 @@ class WsPsola{
     this.fm=Math.min(2,Math.max(0.5,P&&P.fmt||1)); this.ro=P?P.psoJit||0:0;
     const mask=this.mask, bL=this.bL, bR=this.bR, PM=this.PM, Pm=this.Pm, oL=this.oL, oR=this.oR, om=this.om;
     const ka=this.ka||(this.ka=1-Math.exp(-2*Math.PI*320/this.sr));
+    if(Math.abs(this.y4)<1e-20){ this.y1=this.y2=this.y3=this.y4=0; }
     for(let i=0;i<n;i++){
       const w=this.w; bL[w&mask]=L[i]; bR[w&mask]=R[i];
       this.y1+=(L[i]+R[i]-this.y1)*ka; this.y2+=(this.y1-this.y2)*ka; this.y3+=(this.y2-this.y3)*ka; this.y4+=(this.y3-this.y4)*ka;
@@ -1474,11 +1521,15 @@ class WsPsola{
 // lowest strong partial, BLUR averages the spectrum over time. HYBRID (after the noise-morphing method from Aalto University):
 // peaks that stand out are sines and keep locked phases; everything else is noise and gets new random phases, so
 // stretched noise stays noise instead of turning metallic. TONAL and NOISE set the level of each part.
-const PH0=q=>{ const TP=2*Math.PI; return q-TP*Math.floor(q/TP); };
 class WsPV{
   constructor(fft,sr,N,ov){
     this.N=N; this.ov=ov; this.H=N/ov; this.mask=N-1; this.fft=fft; this.sr=sr;
-    this.inL=new Float32Array(N); this.inR=new Float32Array(N); this.olaL=new Float32Array(N); this.olaR=new Float32Array(N);
+    // FRAMES SPREAD OVER TIME: a big frame (4096 points and up) is not done all at once in the audio block where it
+    // falls (one EXTREMESTRETCH frame takes longer than a whole block on an iPad) but in slices over the blocks up to
+    // the next frame, and its sound comes out one hop later. The output ring is twice as long to hold it.
+    this.pipe=N>=4096 && this.H>=512; const OL=this.pipe?2*N:N; this.omask=OL-1;
+    this.job=0; this.jop=0; this.fst={s:0}; this.jP=null; this.jS=1; this.jM='general'; this.lg=Math.round(Math.log2(N));
+    this.inL=new Float32Array(N); this.inR=new Float32Array(N); this.olaL=new Float32Array(OL); this.olaR=new Float32Array(OL);
     this.ip=0; this.op=0; this.hc=0; this.re=new Float64Array(N); this.im=new Float64Array(N);
     const B=N/2+1; this.B=B; this.pre=new Float64Array(B+1);
     this.ch=[];
@@ -1494,18 +1545,73 @@ class WsPV{
   reset(){
     this.inL.fill(0); this.inR.fill(0); this.olaL.fill(0); this.olaR.fill(0);
     for(const c of this.ch){ c.prev.fill(0); c.oph.fill(0); c.ms.fill(0); c.pm.fill(0); c.held=false; c.fe=0; c.fc=0; c.fr+=2; }
-    this.hc=(Math.random()*this.H)|0;   // stagger frames across voices
+    this.job=0; this.hc=WsPV.stagger(this.H);
   }
+  // where in its hop a new voice's frames fall: the golden-ratio sequence spreads voices evenly (no two voices
+  // started one after the other land in the same block), where random places often collide
+  static stagger(H){ WsPV.gq=((WsPV.gq||0)+0.6180339887)%1; return Math.floor(WsPV.gq*H); }
   rnd(){ let x=this.seed; x^=x<<13; x^=x>>>17; x^=x<<5; this.seed=x|0; return (x>>>0)/4294967296; }
   process(L,R,n,P,shift,mode){
-    const mask=this.mask, H=this.H;
+    const mask=this.mask, om=this.omask, H=this.H;
+    this.jP=P; this.jS=shift; this.jM=mode;
+    // a slice of the frame in hand; with few blocks per hop (or the big blocks of the fallback engine) all of it
+    if(this.job){ const K=H/n; this.work(K<3?1e9:Math.ceil((2*this.lg+26)/(K-2))); }
     for(let i=0;i<n;i++){
       this.inL[this.ip]=L[i]; this.inR[this.ip]=R[i]; this.ip=(this.ip+1)&mask;
-      L[i]=this.olaL[this.op]; R[i]=this.olaR[this.op]; this.olaL[this.op]=0; this.olaR[this.op]=0; this.op=(this.op+1)&mask;
-      if(++this.hc>=H){ this.hc=0; this.frame(P,shift,mode); }
+      L[i]=this.olaL[this.op]; R[i]=this.olaR[this.op]; this.olaL[this.op]=0; this.olaR[this.op]=0; this.op=(this.op+1)&om;
+      if(++this.hc>=H){ this.hc=0; this.start(); }
     }
   }
-  analyse(c,P,shift,mode){
+  // a new frame: the windowed input is taken now; the rest is done now (small frames) or over the next blocks
+  start(){
+    if(this.job) this.work(1e9);
+    const N=this.N, re=this.re, im=this.im, w=this.win, mask=this.mask;
+    for(let i=0;i<N;i++){ const k=(this.ip+i)&mask; re[i]=this.inL[k]*w[i]; im[i]=this.inR[k]*w[i]; }
+    this.jop=(this.op+(this.pipe?this.H:0))&this.omask; this.fst.s=0; this.job=1;
+    if(!this.pipe) this.work(1e9);
+  }
+  // up to q units of the frame in hand (an FFT stage is one unit, a channel's analysis 5 + 6)
+  work(q){
+    const N=this.N, H2=N>>1, re=this.re, im=this.im, mask=this.mask, A=this.ch[0], Bc=this.ch[1];
+    let u=0;
+    while(this.job && u<q){
+      const j=this.job;
+      if(j===1 || j===5){
+        u+=this.fft.part(re,im,j===5,this.fst,Math.max(1,Math.min(q-u,this.lg+1)));
+        if(this.fst.s>N){
+          if(j===1){
+            for(let k=0;k<=H2;k++){
+              const nk=(N-k)&mask, zr=re[k], zi=im[k], wr=re[nk], wi=im[nk];
+              A.xr[k]=(zr+wr)*0.5; A.xi[k]=(zi-wi)*0.5; Bc.xr[k]=(zi+wi)*0.5; Bc.xi[k]=(wr-zr)*0.5;
+            }
+            this.job=2;
+          } else this.job=6;
+        }
+      }
+      else if(j===2){ this.measure(A); this.job=21; u+=5; }
+      else if(j===21){ this.analyse2(A,this.jP,this.jS,this.jM); this.job=3; u+=6; }
+      else if(j===3){ this.measure(Bc); this.job=31; u+=5; }
+      else if(j===31){ this.analyse2(Bc,this.jP,this.jS,this.jM); this.job=4; u+=6; }
+      else if(j===4){
+        for(let k=0;k<=H2;k++){
+          const xr=A.xr[k], xi=A.xi[k], yr=Bc.xr[k], yi=Bc.xi[k];
+          re[k]=xr-yi; im[k]=xi+yr;
+          if(k>0 && k<H2){ re[N-k]=xr+yi; im[N-k]=yr-xi; }
+        }
+        this.fst.s=0; this.job=5; u+=1;
+      }
+      else {
+        // Hann analysis x Hann synthesis overlap-adds to 0.375 x overlap; random phases add in power instead
+        const ola=this.ov*0.375, sc=1/(N*(this.jM==='extreme'?Math.sqrt(ola)*0.62:ola)), w=this.win, om=this.omask, o0=this.jop;
+        for(let i=0;i<N;i++){ const k=(o0+i)&om, g=w[i]*sc; this.olaL[k]+=re[i]*g; this.olaR[k]+=im[i]*g; }
+        this.job=0; u+=1;
+      }
+    }
+  }
+  // a channel's analysis, in two halves that can fall in different blocks: first each bin's magnitude, phase and
+  // true frequency (and the spectral flux that finds transients), then all the rest
+  analyse(c,P,shift,mode){ this.measure(c); this.analyse2(c,P,shift,mode); }
+  measure(c){
     const B=this.B, TP=2*Math.PI, om=TP*this.H/this.N, xr=c.xr, xi=c.xi, mag=c.mag, frq=c.frq, prev=c.prev;
     let fl=0, sm=1e-9;
     for(let k=0;k<B;k++){
@@ -1516,6 +1622,10 @@ class WsPV{
       let d=ph-prev[k]-k*om; prev[k]=ph; d-=TP*Math.round(d/TP); frq[k]=k*om+d;
       const df=m-c.pm[k]; if(df>0) fl+=df; sm+=m; c.pm[k]=m;
     }
+    c.fl=fl; c.sm=sm;
+  }
+  analyse2(c,P,shift,mode){
+    const B=this.B, TP=2*Math.PI, om=TP*this.H/this.N, xr=c.xr, xi=c.xi, mag=c.mag, frq=c.frq, prev=c.prev, fl=c.fl, sm=c.sm;
     // a transient frame (SENS sets how sudden it must be): phases restart from the input's (TRANSIENTS; AUTO = CRISP
     // in GENERAL and HYBRID, SMOOTH in the others)
     const tr=P.tsTr==='crisp'||P.tsTr==='mixed'||P.tsTr==='smooth'?P.tsTr:(mode==='general'||mode==='hybrid'?'crisp':'smooth');
@@ -1565,7 +1675,7 @@ class WsPV{
       for(let k=0;k<B;k++){
         const o=Math.round(k*shift); if(o>=B) break;
         const m=M[k]*gainAt(k,o); if(m===0) continue;
-        let t; if(on){ let q=PH0(prev[k]); t=q*TK; } else t=this.rnd()*4096;
+        let t; if(on){ const q=prev[k]-TP*Math.floor(prev[k]/TP); t=q*TK; } else t=this.rnd()*4096;
         const ti=t|0, ci=(ti+1024)&4095;
         xr[o]+=m*sinT[ci]; xi[o]+=m*sinT[ti];
       }
@@ -1634,7 +1744,7 @@ class WsPV{
         if(prism){ let src=-1; if(ipf[k]===fr-1) src=k; else if(ipf[k-1]===fr-1) src=k-1; else if(k+1<B && ipf[k+1]===fr-1) src=k+1; else if(k>1 && ipf[k-2]===fr-1) src=k-2; else if(k+2<B && ipf[k+2]===fr-1) src=k+2;
           th=(src>=0?iph[src]:PH[k])+ft*om; }
         else th=(reset && k>=kRes)?PH[k]:oph[ko]+frq[k]*shift;
-        if(dv){ const v=dv[ko]=dv[ko]*0.85+(this.rnd()-0.5)*drift; th+=v; }
+        if(dv){ const v=dv[ko]=dv[ko]*0.85+(this.rnd()-0.5)*1.6*drift; th+=v; }
         th-=TP*Math.floor(th/TP); nph[i]=th;
         // the octave copies run phase accumulators of their own, at half and twice the partial's frequency
         let kD=-1, kU=-1, thD=0, thU=0;
@@ -1665,23 +1775,8 @@ class WsPV{
     xi[0]=0; xi[B-1]=0;
   }
   frame(P,shift,mode){
-    const N=this.N, H2=N>>1, re=this.re, im=this.im, w=this.win, mask=this.mask, A=this.ch[0], Bc=this.ch[1];
-    for(let i=0;i<N;i++){ const k=(this.ip+i)&mask; re[i]=this.inL[k]*w[i]; im[i]=this.inR[k]*w[i]; }
-    this.fft.transform(re,im,false);
-    for(let k=0;k<=H2;k++){
-      const nk=(N-k)&mask, zr=re[k], zi=im[k], wr=re[nk], wi=im[nk];
-      A.xr[k]=(zr+wr)*0.5; A.xi[k]=(zi-wi)*0.5; Bc.xr[k]=(zi+wi)*0.5; Bc.xi[k]=(wr-zr)*0.5;
-    }
-    this.analyse(A,P,shift,mode); this.analyse(Bc,P,shift,mode);
-    for(let k=0;k<=H2;k++){
-      const xr=A.xr[k], xi=A.xi[k], yr=Bc.xr[k], yi=Bc.xi[k];
-      re[k]=xr-yi; im[k]=xi+yr;
-      if(k>0 && k<H2){ re[N-k]=xr+yi; im[N-k]=yr-xi; }
-    }
-    this.fft.transform(re,im,true);
-    // Hann analysis x Hann synthesis overlap-adds to 0.375 x overlap; random phases add in power instead
-    const ola=this.ov*0.375, sc=1/(N*(mode==='extreme'?Math.sqrt(ola)*0.62:ola));
-    for(let i=0;i<N;i++){ const k=(this.op+i)&mask, g=w[i]*sc; this.olaL[k]+=re[i]*g; this.olaR[k]+=im[i]*g; }
+    this.jP=P; this.jS=shift; this.jM=mode;
+    const p=this.pipe; this.pipe=false; this.start(); this.pipe=p;
   }
 }
 
@@ -1766,7 +1861,7 @@ class WsBeats{
           const f=p-ip, i0=ip&mask, i1=(ip+1)&mask, g=r.g*r.e;
           oL+=(bL[i0]+(bL[i1]-bL[i0])*f)*g; oR+=(bR[i0]+(bR[i1]-bR[i0])*f)*g;
         }
-        r.p=p+r.d*ratio; r.e*=ek;
+        r.p=p+r.d*ratio; r.e*=ek; if(r.e<1e-7) r.e=0;
         if(r.gs){ r.g+=r.gs; if(r.g>=1){ r.g=1; r.gs=0; } else if(r.g<=0){ r.g=0; r.on=0; if(j===this.cur) this.cur=-1; } }
         // a reader that fell 0.6 s behind (sped-up material with no new segment), or a loop held so long that the
         // ring would overwrite it, fades out
@@ -1793,6 +1888,9 @@ class WsTexture{
   }
   reset(){ this.act.fill(0); this.t0=this.T; this.next=0; this.lastF=-1; this.lastR=-1; this.rho=0.5; }
   rnd(){ let x=this.seed; x^=x<<13; x^=x>>>17; x^=x<<5; this.seed=x|0; return (x>>>0)/4294967296; }
+  u(p){ const i=Math.floor(p); return i<this.t0?0:this.bL[i&this.mask]+this.bR[i&this.mask]; }
+  // how well a grain starting at s0 matches the grain it overlaps (read from c), as a normalised correlation
+  score(s0,c,ix,iy,Jn){ let xy=0, yy=1e-9; for(let j=0;j<Jn;j++){ const v=this.u(s0+j*ix); xy+=v*this.u(c+j*iy); yy+=v*v; } return xy/Math.sqrt(yy); }
   spawn(r,P){
     const sr=this.sr, W=Math.max(0.005,Math.min(0.4,P.txSize))*sr, fx=P.txFlux, ovl=(P.txDens||4)*(1+fx);
     const len=Math.max(32,W*(1+0.9*fx*(this.rnd()*2-1)));
@@ -1810,17 +1908,15 @@ class WsTexture{
     if(S>=8 && y>=0 && this.act[y] && this.inc[y]*sg>0){
       const Jn=Math.min(48,Math.floor(Math.min(len,this.len[y]-this.age[y])/8));
       if(Jn>=4){
-        const bL=this.bL, bR=this.bR, m=this.mask, c=this.pos[y], iy=this.inc[y]*8, ix=sg*inc*8, t0=this.t0;
-        const u=p=>{ const i=Math.floor(p); return i<t0?0:bL[i&m]+bR[i&m]; };
-        const score=s0=>{ let xy=0, yy=1e-9; for(let j=0;j<Jn;j++){ const v=u(s0+j*ix); xy+=v*u(c+j*iy); yy+=v*v; } return xy/Math.sqrt(yy); };
+        const c=this.pos[y], iy=this.inc[y]*8, ix=sg*inc*8;
         const lo=a-2*S, top=Math.min(hi,a+S); let best=a, bv=-Infinity;
-        for(let s0=lo;s0<=top;s0+=8){ const v=score(s0); if(v>bv){ bv=v; best=s0; } }
-        const b0=best; for(let s0=b0-7;s0<=b0+7;s0++){ if(s0===b0 || s0<lo || s0>top) continue; const v=score(s0); if(v>bv){ bv=v; best=s0; } }
+        for(let s0=lo;s0<=top;s0+=8){ const v=this.score(s0,c,ix,iy,Jn); if(v>bv){ bv=v; best=s0; } }
+        const b0=best; for(let s0=b0-7;s0<=b0+7;s0++){ if(s0===b0 || s0<lo || s0>top) continue; const v=this.score(s0,c,ix,iy,Jn); if(v>bv){ bv=v; best=s0; } }
         a=best;
         // how alike the two overlapping grains are decides how they add up: the normalised correlation of the best
         // match, less what the best of this many tries reaches on noise (~0.4, with a margin), and nothing once
         // their pitches differ by 20 cents or more (they drift apart within the grain)
-        let xx=1e-9; for(let j=0;j<Jn;j++){ const v=u(c+j*iy); xx+=v*v; }
+        let xx=1e-9; for(let j=0;j<Jn;j++){ const v=this.u(c+j*iy); xx+=v*v; }
         rho=Math.max(0,Math.min(1,(bv/Math.sqrt(xx)-0.5)/0.5))*Math.max(0,1-Math.abs(ct-this.ct[y])/20);
       }
     }
@@ -2604,6 +2700,7 @@ class SpFilt{
     // FILTER OFF / ON fades over 20 ms, so switching it while notes sound does not click
     const want=P.spFlt==='off'?0:1, w0=this.w, w1=want?Math.min(1,w0+n/(0.02*sr)):Math.max(0,w0-n/(0.02*sr)); this.w=w1;
     if(w0<=0 && w1<=0){ this.s.fill(0); this.fc=0; return; }
+    { const st=this.s; for(let i=0;i<8;i++){ const v=st[i]; if(v<1e-20 && v>-1e-20) st[i]=0; } }   // no denormals in the states
     if(P.spFlt!=='off') this.last=P.spFlt;
     const mode=this.last, fade=w0<1 || w1<1;
     if(!this.fc) this.fc=fc;
@@ -3167,6 +3264,11 @@ class WsEngine{
     if(!drone) this.lastRatio=ratio;
     this.focus=v;
   }
+  // after an error or a NaN: every voice stops at once and every processor, filter and effect starts clean
+  hardReset(){
+    for(const v of this.voices){ v.state=0; v.env=0; v.ps=v.gr=v.sm=v.ws=v.pso=v.bt=v.tx=null; v.pvs={}; v.vf=new SpFilt(); v.cfg=null; v.cfgOld=null; v.tsX=0; }
+    this.fx=new GrFx(this.sr); this.fxTail=0; this.tdOn=false; this.early=[];
+  }
   noteOff(id){
     this.early=this.early.filter(e=>e[0]!==id);
     const P=this.P, i=this.mono.findIndex(m=>m.id===id);
@@ -3201,7 +3303,7 @@ class WsEngine{
   process(oL,oR,n){
     this.frames+=n;
     // TOUCH PLAY comes back 120 ms after the last key note is let go, while the finger stays on the waveform
-    if(this.tdOn && this.voices.length && !this.early.length && !this.voices.some(v=>v.id==='drone' && v.state===1)) this.tdOn=false;
+    if(this.tdOn && this.voices.length && !this.early.length){ let d=false; for(const v of this.voices) if(v.id==='drone' && v.state===1){ d=true; break; } if(!d) this.tdOn=false; }
     if(this.touch && this.tPlay && !this.tdOn && !this.tdBlock){
       if(this.keysHeld()) this.tdWait=0; else if((this.tdWait+=n)>=0.12*this.sr){ this.tdWait=0; this.tdStart(); }
     }
@@ -3296,11 +3398,19 @@ class WsHost{
   constructor(sr,N){
     N=N||8; this.N=N;
     this.sr=sr; this.post=null; this.E=[]; this.g=new Array(N).fill(1); this.gt=new Array(N).fill(1);
+    // the players' state reports go to the page together, at most every 12 ms (one message, not one per player)
+    this.q=[]; this.qf=0;
     for(let i=0;i<N;i++){
       const e=new WsEngine(sr); e.inst=i; e.focused=i===0;
-      e.post=(m,t)=>{ m.inst=i; if(this.post) this.post(m,t); };
+      e.post=(m,t)=>{ m.inst=i; if(m.type==='st' && !t) this.q.push(m); else if(this.post) this.post(m,t); };
       this.E.push(e);
     }
+    // CPU: how long each block takes against its deadline (n / rate), for the engine and for each player, reported
+    // four times a second. GUARD: when the engine is over 85% busy, notes that are only fading out (their RELEASE)
+    // are faded in 15 ms, which frees the time they take.
+    const pf=typeof performance!=='undefined' && performance && typeof performance.now==='function';
+    this.now=pf?()=>performance.now():()=>Date.now(); this.hiRes=pf;
+    this.ld={t:0,b:0,pk:0,ov:0,pp:new Float64Array(N),last:0,cut:0}; this.guard=true;
     this.L=new Float32Array(128); this.R=new Float32Array(128);
     // recorder: the master (what you hear) and, with stems on, each player after its mute, before the bus clip
     this.rec=false; this.rl=null; this.rr=null; this.rn=0; this.stems=false;
@@ -3319,6 +3429,7 @@ class WsHost{
     }
     else if(m.type==='focus'){ for(let i=0;i<this.N;i++) this.E[i].focused=i===m.inst; }
     else if(m.type==='mute') this.gt[m.inst]=m.on?0:1;
+    else if(m.type==='guard') this.guard=!!m.on;
     else if(m.type==='panic'){ for(const e of this.E) e.handle({type:'alloff'}); }
     else if(m.type==='main'){
       for(const e of this.E) e.handle(m);
@@ -3329,6 +3440,7 @@ class WsHost{
     else { const e=this.E[m.inst|0]; if(e) e.handle(m); }
   }
   process(oL,oR,n){
+    const t0=this.now(), ld=this.ld;
     if(this.L.length<n){ this.L=new Float32Array(n); this.R=new Float32Array(n); }
     oL.fill(0,0,n); oR.fill(0,0,n);
     const L=this.L, R=this.R, rec=this.rec && n<=8192;
@@ -3336,7 +3448,12 @@ class WsHost{
     const o=this.rn, st=rec && this.stems;
     const c=1-Math.exp(-1/(0.008*this.sr));   // mute fades over ~25 ms
     for(let i=0;i<this.N;i++){
-      this.E[i].process(L,R,n);
+      const e=this.E[i], tp=this.now();
+      try{ e.process(L,R,n); }catch(err){ L.fill(0,0,n); R.fill(0,0,n); e.hardReset(); this.err(i,err); }
+      ld.pp[i]+=this.now()-tp;
+      // NaN or Infinity would stay in the filters and effects for good: that player starts clean instead
+      let q=0; for(let j=0;j<n;j+=8) q+=L[j]+R[j];
+      if(q!==q || q===Infinity || q===-Infinity){ L.fill(0,0,n); R.fill(0,0,n); e.hardReset(); this.err(i,new Error('the sound went out of range (NaN); the player was reset')); }
       let g=this.g[i]; const gt=this.gt[i];
       if(g===0 && gt===0) continue;
       const sl=st?this.sL[i]:null, sr=st?this.sR[i]:null; let mx=0;
@@ -3366,7 +3483,24 @@ class WsHost{
       this.cA=a; this.cPh=ph; this.cW=w;
     } else this.cA=0;
     this.fr+=n;
+    if(this.q.length && this.fr-this.qf>=0.012*this.sr){ if(this.post) this.post({type:'batch',list:this.q}); this.q=[]; this.qf=this.fr; }
+    const dt=this.now()-t0, bud=n/this.sr*1000;
+    // with a millisecond clock a block can read up to 1 ms long: late only when it clearly is
+    ld.t+=dt; ld.b+=bud; if(dt/bud>ld.pk) ld.pk=dt/bud; if(dt>bud+(this.hiRes?0:1)) ld.ov++;
+    if(this.fr-ld.last>=0.25*this.sr) this.loadReport();
   }
+  loadReport(){
+    const ld=this.ld, avg=ld.b>0?ld.t/ld.b:0, per=[], vc=[];
+    for(let i=0;i<this.N;i++){ per.push(ld.b>0?ld.pp[i]/ld.b:0); ld.pp[i]=0; let c=0; for(const v of this.E[i].voices) if(v.state) c++; vc.push(c); }
+    let cut=0;
+    if(this.guard && avg>0.85) for(const e of this.E) for(const v of e.voices) if(v.state===2 && v.relK>0.995){ v.release(true); cut++; }
+    ld.cut+=cut;
+    if(this.post) this.post({type:'load',avg,peak:ld.pk,over:ld.ov,per,vc,cut,hi:this.hiRes,sr:this.sr});
+    ld.t=0; ld.b=0; ld.pk=0; ld.ov=0; ld.last=this.fr;
+  }
+  // an error in one player: reported to the page (at most every 2 s per player)
+  err(i,e){ const t=this.fr/this.sr; this.et=this.et||[]; if(t-(this.et[i]===undefined?-9:this.et[i])<2) return; this.et[i]=t;
+    if(this.post) this.post({type:'engerr',inst:i,msg:String(e&&e.message||e),ts:this.E[i].P.ts,eng:this.E[i].P.eng}); }
   // posts up to 8192 frames: the master, and each stem that was not silent in them (silent ones go as null)
   flushRec(final){
     const l=this.rl, r=this.rr, n=this.rn, tr=[l.buffer,r.buffer]; let stems=null;
@@ -3747,13 +3881,26 @@ class WsProc extends AudioWorkletProcessor{
   process(ins,outs){
     const o=outs[0]; if(!o||!o.length) return true;
     const n=o[0].length;
-    if(o.length>1) this.e.process(o[0],o[1],n);
-    else { if(!this.z||this.z.length<n) this.z=new Float32Array(n); this.e.process(o[0],this.z,n); }
+    try{
+      if(o.length>1) this.e.process(o[0],o[1],n);
+      else { if(!this.z||this.z.length<n) this.z=new Float32Array(n); this.e.process(o[0],this.z,n); }
+    }catch(err){
+      // never let an error stop the processor for good: this block is silent and the page is told
+      for(const c of o) c.fill(0);
+      const t=currentTime; if(!(t-(this.et||-9)<2)){ this.et=t; this.port.postMessage({type:'engerr',inst:-1,msg:String(err&&err.message||err)}); }
+    }
     return true;
   }
 }
 registerProcessor('waveset-engine', WsProc);`;
-const DSP_SRC=[WsFFT,WsPShift,WsGrains,WsSmear,WsWsola,WsPsola,WsPV,WsLane,WsHead,GrWin,GrCloud,GrFx,SpFilt,SpVoice,WsVoice,WsEngine,WsHost].map(c=>c.toString()).join('\n\n')+'\n'+PROC_SRC;
+// The audio thread runs the whole DSP section of this script, taken from its own text, so nothing defined there
+// can be left out. (Only if the text cannot be read, the classes are listed.)
+const DSP_PART=(()=>{
+  try{ const t=document.currentScript && document.currentScript.textContent || '', a=t.indexOf('// ==DSP=='), b=t.indexOf('// ==/DSP==');
+    if(a>=0 && b>a && t.indexOf('class WsHost',a)>0 && t.indexOf('class WsHost',a)<b) return t.slice(a,b); }catch(e){}
+  return [WsFFT,WsPShift,WsGrains,WsSmear,WsWsola,WsPsola,WsPV,WsBeats,WsTexture,WsLane,WsHead,GrWin,GrCloud,GrFx,SpFilt,SpVoice,WsVoice,WsEngine,WsHost].map(c=>c.toString()).join('\n\n');
+})();
+const DSP_SRC=DSP_PART+'\n'+PROC_SRC;
 
 // ==UI==
 (function(){
@@ -4186,7 +4333,7 @@ function sendTo(i,m){ m.inst=i; post(m); }
 function send(m){ sendTo(cur,m); }
 // Engine state arrives ~60 times a second per sounding player. The playhead is drawn from the report that
 // matches what is coming out of the speaker now, i.e. delayed by the output latency.
-function outLatMs(){ if(!ctx) return 0; return ((ctx.outputLatency||0)+(ctx.baseLatency||0))*1000+(engine?2048/ctx.sampleRate*1000:0); }
+function outLatMs(){ if(!ctx) return 0; return ((ctx.outputLatency||0)+(ctx.baseLatency||0))*1000+(engine&&node?(node.bufferSize||2048)/ctx.sampleRate*1000:0); }
 function shownSt(J){
   const h=J.stHist; if(!h.length) return J.st;
   const target=performance.now()-outLatMs();
@@ -4194,6 +4341,9 @@ function shownSt(J){
   return h[0].m;
 }
 function onEngine(m){
+  if(m.type==='batch'){ for(const x of m.list) onEngine(x); return; }
+  if(m.type==='load'){ onLoad(m); return; }
+  if(m.type==='engerr'){ onEngErr(m); return; }
   if(m.type==='rec'){ onRecChunk(m); return; }
   const J=inst[m.inst|0]; if(!J) return;
   if(m.type==='st'){ J.st=m; J.stHist.push({t:performance.now(),m}); if(J.stHist.length>48) J.stHist.shift(); if(J===I) dirty=true; }
@@ -4404,8 +4554,9 @@ function applyParams(p){
 // ENGINE RATE: the rate everything plays and records at; AUTO is the device's own. Kept on this device.
 const SR_LIST=[0,44100,48000,88200,96000];
 let srWant=0, srRefused=0, srBusy=false, engHow='';
-const AUD={wake:true,bg:true};
-try{ const s=JSON.parse(localStorage.getItem('wavesetPlayer.aud')||'{}'); if(typeof s.wake==='boolean') AUD.wake=s.wake; if(typeof s.bg==='boolean') AUD.bg=s.bg; }catch(e){}
+const AUD={wake:true,bg:true,lat:'low',guard:true};
+try{ const s=JSON.parse(localStorage.getItem('wavesetPlayer.aud')||'{}'); if(typeof s.wake==='boolean') AUD.wake=s.wake; if(typeof s.bg==='boolean') AUD.bg=s.bg;
+  if(['low','mid','safe'].includes(s.lat)) AUD.lat=s.lat; if(typeof s.guard==='boolean') AUD.guard=s.guard; }catch(e){}
 const audSave=()=>{ try{ localStorage.setItem('wavesetPlayer.aud',JSON.stringify(AUD)); }catch(e){} };
 let audioBroken=false, ctWatch=-1, ctWatchAt=0, wakeLock=null, wakeBusy=false, bgEl=null;
 try{ const v=+localStorage.getItem('wavesetPlayer.sr'); if(SR_LIST.includes(v)) srWant=v; }catch(e){}
@@ -4422,8 +4573,9 @@ function createCtx(){
   try{ if(navigator.audioSession) navigator.audioSession.type='playback'; }catch(e){}
   const AC=window.AudioContext||window.webkitAudioContext;
   if(!AC) throw new Error('This browser has no Web Audio support.');
-  const opt={latencyHint:'interactive'}; if(srWant) opt.sampleRate=srWant;
-  try{ ctx=new AC(opt); }catch(e){ srRefused=srWant; try{ ctx=new AC({latencyHint:'interactive'}); }catch(e2){ ctx=new AC(); } }
+  // LATENCY: LOW asks for the shortest buffer, MEDIUM and SAFE for longer ones that ride out busy moments
+  const lh={low:'interactive',mid:'balanced',safe:'playback'}[AUD.lat]||'interactive', opt={latencyHint:lh}; if(srWant) opt.sampleRate=srWant;
+  try{ ctx=new AC(opt); }catch(e){ srRefused=srWant; try{ ctx=new AC({latencyHint:lh}); }catch(e2){ ctx=new AC(); } }
   if(srWant && ctx.sampleRate!==srWant) srRefused=srWant;
   return ctx;
 }
@@ -4438,11 +4590,14 @@ function setupNode(){
       await ctx.audioWorklet.addModule(url);
       node=new AudioWorkletNode(ctx,'waveset-engine',{numberOfInputs:0,numberOfOutputs:1,outputChannelCount:[2]});
       node.port.onmessage=e=>onEngine(e.data);
+      // the audio thread stopped for good (it should not, as every block is guarded): the next tap restarts it
+      node.onprocessorerror=()=>{ audioBroken=true; renderAudioState(); msg('The sound engine stopped. Tap anywhere to start it again.',6000); };
     }catch(err){
       console.warn('AudioWorklet unavailable, using ScriptProcessor:',err&&err.message||err);
       how='ScriptProcessor';
       engine=new WsHost(ctx.sampleRate); engine.post=onEngine;
-      node=ctx.createScriptProcessor(2048,1,2);
+      // no audio thread here: the engine runs on the page's thread, in bigger blocks the higher LATENCY is set
+      node=ctx.createScriptProcessor(AUD.lat==='safe'?8192:AUD.lat==='mid'?4096:2048,1,2);
       node.onaudioprocess=e=>{ const b=e.outputBuffer; engine.process(b.getChannelData(0),b.getChannelData(1),b.length); };
     }
     node.connect(ctx.destination);
@@ -4454,8 +4609,8 @@ function setupNode(){
       if(J.sample) sendSample(J);
       if(J.mute) post({type:'mute',inst:J.i,on:true});
     }
-    post({type:'focus',inst:cur});
-    engHow=how; renderRatePill();
+    post({type:'focus',inst:cur}); post({type:'guard',on:AUD.guard});
+    engHow=how; CPU.at=performance.now(); renderRatePill();
   })();
   return setupP;
 }
@@ -4467,7 +4622,7 @@ function renderRatePop(){
     $('#aud-wake').setAttribute('aria-pressed',String(AUD.wake)); $('#aud-bg').setAttribute('aria-pressed',String(AUD.bg));
     $('#aud-wake-st').textContent=!('wakeLock' in navigator)?'not offered by this browser':!AUD.wake?'off':wakeLock?'on: the screen stays on':'on once the sound starts';
     $('#aud-bg-st').textContent=!AUD.bg?'off':bgEl&&!bgEl.paused?'on':'on once the sound starts'; }
-  $('#sr-now').textContent=ctx?'NOW '+fKHz(ctx.sampleRate)+' kHz':'AUDIO OFF';
+  $('#sr-now').textContent=ctx?'NOW '+fKHz(ctx.sampleRate)+' kHz':'AUDIO OFF'; renderCpuPop();
   const dev=ctx&&!srWant?' (your device’s own)':'';
   $('#sr-desc').textContent=(rec?'Stop the recording to change the rate: a take keeps one rate. ':'')
     +(srRefused&&ctx&&ctx.sampleRate!==srRefused?`This browser would not run at ${fKHz(srRefused)} kHz, so it runs at ${fKHz(ctx.sampleRate)} kHz${dev}. `:ctx?`Running at ${fKHz(ctx.sampleRate)} kHz${dev}. `:srWant?`Audio will start at ${fKHz(srWant)} kHz. `:'Audio will start at your device’s own rate. ')
@@ -4476,7 +4631,7 @@ function renderRatePop(){
 function placeRatePop(){ const r=rateBtn.getBoundingClientRect(), w=ratePop.offsetWidth, vw=document.documentElement.clientWidth; ratePop.style.left=Math.max(8,Math.min(vw-w-8,r.right-w))+'px'; ratePop.style.top=Math.round(r.bottom+8)+'px'; }
 function openRatePop(on){ ratePop.hidden=!on; rateBtn.setAttribute('aria-expanded',String(on)); if(on){ renderRatePop(); placeRatePop(); } }
 rateBtn.addEventListener('click',()=>openRatePop(ratePop.hidden));
-document.addEventListener('pointerdown',e=>{ if(!ratePop.hidden && !ratePop.contains(e.target) && !rateBtn.contains(e.target)) openRatePop(false); },true);
+document.addEventListener('pointerdown',e=>{ if(!ratePop.hidden && !ratePop.contains(e.target) && !rateBtn.contains(e.target) && !cpuBtn.contains(e.target)) openRatePop(false); },true);
 document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !ratePop.hidden) openRatePop(false); });
 window.addEventListener('resize',()=>{ if(!ratePop.hidden) placeRatePop(); });
 segSr.addEventListener('click',e=>{ const b=e.target.closest('button[data-sr]'); if(b) setEngineRate(+b.dataset.sr); });
@@ -4549,9 +4704,61 @@ function audioHeal(){
 setInterval(()=>{
   if(document.hidden || !ctx || !nodeReady || srBusy){ ctWatch=-1; return; }
   const t=ctx.currentTime, now=performance.now();
-  if(ctx.state==='running'){ if(t!==ctWatch){ ctWatch=t; ctWatchAt=now; } else if(now-ctWatchAt>1500) audioBroken=true; }
+  if(ctx.state==='running'){ if(t!==ctWatch){ ctWatch=t; ctWatchAt=now; } else if(now-ctWatchAt>1500) audioBroken=true;
+    if(CPU.at && now-CPU.at>2500 && !audioBroken){ audioBroken=true; msg('The sound engine stopped answering. Tap anywhere to start it again.',6000); } }
   renderAudioState();
 },700);
+// ---------- CPU: how busy the sound engine is ----------
+// The engine times every block of sound against the time it is allowed (the block's length) and reports four times a
+// second: the average, the busiest block, how many blocks ran late (each may be heard as a click) and each player's
+// share. The pill shows the average; amber from 70%, red from 90% or when blocks ran late in the last 5 s.
+const CPU={avg:0,sm:0,peak:0,per:[],vc:[],late:[],cut:0,hi:true,at:0};
+const cpuBtn=$('#cpu');
+function onLoad(m){
+  const now=performance.now(); CPU.at=now; CPU.avg=m.avg; CPU.sm=CPU.sm?CPU.sm*0.6+m.avg*0.4:m.avg; CPU.peak=m.peak; CPU.per=m.per||[]; CPU.vc=m.vc||[]; CPU.hi=m.hi!==false;
+  if(m.over>0) CPU.late.push([now,m.over]); while(CPU.late.length && now-CPU.late[0][0]>60000) CPU.late.shift();
+  if(m.cut) CPU.cut+=m.cut;
+  renderCpu();
+}
+function cpuLate(ms){ const now=performance.now(); let n=0; for(const [t,c] of CPU.late) if(now-t<=ms) n+=c; return n; }
+function renderCpu(){
+  const a=Math.round(CPU.sm*100), late=cpuLate(5000)>0, bad=CPU.sm>0.9 || late;
+  cpuBtn.textContent='CPU '+(nodeReady?a+'%':'—'); cpuBtn.classList.toggle('bad',bad); cpuBtn.classList.toggle('warn',!bad && CPU.sm>0.7);
+  cpuBtn.title='Sound engine: '+a+'% busy'+(late?', blocks ran late in the last 5 s':'');
+  if(!ratePop.hidden) renderCpuPop();
+}
+const TS_NAME=v=>{ const o=document.querySelector('#sel-ts option[value="'+v+'"]'); return o?o.textContent:v; };
+function renderCpuPop(){
+  const pc=v=>Math.round(v*100)+'%', a=CPU.avg, pk=CPU.peak, l1=cpuLate(60000);
+  $('#cpu-now').textContent=nodeReady?' · '+pc(a)+' now, busiest block '+pc(pk):'';
+  const bar=$('#cpu-bar'); bar.style.width=Math.min(100,a*100)+'%'; bar.classList.toggle('hot',a>0.9); $('#cpu-pk').style.left='calc('+Math.min(100,pk*100)+'% - 2px)';
+  // the players that take time, busiest first
+  const rows=[]; CPU.per.forEach((v,i)=>{ if(v>0.004 || CPU.vc[i]>0) rows.push([v,i]); }); rows.sort((x,y)=>y[0]-x[0]);
+  $('#cpu-list').innerHTML=rows.slice(0,8).map(([v,i])=>{ const J=inst[i], P=J.P, eng={ws:'WAVESET',gr:'GRANULAR',sp:'SIMPLER'}[P.eng]||'', ts=P.ts==='off'?'':' · '+TS_NAME(P.ts)+(TS_Q.includes(P.ts)?' '+String(P.tsQ).toUpperCase():'');
+    return `<div class="cpu-row"><span>${pnumI(i)}</span><span class="cb"><i style="width:${Math.min(100,v*100/Math.max(0.01,a)*Math.min(1,a))}%"></i></span><b>${pc(v)}</b><span class="cn">${CPU.vc[i]||0} voice${CPU.vc[i]===1?'':'s'} · ${eng}${ts}</span></div>`; }).join('');
+  const main=engHow==='ScriptProcessor';
+  $('#cpu-desc').textContent=(!nodeReady?'The meter starts with the sound. ':'')
+    +`How much of each block’s time the engine needs; over 100% a block is late (a click or a gap). ${l1?l1+' late in the last minute.':'None late in the last minute.'} `
+    +(main?'Here the engine shares the page’s thread, so busy moments on screen can break the sound: try LATENCY SAFE. ':'')
+    +'Long-window modes at BETTER or BEST cost the most, with many notes and long releases.'+(CPU.hi?'':' Timed to the millisecond here: estimates.');
+  $('#aud-guard').setAttribute('aria-pressed',String(AUD.guard));
+  $('#aud-guard-st').textContent=AUD.guard?(CPU.cut?'on · faded '+CPU.cut+' releasing note'+(CPU.cut===1?'':'s')+' so far':'on: when the engine is over 85% busy, notes that are only fading out (their RELEASE) end in 15 ms'):'off';
+  $('#seg-lat').querySelectorAll('button').forEach(b=>{ b.setAttribute('aria-pressed',String(b.dataset.lat===AUD.lat)); b.disabled=srBusy; });
+  const ol=ctx?Math.round(((ctx.outputLatency||0)+(ctx.baseLatency||0))*1000):0;
+  $('#lat-desc').textContent=`LOW answers the keys fastest; MEDIUM and SAFE give the device a longer buffer, so a busy moment does not break the sound, and the keys answer a little later.${ol?' The output takes '+ol+' ms now.':''} Changing it restarts the sound for a moment.`;
+}
+function onEngErr(m){
+  const where=m.inst>=0?`Player ${pnumI(m.inst)}${m.ts&&m.ts!=='off'?' ('+TS_NAME(m.ts)+')':''}`:'The sound engine';
+  console.error('CRGT engine:',where,m.msg);
+  msg(m.inst>=0?`${where} hit an error (${m.msg}). It was reset; the other players played on.`:`${where} hit an error (${m.msg}); that moment was silent.`,6000);
+}
+cpuBtn.addEventListener('click',()=>openRatePop(ratePop.hidden));
+$('#aud-guard').addEventListener('click',()=>{ AUD.guard=!AUD.guard; audSave(); post({type:'guard',on:AUD.guard}); renderCpuPop(); msg(AUD.guard?'PROTECT on: when the engine is too busy, fading notes end quickly.':'PROTECT off.',2500); });
+$('#seg-lat').addEventListener('click',async e=>{
+  const b=e.target.closest('button[data-lat]'); if(!b || srBusy || b.dataset.lat===AUD.lat) return;
+  AUD.lat=b.dataset.lat; audSave(); renderCpuPop();
+  if(ctx){ try{ await restartAudio(); msg('LATENCY '+b.textContent+'.',1800); }catch(err){ msg('Could not restart the audio: '+(err&&err.message||err),4000); } }
+});
 function audioBack(){ if(document.hidden) return; ctWatch=-1; if(ctx && ctx.state!=='running' && !srBusy){ const p=ctx.resume(); if(p && p.catch) p.catch(()=>{}); } wakeOn(); setTimeout(renderAudioState,600); }
 document.addEventListener('visibilitychange',audioBack); window.addEventListener('pageshow',audioBack); window.addEventListener('focus',audioBack);
 function renderAudioState(){
@@ -7685,6 +7892,45 @@ function gRestoreLayers(J,g,force){
   if(!gHas(G)){ G.play=false; for(const L of G.layers) L.run=false; }
   gOwn(J,true); gEnsure();
 }
+// ---------- COPY / PASTE a player ----------
+// COPY takes the selected player as it is now: its sample, every setting (engine, time stretch, filter, FX, LFOs,
+// matrix, slices, loop region, preset slot), its gesture-loop layers with their takes, LENGTHs and mutes, its zoom and
+// its folded panels. PASTE makes the selected player that, replacing what it had (UNDO brings it back). From then on
+// the two are independent: takes are never changed in place, so editing one never touches the other. The copy can be
+// pasted into as many players as you like.
+let plClip=null;
+const pasteBtn=$('#pl-paste');
+function renderClip(){ pasteBtn.disabled=!plClip; pasteBtn.textContent=plClip?'PASTE '+pnumI(plClip.from):'PASTE';
+  pasteBtn.title=plClip?`Make this player a copy of player ${pnumI(plClip.from)} as you copied it`:'Copy a player first, then paste it into another'; }
+function plCopy(){
+  const J=I, layers=J.G.layers.filter(L=>L.src);
+  if(!J.sample && !layers.length){ msg('This player is empty: nothing to copy.',2200); return; }
+  plClip={from:J.i,P:JSON.parse(JSON.stringify(J.P)),sample:J.sample,sampleId:J.sampleId,sampleName:J.sampleName,spBpmEst:J.spBpmEst||0,
+    g:{sync:J.G.sync,sel:J.G.sel,layers:layers.map(L=>({src:L.src,sync:L.sync,mute:L.mute}))},view:{v0:J.view.v0,v1:J.view.v1},secs:[...J.secs],slot:J.curSlot};
+  renderClip();
+  msg(`Player ${pnum(J)} copied${J.sample?' ('+J.sampleName+')':''}${layers.length?', with '+layers.length+' gesture layer'+(layers.length===1?'':'s'):''}. Pick another player and tap PASTE.`,3500);
+}
+function plPaste(){
+  const c=plClip, J=I; if(!c) return;
+  undoPoint('');
+  // the target stops what it is doing: its held notes, fingers, loops
+  for(const [m,i] of [...sounding]) if(i===J.i) noteOff(m);
+  sendTo(J.i,{type:'alloff'}); releaseWave();
+  J.taps.forEach((t,id)=>sendTo(J.i,{type:'tapoff',id})); J.taps.clear();
+  if(J.G.play) gStopLoop(J); if(J.G.rs) gSilence(J);
+  if(J.sample!==c.sample || J.sampleId!==c.sampleId) setSample(J,c.sample,c.sampleId,c.sampleName,true);
+  J.P=Object.assign({},DEFAULTS,JSON.parse(JSON.stringify(c.P))); J.spBpmEst=c.spBpmEst; J.spSel=0; J.curSlot=c.slot;
+  sendTo(J.i,{type:'params',p:Object.assign({},J.P)}); if(J.sample) ensureMips(J);
+  gRestoreLayers(J,{sync:c.g.sync,sel:c.g.sel,layers:c.g.layers.map(l=>({src:l.src,sync:l.sync,mute:l.mute}))},true);
+  J.view={v0:c.view.v0,v1:c.view.v1}; J.secs=new Set(c.secs); J.secSolo=null;
+  P=I.P;
+  renderParams(); renderMeta(); renderSlots(); renderZoom(); renderTabs(); gUI(); renderMain(); secApply();
+  if(!dock.hidden) buildKeys();
+  baseDirty=true; ovDirty=true; dirty=true; markState();
+  const n=c.g.layers.length;
+  msg(c.from===J.i?`Player ${pnum(J)} is back as you copied it.`:`Player ${pnum(J)} is now a copy of player ${pnumI(c.from)}${n?' with its '+n+' gesture layer'+(n===1?'':'s')+' (stopped: ▶ plays them)':''}. Change anything: the two are separate. UNDO brings back what it had.`,5000);
+}
+$('#pl-copy').addEventListener('click',plCopy); pasteBtn.addEventListener('click',plPaste);
 function renderUndo(){ undoBtn.disabled=!undoStack.length; redoBtn.disabled=!redoStack.length; }
 function undo(){ if(!undoStack.length) return; redoStack.push(undoSnap()); applyUndo(undoStack.pop()); undoKey=''; renderUndo(); msg('Undone.',1500); }
 function redo(){ if(!redoStack.length) return; undoStack.push(undoSnap()); applyUndo(redoStack.pop()); undoKey=''; renderUndo(); msg('Redone.',1500); }
@@ -8156,7 +8402,7 @@ keysBtn.addEventListener('click',()=>setTimeout(secApply,0));
 let secW=innerWidth; window.addEventListener('resize',()=>{ if(innerWidth!==secW){ secW=innerWidth; secBase.clear(); secApply(); } });
 secReady=true; secApply();
 
-window.__ws={vpHeal,get vp(){ return {STANDALONE,vpMax,vpW,low:dockLow()}; },get tabOrder(){ return tabOrder.slice(); },get secAll(){ return {inst:inst.map(J=>[...J.secs].sort()),page:[...secGlobal].sort(),keys:!dock.hidden}; },get aud(){ return {AUD,broken:audioBroken,wake:!!wakeLock,bg:!!(bgEl&&!bgEl.paused)}; },heal:()=>audioHeal(),breakAudio:()=>{ audioBroken=true; renderAudioState(); },get secs(){ return {min:[...I.secs,...secGlobal],solo:I.secSolo}; },get ctx(){ return ctx; },get nodeReady(){ return nodeReady; },inst,M,ed:{ED,EL,model:()=>{ const L=edLayer(); return L?edModel(L):null; },geo:()=>edGeo(),rows:()=>{ const L=edLayer(); return L?edRows(edModel(L)):null; },posRange:()=>edPosRange(),ctlRange:()=>edCtlRange(),targets:()=>edTargets(),tx:(t)=>{ const L=edLayer(); return edTX(edGeo(),t,L.src.S); },yv:v=>edYV(edGeo(),v),yu:u=>edYU(edGeo(),u)},get cur(){ return cur; },snapshot,selectInst,restoreSession,sessionZip,unzip,undo,redo,get undoN(){ return undoStack.length; },takeZip,get takes(){ return takes; }};
+window.__ws={plCopy:()=>plCopy(),plPaste:()=>plPaste(),get plClip(){ return plClip; },get cpu(){ return CPU; },get engHow(){ return engHow; },send,vpHeal,get vp(){ return {STANDALONE,vpMax,vpW,low:dockLow()}; },get tabOrder(){ return tabOrder.slice(); },get secAll(){ return {inst:inst.map(J=>[...J.secs].sort()),page:[...secGlobal].sort(),keys:!dock.hidden}; },get aud(){ return {AUD,broken:audioBroken,wake:!!wakeLock,bg:!!(bgEl&&!bgEl.paused)}; },heal:()=>audioHeal(),breakAudio:()=>{ audioBroken=true; renderAudioState(); },get secs(){ return {min:[...I.secs,...secGlobal],solo:I.secSolo}; },get ctx(){ return ctx; },get nodeReady(){ return nodeReady; },inst,M,ed:{ED,EL,model:()=>{ const L=edLayer(); return L?edModel(L):null; },geo:()=>edGeo(),rows:()=>{ const L=edLayer(); return L?edRows(edModel(L)):null; },posRange:()=>edPosRange(),ctlRange:()=>edCtlRange(),targets:()=>edTargets(),tx:(t)=>{ const L=edLayer(); return edTX(edGeo(),t,L.src.S); },yv:v=>edYV(edGeo(),v),yu:u=>edYU(edGeo(),u)},get cur(){ return cur; },snapshot,selectInst,restoreSession,sessionZip,unzip,undo,redo,get undoN(){ return undoStack.length; },takeZip,get takes(){ return takes; }};
 })();
 // ==/UI==
 </script>
