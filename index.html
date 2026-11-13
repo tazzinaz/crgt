@@ -899,7 +899,7 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
     </section>
   </main>
 
-  <p class="foot"><b>Full screen:</b> the corner button (where the browser allows it) fills the whole display and hides the viewer’s bar; tap it again or press Esc to leave. <b>Sections:</b> every part of the page has an icon in the bar above the panels (it stays at the top while you scroll). Tap an icon to fold that section away or bring it back; a folded section shows just its icon. Double-tap an icon to keep only that panel open, and double-tap it again for the ones you had; ALL shows everything. The icon beside each panel’s title folds it too. The panels left open widen into the space. Each player keeps its own panels, so switching player switches the view (players, clock and keys are the same for all of them), and the whole view is saved with the session and inside its exported .zip: you keep just what you are playing with on screen, player by player. <b>Players:</b> drag a tab to move the player to another place (or hold it a moment, then drag); the others slide aside. A player keeps its sound, loops and view when it moves; its number is its place, and the keys 1–8 follow the places. The order is saved with the session. eight, each with its own sample, engine, settings, loop region and gesture loop; all eight sound together. The tab you pick receives the knobs, the waveform and the keys (1–8 on a computer keyboard switch tabs). M mutes a player. <b>Touch:</b> drag a knob up or right to raise it, double-tap to reset. Drag across the waveform to move the position; the blue handle is where you send it, each thin line is a read position you hear. <b>Several fingers:</b> every extra finger on the waveform (up to four in all) adds a read position for as long as it stays down, marked by a blue ring; each note plays all of them, so three notes with two fingers sound six streams. Lift the first finger and the next one takes over the blue handle. Gesture loops record and replay these fingers too (violet rings). <b>Scrub:</b> SKIP jumps to where your finger is; FLUID glides there through the wavesets in between, in order (backwards like tape when you drag left), as fast as GLIDE allows; while your finger moves the sound follows it, and when it rests the unit loops there. <b>Granular:</b> ENGINE above the waveform switches the player between WAVESET and GRANULAR, an engine modelled on the Tasty Chips GR-1. Only the engine's own panels change (GRAIN, GRAIN WINDOW and SCAN · KEYS take the place of WAVESET, INTERPOLATION, JITTER and PROCESS); the sample, position, loop, keys, voices, output, time stretch, filter, fx, LFOs, matrix, presets and gesture loops stay. Grains: DENSITY 0.1–1000 a second, SIZE 5 ms–5 s, SPRAY, SCAN −2×…+2×, TUNE, DIRECTION, PAN and PAN SPRAY; a window shaped by SIDES, TILT and CURVE; four spawn modes, granular glide, key sync, anti-aliasing and up to 128 grains per voice. Sample modes GRANULAR, AUDITION and TAPE; scan modes LOOP, ONE SHOT and PING PONG; KEY→POS and KEY PITCH. With LOOP on, the scan pointer, spray, grains and position offsets all stay inside the loop and scale with it, as in the waveset engine. With time stretch on, the grains keep TUNE and the stretch mode transposes to the key. <b>Simpler:</b> the third ENGINE plays the sample as Ableton's Simpler does. CLASSIC: notes start at the blue handle and play S LENGTH of the region (the LOOP region, or the file), pitched by the key, through the ADSR, with a sustain LOOP (LOOP LEN, LOOP FADE). ONE-SHOT: one note at a time, TRIGGER or GATE, FADE IN and FADE OUT. SLICE: one slice per key from ROOT, sliced by TRANSIENT, BEAT (DIVISION of the sample's tempo, found or typed), REGION (equal parts), MANUAL, or by spectral features: LOUDNESS, CHROMA (harmony), BRIGHTNESS, TIMBRE (MFCC) and NOISINESS; SENSITIVITY sets how many. Drag markers in the band at the top of the waveform, double-tap the band to add one, double-tap a marker to remove it; ◀ ▶ nudge, SPLIT and DELETE act on the selected slice; MONO, POLY and THRU playback. Every mode has SNAP, REVERSE, GAIN, TRANSPOSE, DETUNE, a pitch envelope, GLIDE and PORTA, SPREAD, PAN, VEL→VOL, RETRIG, WARP AS (bars of the BPM, with the TIME STRETCH mode as warp mode) and the FILTER (shared with the other engines). <b>LFO and MATRIX:</b> the buttons next to ENGINE open them as floating windows; drag a window by its title bar, × or Esc closes it. Two LFOs (sine, square, saw, S&amp;H and AUX, a shape you draw in the LFO SHAPE window opened by ✎ DRAW) with key sync, MAIN clock, quantize and cross-modulation; with CLOCK MAIN, RATE divides or multiplies MAIN, whether MAIN came from a take, was typed in or comes from the BPM. The matrix holds up to 16 routes from the LFOs, velocity, key, pressure or a random value per note; its menu lists the controls of the engine in use and the shared ones (envelope, filter, effect, time stretch); every note is modulated on its own. <b>Filter:</b> in every engine each note has its own filter, the one from SIMPLER: LP, HP, BP, NOTCH or MORPH, 12 or 24 dB, five circuits with DRIVE, an envelope (F.ATTACK … F.RELEASE, ENV), KEY and VEL tracking; sessions with the old 12 dB player filter open with it set the same. <b>FX:</b> one effect (delay, distortion, reducer or reverb) per player, in every engine. <b>Time stretch:</b> besides the four modes from the SuperCollider patch, MODE has Max stretch~’s modes (BASIC, MONOPHONIC, RHYTHMIC, GENERAL, POLYPHONIC, PADS, EXTREMESTRETCH, EFFICIENT), made here for this engine, with QUALITY and formant control, and five creative modes: BEATS and TEXTURE after Ableton Live’s warp modes, SPECTRAL after PaulXStretch (random phase, spread, harmonics tuned to the key, freeze), PRISM after CDP’s spectral shift, stretch and blur, and HYBRID after the noise-morphing method from Aalto University (sines and noise stretched apart). TRANSIENTS, after Rubber Band, chooses how GENERAL, POLYPHONIC, PADS and HYBRID treat hits. <b>Loop:</b> drag on the ruler under the waveform to draw a loop; drag its edges or its middle to change it. Edges always land on a zero crossing. ◀ ▶ move an edge by one waveset; SET IN / SET OUT place it at the playhead you hear. Pinch on the ruler (or ctrl + scroll) to zoom down to single samples; the strip below shows the whole file, tap it to move the view. <b>Keys:</b> C4 (red mark) is the original pitch; press lower on a key to play louder. With time stretch OFF a key changes speed and pitch together; with any other mode it changes pitch only. On a computer keyboard, A–K play and Z/X change octave. <b>FREE:</b> the keyboard becomes a continuous surface; each finger glides on its own. <b>Process:</b> the PROCESS menu above the waveform runs Trevor Wishart’s CDP DISTORT waveset processes live (MULTIPLY, DIVIDE, HARMONIC, FRACTAL, REFORM, PITCH, QUIRK, AVERAGE, TELESCOPE, REPLACE, DELETE, OMIT, REVERSE, SHUFFLE, ENVEL); their settings are in the PROCESS panel. Group processes work inside each unit, so raise SIZE to give them wavecycles to group. ORDER reads the file in time, by waveset length or by waveset power. <b>Gesture loops:</b> each player loops what your hands do on it, in up to four layers (A–D) that play together. REC arms the selected layer; the take starts with your next move and ends when you press REC or PLAY. + adds a new layer and arms it while the other layers keep playing: give it its own LENGTH first, say MAIN ×2 for a position sweep twice as long as the notes in A. LENGTH decides what a layer plays: FREE plays the take as it is; a multiple or division of MAIN cuts the take to that length, or repeats it until it is filled. Each layer keeps its take, so its LENGTH can be changed at any time: shorter cuts, longer brings the cut part back or repeats it. MAIN is set by the first MAIN-length take, or type it in (÷2 and ×2 halve and double it), or let the tempo set it: SYNC makes MAIN a number of BARS of the signature at the BPM (type it or TAP it), CLICK ticks every beat (it is not recorded), free takes become whole beats and stay on the beat grid, and QUANT gives new takes a QUANTIZE of 1/4 … 1/32 notes (kept with the layer: change or remove it in ✎ EDIT); MAIN-length layers stay in time with it and with each other, and the lanes under the layer buttons show their lengths side by side. Notes and fingers of all layers sound together; a knob, a switch or the position follows the layer that recorded it last, so a new layer takes it over. Tap a layer to select it, tap it again to mute it: it keeps its place and comes back in time, and its controls go back to the layer below. While the layers play, REC overdubs into the selected one; a control you hold is yours. CLEAR empties the selected layer. <b>Fix a take:</b> ✎ EDIT opens the gesture editor on the selected layer, in every engine. Notes are bars (in SIMPLER SLICE the rows are slices, each drawn with its sound): drag one to move it in time, snapped to GRID, or up and down to another note or slice; drag its right end to change the length; drag its stem in VEL for how hard. POSITION shows where in the sample you played on the waveform, against the sample drawn top to bottom on the left: drag a point, or a whole jump or drag by its line, in time or to another part of the sample; it snaps to the sample's onsets (by transient, loudness, chroma, brightness, timbre or noisiness, as SLICE finds them), to zero crossings or to the loop's edges. Violet bars are extra fingers; THIN keeps the shape of long drags with fewer points. CONTROL shows a recorded knob or switch. Notes: tap one to select it and its tools appear beside it (DUPLICATE, LENGTH − +, ◀ ▶ ▲ ▼, DELETE); drag it to move it, drag the grips at either end to make it longer or shorter. Double-tap empty space to add a note and keep your finger down to drag out its length; with DRAW on, a single tap or drag on empty space draws one and a tap on a note removes it. New notes take the length and velocity of the last note you touched. DUPLICATE puts a copy right after the selection, so pressing it again builds a run. To work on several notes, hold your finger still on empty space for a moment and then drag a box around them (with a mouse just drag; ⇧-click adds or removes one); dragging, resizing, the velocity, the arrows, DUPLICATE and DELETE then act on all of them. With a keyboard: ⌫ deletes, ⌘D duplicates, ⌘A selects every note, ← → move, ⇧← ⇧→ shorter and longer, ↑ ↓ change the note, and ⌥-drag copies. Points on the waveform and in the control lane: double-tap to add or remove, the arrows move the selected one (◀ ▶ a grid step, 10 ms with GRID OFF; ▲ ▼ to the next onset or step). ▶ PLAY plays the loops while you edit. Zoom in time and in each lane (notes or slices, the position in the sample, the control): pinch with the fingers side by side to zoom time, one above the other to zoom the lane under them, and move them together to scroll; drag empty space to scroll; drag the ruler sideways to scroll and down to zoom in on the moment you hold; drag a lane's left edge up and down to scroll it, sideways to zoom it; ↔ − + zoom time around the selection, ↕ − + the lane you last touched (marked at its left edge). FIT frames the selection (or everything you played) in time and in every lane, and ALL shows the whole take again; double-tap the ruler or a lane's edge for the same on just that. Zoomed in, ◀ ▶ without GRID and ▲ ▼ between onsets or control values take finer steps, and an edit dragged to the edge scrolls the view. Drag between two lanes to give one more room (double-tap there to reset). On a trackpad: pinch or ⌘-scroll zooms time, ⌥-scroll zooms the lane, scrolling moves it. Each layer keeps its own view. QUANTIZE pulls the layer's notes and fingers (with + POSITION the jumps on the waveform too) to GRID by STRENGTH, with SWING; it keeps what you played, so it can be changed or turned off at any time, and whatever you moved by hand stays where you put it. Every change is one undo step, is saved with the session and is heard from the next cycle. LAT COMP (on unless you turn it off) puts new takes and overdubs where you heard them, moving them back by the output latency the browser reports; the button shows how much. <b>Undo:</b> ↶ and ↷ (or ⌘Z, ⇧⌘Z) step back and forward through changes to settings, samples, loop regions, gesture buffers, LENGTH, MAIN and mutes; a knob drag counts as one step. <b>Engine rate:</b> tap the audio pill at the top right (AUDIOWORKLET · 48.0 kHz) to choose the rate everything plays and records at: AUTO (your device’s own), 44.1, 48, 88.2 or 96 kHz. Higher rates leave less aliasing when you pitch up, drive or REDUCE, and take about twice the processing. Changing it restarts the sound for a moment with every sample, setting and loop kept; notes sounding at that moment stop. It is locked while a take is recording, and kept on this device. <b>Sound that keeps going:</b> there is no PLAY / STOP; the players sound from the keys, the FREE surface, the waveform and their loops. In the same AUDIO window, KEEP SCREEN ON stops the iPad locking by itself while CRGT is open, and PLAY WHEN LOCKED keeps the sound going if you lock it anyway, the way a music player does (CRGT shows on the lock screen); loops wait while it is locked and carry on in step when you unlock. If the iPad pauses the sound all the same (a call, another app, a long lock), the pill turns red and reads SOUND PAUSED: the next tap or key anywhere brings it back, with a fresh engine if the old one will not wake, keeping every sample, setting and loop. <b>Record:</b> REC captures the master (the mix you hear) as 24-bit WAV; with STEMS on it also records every player on its own track, sample-aligned with the master, and the takes sheet saves master and stems as separate files. Every joint between wavesets is spliced with a 1.5 ms crossfade from the sound's own continuation, and wavesets are cut from a DC-blocked copy of the file, so jumps, short units and fast scrubbing stay free of clicks. <b>Sessions:</b> everything is saved in this browser as you play and comes back when you reopen the page; SESSION saves named copies and exports them as .zip files with their samples.</p>
+  <p class="foot"><b>Full screen:</b> the corner button (where the browser allows it) fills the whole display and hides the viewer’s bar; tap it again or press Esc to leave. <b>Sections:</b> every part of the page has an icon in the bar above the panels (it stays at the top while you scroll). Tap an icon to fold that section away or bring it back; a folded section shows just its icon. Double-tap an icon to keep only that panel open, and double-tap it again for the ones you had; ALL shows everything. The icon beside each panel’s title folds it too. The panels left open widen into the space. Each player keeps its own panels, so switching player switches the view (players, clock and keys are the same for all of them), and the whole view is saved with the session and inside its exported .zip: you keep just what you are playing with on screen, player by player. <b>Players:</b> drag a tab to move the player to another place (or hold it a moment, then drag); the others slide aside. A player keeps its sound, loops and view when it moves; its number is its place, and the keys 1–8 follow the places. The order is saved with the session. eight, each with its own sample, engine, settings, loop region and gesture loop; all eight sound together. The tab you pick receives the knobs, the waveform and the keys (1–8 on a computer keyboard switch tabs). M mutes a player. <b>Touch:</b> drag a knob up or right to raise it, double-tap to reset. Touch the waveform to play the sample from there, at the pitch it was recorded (C4), as long as your finger stays; drag to move through it. While keys are sounding the touch does not play by itself: it moves the position the notes play from, and the touch sound comes back 120 ms after you let go of the keys. The blue handle is where you send it, each thin line is a read position you hear. <b>Several fingers:</b> every extra finger on the waveform (up to four in all) adds a read position for as long as it stays down, marked by a blue ring; each note plays all of them, so three notes with two fingers sound six streams. Lift the first finger and the next one takes over the blue handle. Gesture loops record and replay these fingers too (violet rings). <b>Scrub:</b> SKIP jumps to where your finger is; FLUID glides there through the wavesets in between, in order (backwards like tape when you drag left), as fast as GLIDE allows; while your finger moves the sound follows it, and when it rests the unit loops there. <b>Granular:</b> ENGINE above the waveform switches the player between WAVESET and GRANULAR, an engine modelled on the Tasty Chips GR-1. Only the engine's own panels change (GRAIN, GRAIN WINDOW and SCAN · KEYS take the place of WAVESET, INTERPOLATION, JITTER and PROCESS); the sample, position, loop, keys, voices, output, time stretch, filter, fx, LFOs, matrix, presets and gesture loops stay. Grains: DENSITY 0.1–1000 a second, SIZE 5 ms–5 s, SPRAY, SCAN −2×…+2×, TUNE, DIRECTION, PAN and PAN SPRAY; a window shaped by SIDES, TILT and CURVE; four spawn modes, granular glide, key sync, anti-aliasing and up to 128 grains per voice. Sample modes GRANULAR, AUDITION and TAPE; scan modes LOOP, ONE SHOT and PING PONG; KEY→POS and KEY PITCH. With LOOP on, the scan pointer, spray, grains and position offsets all stay inside the loop and scale with it, as in the waveset engine. With time stretch on, the grains keep TUNE and the stretch mode transposes to the key. <b>Simpler:</b> the third ENGINE plays the sample as Ableton's Simpler does. CLASSIC: notes start at the blue handle and play S LENGTH of the region (the LOOP region, or the file), pitched by the key, through the ADSR, with a sustain LOOP (LOOP LEN, LOOP FADE). ONE-SHOT: one note at a time, TRIGGER or GATE, FADE IN and FADE OUT. SLICE: one slice per key from ROOT, sliced by TRANSIENT, BEAT (DIVISION of the sample's tempo, found or typed), REGION (equal parts), MANUAL, or by spectral features: LOUDNESS, CHROMA (harmony), BRIGHTNESS, TIMBRE (MFCC) and NOISINESS; SENSITIVITY sets how many. Drag markers in the band at the top of the waveform, double-tap the band to add one, double-tap a marker to remove it; ◀ ▶ nudge, SPLIT and DELETE act on the selected slice; MONO, POLY and THRU playback. Every mode has SNAP, REVERSE, GAIN, TRANSPOSE, DETUNE, a pitch envelope, GLIDE and PORTA, SPREAD, PAN, VEL→VOL, RETRIG, WARP AS (bars of the BPM, with the TIME STRETCH mode as warp mode) and the FILTER (shared with the other engines). <b>LFO and MATRIX:</b> the buttons next to ENGINE open them as floating windows; drag a window by its title bar, × or Esc closes it. Two LFOs (sine, square, saw, S&amp;H and AUX, a shape you draw in the LFO SHAPE window opened by ✎ DRAW) with key sync, MAIN clock, quantize and cross-modulation; with CLOCK MAIN, RATE divides or multiplies MAIN, whether MAIN came from a take, was typed in or comes from the BPM. The matrix holds up to 16 routes from the LFOs, velocity, key, pressure or a random value per note; its menu lists the controls of the engine in use and the shared ones (envelope, filter, effect, time stretch); every note is modulated on its own. <b>Filter:</b> in every engine each note has its own filter, the one from SIMPLER: LP, HP, BP, NOTCH or MORPH, 12 or 24 dB, five circuits with DRIVE, an envelope (F.ATTACK … F.RELEASE, ENV), KEY and VEL tracking; sessions with the old 12 dB player filter open with it set the same. <b>FX:</b> one effect (delay, distortion, reducer or reverb) per player, in every engine. <b>Time stretch:</b> besides the four modes from the SuperCollider patch, MODE has Max stretch~’s modes (BASIC, MONOPHONIC, RHYTHMIC, GENERAL, POLYPHONIC, PADS, EXTREMESTRETCH, EFFICIENT), made here for this engine, with QUALITY and formant control, and five creative modes: BEATS and TEXTURE after Ableton Live’s warp modes, SPECTRAL after PaulXStretch (random phase, spread, harmonics tuned to the key, freeze), PRISM after CDP’s spectral shift, stretch and blur, and HYBRID after the noise-morphing method from Aalto University (sines and noise stretched apart). TRANSIENTS, after Rubber Band, chooses how GENERAL, POLYPHONIC, PADS and HYBRID treat hits. Every mode but OFF has controls of its own beyond PITCH, shown when it is chosen and described under the panel: from SuperCollider’s PitchShift P.DISP and T.DISP, Warp1’s window SHAPE, TGrains’ random rate and reverse; for the Max modes GRAIN, SEARCH, JITTER, SENS, PUNCH, FORMANT, ROUGH, DRIFT and SMOOTH; PaulXStretch’s ONSETS and octave mixer (OCT −1, OCT +1); CDP’s TRACE; and LOOP SIZE, FADE, SWING, DENSITY, WIDTH and SPLIT. All of them can be modulated from the MATRIX. <b>Loop:</b> drag on the ruler under the waveform to draw a loop; drag its edges or its middle to change it. Edges always land on a zero crossing. ◀ ▶ move an edge by one waveset; SET IN / SET OUT place it at the playhead you hear. Pinch on the ruler (or ctrl + scroll) to zoom down to single samples; the strip below shows the whole file, tap it to move the view. <b>Keys:</b> C4 (red mark) is the original pitch; press lower on a key to play louder. With time stretch OFF a key changes speed and pitch together; with any other mode it changes pitch only. On a computer keyboard, A–K play and Z/X change octave. <b>FREE:</b> the keyboard becomes a continuous surface; each finger glides on its own. <b>Process:</b> the PROCESS menu above the waveform runs Trevor Wishart’s CDP DISTORT waveset processes live (MULTIPLY, DIVIDE, HARMONIC, FRACTAL, REFORM, PITCH, QUIRK, AVERAGE, TELESCOPE, REPLACE, DELETE, OMIT, REVERSE, SHUFFLE, ENVEL); their settings are in the PROCESS panel. Group processes work inside each unit, so raise SIZE to give them wavecycles to group. ORDER reads the file in time, by waveset length or by waveset power. <b>Gesture loops:</b> each player loops what your hands do on it, in up to four layers (A–D) that play together. REC arms the selected layer; the take starts with your next move and ends when you press REC or PLAY. + adds a new layer and arms it while the other layers keep playing: give it its own LENGTH first, say MAIN ×2 for a position sweep twice as long as the notes in A. LENGTH decides what a layer plays: FREE plays the take as it is; a multiple or division of MAIN cuts the take to that length, or repeats it until it is filled. Each layer keeps its take, so its LENGTH can be changed at any time: shorter cuts, longer brings the cut part back or repeats it. MAIN is set by the first MAIN-length take, or type it in (÷2 and ×2 halve and double it), or let the tempo set it: SYNC makes MAIN a number of BARS of the signature at the BPM (type it or TAP it), CLICK ticks every beat (it is not recorded), free takes become whole beats and stay on the beat grid, and QUANT gives new takes a QUANTIZE of 1/4 … 1/32 notes (kept with the layer: change or remove it in ✎ EDIT); MAIN-length layers stay in time with it and with each other, and the lanes under the layer buttons show their lengths side by side. Notes and fingers of all layers sound together; a knob, a switch or the position follows the layer that recorded it last, so a new layer takes it over. Tap a layer to select it, tap it again to mute it: it keeps its place and comes back in time, and its controls go back to the layer below. While the layers play, REC overdubs into the selected one; a control you hold is yours. CLEAR empties the selected layer. <b>Fix a take:</b> ✎ EDIT opens the gesture editor on the selected layer, in every engine. Notes are bars (in SIMPLER SLICE the rows are slices, each drawn with its sound): drag one to move it in time, snapped to GRID, or up and down to another note or slice; drag its right end to change the length; drag its stem in VEL for how hard. POSITION shows where in the sample you played on the waveform, against the sample drawn top to bottom on the left: drag a point, or a whole jump or drag by its line, in time or to another part of the sample; it snaps to the sample's onsets (by transient, loudness, chroma, brightness, timbre or noisiness, as SLICE finds them), to zero crossings or to the loop's edges. Violet bars are extra fingers; THIN keeps the shape of long drags with fewer points. CONTROL shows a recorded knob or switch. Notes: tap one to select it and its tools appear beside it (DUPLICATE, LENGTH − +, ◀ ▶ ▲ ▼, DELETE); drag it to move it, drag the grips at either end to make it longer or shorter. Double-tap empty space to add a note and keep your finger down to drag out its length; with DRAW on, a single tap or drag on empty space draws one and a tap on a note removes it. New notes take the length and velocity of the last note you touched. DUPLICATE puts a copy right after the selection, so pressing it again builds a run. To work on several notes, hold your finger still on empty space for a moment and then drag a box around them (with a mouse just drag; ⇧-click adds or removes one); dragging, resizing, the velocity, the arrows, DUPLICATE and DELETE then act on all of them. With a keyboard: ⌫ deletes, ⌘D duplicates, ⌘A selects every note, ← → move, ⇧← ⇧→ shorter and longer, ↑ ↓ change the note, and ⌥-drag copies. Points on the waveform and in the control lane: double-tap to add or remove, the arrows move the selected one (◀ ▶ a grid step, 10 ms with GRID OFF; ▲ ▼ to the next onset or step). ▶ PLAY plays the loops while you edit. Zoom in time and in each lane (notes or slices, the position in the sample, the control): pinch with the fingers side by side to zoom time, one above the other to zoom the lane under them, and move them together to scroll; drag empty space to scroll; drag the ruler sideways to scroll and down to zoom in on the moment you hold; drag a lane's left edge up and down to scroll it, sideways to zoom it; ↔ − + zoom time around the selection, ↕ − + the lane you last touched (marked at its left edge). FIT frames the selection (or everything you played) in time and in every lane, and ALL shows the whole take again; double-tap the ruler or a lane's edge for the same on just that. Zoomed in, ◀ ▶ without GRID and ▲ ▼ between onsets or control values take finer steps, and an edit dragged to the edge scrolls the view. Drag between two lanes to give one more room (double-tap there to reset). On a trackpad: pinch or ⌘-scroll zooms time, ⌥-scroll zooms the lane, scrolling moves it. Each layer keeps its own view. QUANTIZE pulls the layer's notes and fingers (with + POSITION the jumps on the waveform too) to GRID by STRENGTH, with SWING; it keeps what you played, so it can be changed or turned off at any time, and whatever you moved by hand stays where you put it. Every change is one undo step, is saved with the session and is heard from the next cycle. LAT COMP (on unless you turn it off) puts new takes and overdubs where you heard them, moving them back by the output latency the browser reports; the button shows how much. <b>Undo:</b> ↶ and ↷ (or ⌘Z, ⇧⌘Z) step back and forward through changes to settings, samples, loop regions, gesture buffers, LENGTH, MAIN and mutes; a knob drag counts as one step. <b>Engine rate:</b> tap the audio pill at the top right (AUDIOWORKLET · 48.0 kHz) to choose the rate everything plays and records at: AUTO (your device’s own), 44.1, 48, 88.2 or 96 kHz. Higher rates leave less aliasing when you pitch up, drive or REDUCE, and take about twice the processing. Changing it restarts the sound for a moment with every sample, setting and loop kept; notes sounding at that moment stop. It is locked while a take is recording, and kept on this device. <b>Sound that keeps going:</b> there is no PLAY / STOP; the players sound from the keys, the FREE surface, the waveform and their loops. In the same AUDIO window, KEEP SCREEN ON stops the iPad locking by itself while CRGT is open, and PLAY WHEN LOCKED keeps the sound going if you lock it anyway, the way a music player does (CRGT shows on the lock screen); loops wait while it is locked and carry on in step when you unlock. If the iPad pauses the sound all the same (a call, another app, a long lock), the pill turns red and reads SOUND PAUSED: the next tap or key anywhere brings it back, with a fresh engine if the old one will not wake, keeping every sample, setting and loop. <b>Record:</b> REC captures the master (the mix you hear) as 24-bit WAV; with STEMS on it also records every player on its own track, sample-aligned with the master, and the takes sheet saves master and stems as separate files. Every joint between wavesets is spliced with a 1.5 ms crossfade from the sound's own continuation, and wavesets are cut from a DC-blocked copy of the file, so jumps, short units and fast scrubbing stay free of clicks. <b>Sessions:</b> everything is saved in this browser as you play and comes back when you reopen the page; SESSION saves named copies and exports them as .zip files with their samples.</p>
 </div>
 
 <div class="fwin" id="fw-lfo" hidden role="dialog" aria-labelledby="wl-h">
@@ -1092,62 +1092,110 @@ class WsFFT{
   }
 }
 
-// Two-tap delay-line pitch shifter (same principle as SC PitchShift)
+// Two-tap delay-line pitch shifter (same principle as SC PitchShift). As in PitchShift, P.DISP gives every grain a
+// pitch of its own (up to ± the semitones shown) and T.DISP a delay of its own (up to the window), both drawn when a
+// tap starts again, where its window is silent.
 class WsPShift{
-  constructor(sr){ this.sr=sr; this.N=1<<17; this.mask=this.N-1; this.bL=new Float32Array(this.N); this.bR=new Float32Array(this.N); this.w=0; this.ph=0; this.t0=0; }
+  constructor(sr){ this.sr=sr; this.N=1<<17; this.mask=this.N-1; this.bL=new Float32Array(this.N); this.bR=new Float32Array(this.N); this.w=0; this.ph=0; this.t0=0;
+    this.q=[0,0.5]; this.r=[1,1]; this.o=[0,0]; this.seed=(Math.random()*2147483647)|1; }
   // a reused voice ignores history from before its note-on instead of clearing 1 MB in the audio thread
-  reset(){ this.t0=this.w; this.ph=0; }
-  process(L,R,n,ratio,win){
-    const W=Math.max(64,win*this.sr), inc=(1-ratio)/W, mask=this.mask, bL=this.bL, bR=this.bR, t0=this.t0;
-    let w=this.w, ph=this.ph;
-    for(let i=0;i<n;i++){
-      bL[w&mask]=L[i]; bR[w&mask]=R[i];
-      ph+=inc; ph-=Math.floor(ph);
-      let p2=ph+0.5; if(p2>=1) p2-=1;
-      const s1=Math.sin(Math.PI*ph), w1=s1*s1, w2=1-w1;
-      let r=w-(ph*W+2), ri=Math.floor(r), f=r-ri, i0=ri&mask, i1=(ri+1)&mask;
-      const aL=ri<t0?0:bL[i0]+(bL[i1]-bL[i0])*f, aR=ri<t0?0:bR[i0]+(bR[i1]-bR[i0])*f;
-      r=w-(p2*W+2); ri=Math.floor(r); f=r-ri; i0=ri&mask; i1=(ri+1)&mask;
-      const cL=ri<t0?0:bL[i0]+(bL[i1]-bL[i0])*f, cR=ri<t0?0:bR[i0]+(bR[i1]-bR[i0])*f;
-      L[i]=aL*w1+cL*w2; R[i]=aR*w1+cR*w2;
-      w++;
+  reset(){ this.t0=this.w; this.ph=0; this.q[0]=0; this.q[1]=0.5; this.r[0]=this.r[1]=1; this.o[0]=this.o[1]=0; }
+  rnd(){ let x=this.seed; x^=x<<13; x^=x>>>17; x^=x<<5; this.seed=x|0; return (x>>>0)/4294967296; }
+  process(L,R,n,ratio,win,pd,td){
+    const W=Math.max(64,win*this.sr), mask=this.mask, bL=this.bL, bR=this.bR, t0=this.t0;
+    let w=this.w;
+    if(!(pd>0.001) && !(td>0.001)){
+      // no dispersion: two taps half a window apart, their sin² windows summing to one
+      const inc=(1-ratio)/W; let ph=this.ph;
+      for(let i=0;i<n;i++){
+        bL[w&mask]=L[i]; bR[w&mask]=R[i];
+        ph+=inc; ph-=Math.floor(ph);
+        let p2=ph+0.5; if(p2>=1) p2-=1;
+        const s1=Math.sin(Math.PI*ph), w1=s1*s1, w2=1-w1;
+        let r=w-(ph*W+2), ri=Math.floor(r), f=r-ri, i0=ri&mask, i1=(ri+1)&mask;
+        const aL=ri<t0?0:bL[i0]+(bL[i1]-bL[i0])*f, aR=ri<t0?0:bR[i0]+(bR[i1]-bR[i0])*f;
+        r=w-(p2*W+2); ri=Math.floor(r); f=r-ri; i0=ri&mask; i1=(ri+1)&mask;
+        const cL=ri<t0?0:bL[i0]+(bL[i1]-bL[i0])*f, cR=ri<t0?0:bR[i0]+(bR[i1]-bR[i0])*f;
+        L[i]=aL*w1+cL*w2; R[i]=aR*w1+cR*w2;
+        w++;
+      }
+      this.ph=ph; this.q[0]=ph; this.q[1]=ph+0.5>=1?ph-0.5:ph+0.5; this.r[0]=this.r[1]=1; this.o[0]=this.o[1]=0;
+    } else {
+      // each tap runs on its own phase, pitch and delay
+      const q=this.q, rr=this.r, oo=this.o, oMax=Math.max(0,this.N-W-64);
+      for(let i=0;i<n;i++){
+        bL[w&mask]=L[i]; bR[w&mask]=R[i];
+        let oL=0, oR=0;
+        for(let t=0;t<2;t++){
+          let ph=q[t]+(1-ratio*rr[t])/W;
+          if(ph>=1 || ph<0){ ph-=Math.floor(ph); rr[t]=Math.pow(2,pd*(this.rnd()*2-1)/12); oo[t]=Math.min(oMax,td*W*this.rnd()); }
+          q[t]=ph;
+          const s1=Math.sin(Math.PI*ph), g=s1*s1, r=w-(ph*W+2+oo[t]), ri=Math.floor(r);
+          if(ri>=t0){ const f=r-ri, i0=ri&mask, i1=(ri+1)&mask; oL+=(bL[i0]+(bL[i1]-bL[i0])*f)*g; oR+=(bR[i0]+(bR[i1]-bR[i0])*f)*g; }
+        }
+        L[i]=oL; R[i]=oR; w++;
+      }
+      this.ph=q[0];
     }
-    this.w=w; this.ph=ph;
+    this.w=w;
   }
 }
 
-// Grain cloud over the stream history. mode 0 = WARP1-style, mode 1 = TGRAINS-style scatter
+// Grain cloud over the stream history. mode 0 = WARP1-style, mode 1 = TGRAINS-style scatter.
+// WARP1: SHAPE draws the grain window (as Warp1's envelope buffer): Hann at 0, flatter up to 50% (a Tukey window with
+// short fades), then percussive (a fast attack and a decay) up to 100%; SPREAD scatters grains in the stereo field.
+// TGRAINS: P.RAND gives every grain a pitch of its own (± the semitones shown, as a random TGrains rate) and REVERSE
+// plays that share of grains backwards (a negative rate).
 class WsGrains{
   constructor(sr){
     this.sr=sr; this.N=1<<18; this.mask=this.N-1; this.bL=new Float32Array(this.N); this.bR=new Float32Array(this.N); this.T=0;
     this.act=new Uint8Array(64); this.pos=new Float64Array(64); this.inc=new Float32Array(64); this.age=new Float32Array(64);
     this.len=new Float32Array(64); this.gl=new Float32Array(64); this.gr=new Float32Array(64); this.next=0;
-    this.win=new Float32Array(1026); for(let i=0;i<1026;i++) this.win[i]=0.5-0.5*Math.cos(2*Math.PI*Math.min(i,1024)/1024);
+    this.win=new Float32Array(1026); this.wsh=-1; this.shape(0);
     this.t0=0;
   }
+  // the window table for SHAPE, with its mean and mean square (for the make-up gain)
+  shape(sh){
+    if(Math.abs(sh-this.wsh)<0.004) return; this.wsh=sh;
+    const w=this.win, a=Math.max(0.1,1-1.8*Math.min(0.5,sh)), t=sh>0.5?(sh-0.5)*2:0, K=2+10*t;
+    let m=0, q=0, pk=0;
+    for(let i=0;i<=1024;i++){
+      const x=i/1024;
+      let v=x<a/2?0.5-0.5*Math.cos(2*Math.PI*x/a):x>1-a/2?0.5-0.5*Math.cos(2*Math.PI*(1-x)/a):1;
+      if(t>0){ const p=(1-Math.exp(-x/0.015))*Math.exp(-x*K)*(x>0.92?(1-x)/0.08:1); v=v*(1-t)+p*t; }
+      w[i]=v; if(v>pk) pk=v;
+    }
+    for(let i=0;i<=1024;i++){ w[i]/=pk; if(i<1024){ m+=w[i]; q+=w[i]*w[i]; } }
+    w[1025]=w[1024]; this.wm=m/1024; this.wp=q/1024;
+  }
   reset(){ this.act.fill(0); this.t0=this.T; this.next=0; }
-  spawn(mode,ratio,W,ovl,rnd){
-    const sr=this.sr; let len, iv, sc, pan;
-    if(mode===0){ len=W*(1+rnd*0.8*(Math.random()*2-1)); iv=W/ovl*(1+rnd*0.5*(Math.random()*2-1)); sc=rnd*W*Math.random(); pan=0; }
-    else{ len=W*(0.75+0.5*Math.random()); iv=(W/ovl)*(0.4+1.2*Math.random()); sc=rnd*0.75*sr*Math.random(); pan=(Math.random()*2-1)*(0.25+0.75*rnd); }
+  spawn(mode,ratio,W,ovl,rnd,P){
+    const sr=this.sr; let len, iv, sc, pan, inc=ratio, rev=false;
+    if(mode===0){ len=W*(1+rnd*0.8*(Math.random()*2-1)); iv=W/ovl*(1+rnd*0.5*(Math.random()*2-1)); sc=rnd*W*Math.random(); pan=(Math.random()*2-1)*(P.w1Spr||0); }
+    else{
+      len=W*(0.75+0.5*Math.random()); iv=(W/ovl)*(0.4+1.2*Math.random()); sc=rnd*0.75*sr*Math.random(); pan=(Math.random()*2-1)*(0.25+0.75*rnd);
+      if(P.tgPR>0) inc=Math.min(4,ratio*Math.pow(2,P.tgPR*(Math.random()*2-1)/12));
+      rev=Math.random()<(P.tgRev||0);
+    }
     len=Math.max(16,len); this.next=Math.max(1,iv);
     let g=-1; for(let i=0;i<64;i++) if(!this.act[i]){ g=i; break; }
     if(g<0) return;
-    const need=ratio>1?(ratio-1)*len:0;
-    this.act[g]=1; this.pos[g]=this.T-(need+4+sc); this.inc[g]=ratio; this.age[g]=0; this.len[g]=len;
+    const need=inc>1?(inc-1)*len:0;
+    this.act[g]=1; this.pos[g]=rev?this.T-4-sc:this.T-(need+4+sc); this.inc[g]=rev?-inc:inc; this.age[g]=0; this.len[g]=len;
     const a=(pan+1)*Math.PI/4; this.gl[g]=Math.min(1,Math.cos(a)*Math.SQRT2); this.gr[g]=Math.min(1,Math.sin(a)*Math.SQRT2);
   }
-  process(L,R,n,mode,ratio,win,ovl,rnd){
+  process(L,R,n,mode,ratio,win,ovl,rnd,P){
+    this.shape(mode===0?(P.w1Shp||0):0);
     const W=Math.max(32,win*this.sr), mask=this.mask, bL=this.bL, bR=this.bR, wt=this.win;
     const act=this.act, pos=this.pos, inc=this.inc, age=this.age, len=this.len, gl=this.gl, gr=this.gr;
-    // Grains reading the same spot add coherently (sum ~ ovl/2); scattered or transposed grains add in power.
-    // Interpolate the make-up gain between the two cases by an estimate of decorrelation.
-    const o=Math.max(mode===0?2:1,ovl), dec=Math.min(1,(mode===0?rnd:2*rnd)+Math.abs(Math.log2(ratio)));
-    const gain=Math.pow(2/o,1-dec)*Math.pow(1/Math.sqrt(o*0.375),dec);
+    // Grains reading the same spot add coherently (sum ~ overlap x the window's mean); scattered, transposed or
+    // reversed grains add in power. Interpolate the make-up gain between the two by an estimate of decorrelation.
+    const o=Math.max(mode===0?2:1,ovl), dec=Math.min(1,(mode===0?rnd+(P.w1Spr||0)*0.5:2*rnd+(P.tgPR||0)/6+(P.tgRev||0))+Math.abs(Math.log2(ratio)));
+    const gain=Math.pow(1/(o*this.wm),1-dec)*Math.pow(1/Math.sqrt(o*this.wp),dec);
     const t0=this.t0;
     for(let i=0;i<n;i++){
       const T=this.T; bL[T&mask]=L[i]; bR[T&mask]=R[i];
-      if(--this.next<=0) this.spawn(mode,ratio,W,ovl,rnd);
+      if(--this.next<=0) this.spawn(mode,ratio,W,ovl,rnd,P);
       let oL=0, oR=0;
       for(let g=0;g<64;g++){
         if(!act[g]) continue;
@@ -1165,12 +1213,13 @@ class WsGrains{
   }
 }
 
-// Phase-vocoder smear: magnitude blur (BINS), freeze, bin shift, output feedback. Stereo in one object:
+// Phase-vocoder smear: magnitude blur (BINS), freeze, bin shift, output feedback (FEED, every FB TIME, darkened by
+// DAMP: a low-pass in the loop, so repeats lose their highs as in a tape echo). Stereo in one object:
 // L and R share one complex FFT each way (L in the real part, R in the imaginary part), and phase/trig use a
 // polynomial atan2 and a sine table, so eight voices stay affordable on an iPad.
 class WsSmear{
   constructor(fft,sr){
-    const N=2048; this.N=N; this.H=512; this.mask=N-1; this.fft=fft; this.D=Math.min(4000,Math.round(0.05*sr));
+    const N=2048; this.N=N; this.H=512; this.mask=N-1; this.fft=fft; this.sr=sr; this.FB=1<<16; this.dL=0; this.dR=0;
     this.inL=new Float32Array(N); this.inR=new Float32Array(N); this.olaL=new Float32Array(N); this.olaR=new Float32Array(N);
     this.ip=0; this.op=0; this.hc=0;
     this.re=new Float64Array(N); this.im=new Float64Array(N);
@@ -1180,23 +1229,25 @@ class WsSmear{
       fP:new Float32Array(B),mix:new Float32Array(B),blur:new Float32Array(B),oph:new Float64Array(B),nph:new Float64Array(B),
       pk:new Int32Array(B),xr:new Float64Array(B),xi:new Float64Array(B),held:false});
     this.win=new Float32Array(N); for(let i=0;i<N;i++) this.win[i]=0.5-0.5*Math.cos(2*Math.PI*i/N);
-    this.fbL=new Float32Array(4096); this.fbR=new Float32Array(4096); this.fp=0;
+    this.fbL=new Float32Array(this.FB); this.fbR=new Float32Array(this.FB); this.fp=0;
     this.sinT=new Float32Array(4097); for(let i=0;i<=4096;i++) this.sinT[i]=Math.sin(2*Math.PI*i/4096);
   }
   reset(){
-    this.inL.fill(0); this.inR.fill(0); this.olaL.fill(0); this.olaR.fill(0); this.fbL.fill(0); this.fbR.fill(0);
+    this.inL.fill(0); this.inR.fill(0); this.olaL.fill(0); this.olaR.fill(0); this.fbL.fill(0); this.fbR.fill(0); this.dL=0; this.dR=0;
     for(const c of this.ch){ c.prev.fill(0); c.oph.fill(0); c.fM.fill(0); c.fP.fill(0); c.held=false; }
     this.hc=(Math.random()*this.H)|0;  // stagger FFT frames across voices so they don't all land in one block
   }
   process(L,R,n,P,shift){
-    const mask=this.mask, feed=P.smFeed, D=this.D;
+    const mask=this.mask, feed=P.smFeed, FM=this.FB-1, D=Math.max(16,Math.min(FM-256,Math.round((P.smFT||0.093)*this.sr)-this.N));
+    const dm=P.smDmp||0, a=dm<0.001?1:1-Math.exp(-2*Math.PI*20000*Math.pow(300/20000,dm)/this.sr);
     for(let i=0;i<n;i++){
-      const fi=(this.fp-D)&4095;
-      let fl=this.fbL[fi]*feed, fr=this.fbR[fi]*feed;
+      const fi=(this.fp-D)&FM;
+      this.dL+=(this.fbL[fi]-this.dL)*a; this.dR+=(this.fbR[fi]-this.dR)*a;
+      let fl=this.dL*feed, fr=this.dR*feed;
       if(fl>1) fl=1; else if(fl<-1) fl=-1; if(fr>1) fr=1; else if(fr<-1) fr=-1;
       this.inL[this.ip]=L[i]+fl; this.inR[this.ip]=R[i]+fr; this.ip=(this.ip+1)&mask;
       const yl=this.olaL[this.op], yr=this.olaR[this.op]; this.olaL[this.op]=0; this.olaR[this.op]=0; this.op=(this.op+1)&mask;
-      this.fbL[this.fp]=yl; this.fbR[this.fp]=yr; this.fp=(this.fp+1)&4095;
+      this.fbL[this.fp]=yl; this.fbR[this.fp]=yr; this.fp=(this.fp+1)&FM;
       L[i]=yl; R[i]=yr;
       if(++this.hc>=this.H){ this.hc=0; this.frame(P,shift); }
     }
@@ -1283,24 +1334,31 @@ class WsSmear{
 // Every grain's start is searched (coarse, then fine) for the best match with the previous grain's natural
 // continuation, so grains add in phase instead of beating. RHYTHMIC uses short grains, and a transient starts a
 // grain of its own exactly on time, with the previous grain cut away, so attacks stay sharp and single.
+// GRAIN scales the grain length of the QUALITY chosen; SEARCH sets how far a grain may move to match (0 = not at all:
+// plain overlapping grains, phasey); JITTER pulls each grain back in time by a random amount (rough, chorused);
+// RHYTHMIC: SENS sets how quiet a hit can be and still count, PUNCH lifts the first 12 ms of every hit.
 class WsWsola{
   constructor(sr){
     this.sr=sr; this.N=1<<17; this.mask=this.N-1; this.bL=new Float32Array(this.N); this.bR=new Float32Array(this.N); this.w=0; this.t0=0;
     this.O=1<<15; this.om=this.O-1; this.oL=new Float32Array(this.O); this.oR=new Float32Array(this.O); this.op=0;
-    this.next=0; this.pa=-1; this.eF=0; this.eS=0; this.onset=-1e9; this.cool=0; this.win=null; this.wl=0;
+    this.next=0; this.pa=-1; this.eF=0; this.eS=0; this.onset=-1e9; this.cool=0; this.win=new Float32Array(Math.ceil(0.15*sr)+2); this.wl=0;
+    this.seed=(Math.random()*2147483647)|1;
   }
+  rnd(){ let x=this.seed; x^=x<<13; x^=x>>>17; x^=x<<5; this.seed=x|0; return (x>>>0)/4294967296; }
   reset(){ this.t0=this.w; this.oL.fill(0); this.oR.fill(0); this.next=0; this.pa=-1; this.eF=0; this.eS=0; this.onset=-1e9; this.cool=0; }
   rd(b,p){ const i=Math.floor(p); if(i<this.t0) return 0; const f=p-i, m=this.mask, a=b[i&m]; return a+(b[(i+1)&m]-a)*f; }
-  process(L,R,n,ratio,W,rhythmic,S){
-    this.S=S||Math.round(0.01*this.sr);
-    if(this.wl!==W){ this.win=new Float32Array(W); for(let j=0;j<W;j++) this.win[j]=0.5-0.5*Math.cos(2*Math.PI*j/W); this.wl=W; }
+  process(L,R,n,ratio,W,rhythmic,S,P){
+    W=Math.min(this.win.length-2,W); this.S=S>=0?S:Math.round(0.01*this.sr);
+    this.jit=P?P.wsJit||0:0; this.punch=P?P.rhPunch||0:0;
+    const thr=1.3+2.4*(1-(P&&P.rhSens!==undefined?P.rhSens:0.5));
+    if(this.wl!==W){ for(let j=0;j<W;j++) this.win[j]=0.5-0.5*Math.cos(2*Math.PI*j/W); this.wl=W; }
     const mask=this.mask, bL=this.bL, bR=this.bR, Hs=W>>1, om=this.om, oL=this.oL, oR=this.oR;
     const kF=1-Math.exp(-1/(0.0015*this.sr)), kS=1-Math.exp(-1/(0.06*this.sr));
     for(let i=0;i<n;i++){
       const w=this.w; bL[w&mask]=L[i]; bR[w&mask]=R[i];
       if(rhythmic){
         const e=(L[i]<0?-L[i]:L[i])+(R[i]<0?-R[i]:R[i]); this.eF+=(e-this.eF)*kF; this.eS+=(e-this.eS)*kS;
-        if(this.cool>0) this.cool--; else if(this.eF>2.5*this.eS+2e-3){ this.onset=w; this.cool=Math.round(0.06*this.sr); }
+        if(this.cool>0) this.cool--; else if(this.eF>thr*this.eS+2e-3){ this.onset=w; this.cool=Math.round(0.06*this.sr); }
       }
       this.w=w+1;
       if(--this.next<=0){ this.grain(ratio,W,Hs,rhythmic); this.next=Hs; }
@@ -1312,7 +1370,7 @@ class WsWsola{
     const bL=this.bL, bR=this.bR, mask=this.mask, t0=this.t0;
     let a=this.w-D, hit=false;
     if(rhythmic && this.onset>a-Hs && this.onset<=a+Hs){ a=this.onset; this.onset=-1e9; hit=true; }
-    else if(this.pa>=0){
+    else if(this.pa>=0 && S>=1){
       // compare a mono slice of the history, every 8th output sample of the overlap, against the previous grain's continuation
       const c=Math.round(this.pa+Hs*r), J=Hs>>3, jo=this.jo||(this.jo=new Int32Array(4096)), sl=this.sl||(this.sl=new Float32Array(1<<15));
       for(let j=0;j<J;j++) jo[j]=Math.round(j*8*r);
@@ -1325,34 +1383,46 @@ class WsWsola{
       const b0=best; for(let s=b0-7;s<=b0+7;s++){ if(s===b0 || s<a-S || s>a+S) continue; const v=score(s); if(v>bv){ bv=v; best=s; } }
       a=best;
     }
+    // JITTER after the match: the grain lands off it, by up to half a grain back in time
+    if(this.jit>0 && !hit) a-=Math.round(this.jit*Hs*this.rnd());
     const rdw=(j,h)=>{ const p=a+j*r, i=Math.floor(p), o=(op+j)&om; if(i<t0) return; const f=p-i, i0=i&mask, i1=(i+1)&mask; oL[o]+=(bL[i0]+(bL[i1]-bL[i0])*f)*h; oR[o]+=(bR[i0]+(bR[i1]-bR[i0])*f)*h; };
     if(hit){
       // a transient: the grain still sounding fades out in 1.5 ms, and the new one starts at full level after a 1.5 ms rise
-      const K=Math.max(8,Math.round(0.0015*this.sr));
+      const K=Math.max(8,Math.round(0.0015*this.sr)), pu=3*this.punch, pk=1/(0.012*this.sr);
       for(let j=0;j<W;j++){ const g=j<K?1-j/K:0, o=(op+j)&om; oL[o]*=g; oR[o]*=g; }
-      for(let j=0;j<W;j++) rdw(j,j<Hs?(j<K?j/K:1):win[j]);
+      for(let j=0;j<W;j++) rdw(j,(j<Hs?(j<K?j/K:1):win[j])*(pu>0?1+pu*Math.exp(-j*pk):1));
     } else for(let j=0;j<W;j++) rdw(j,win[j]);
     this.pa=a;
   }
 }
 
-// PSOLA (MONOPHONIC): pitch-synchronous grains. Pitch marks are the stream's own upward zero crossings (the
-// waveset boundaries); each grain is two periods long, Hann-windowed and centred on a mark, and grains are laid
+// PSOLA (MONOPHONIC): pitch-synchronous grains. The periods are found on the stream through a steep low-pass (four
+// poles at 320 Hz), so they follow the fundamental rather than the formants; each period's mark is the stream's own
+// last upward zero crossing before it (a waveset boundary, as before for simple waves); each grain is two periods long, Hann-windowed and centred on a mark, and grains are laid
 // down one period / ratio apart. The spectral envelope stays where it was, so a voice keeps its formants.
+// FORMANT reads every grain faster or slower (and makes it shorter or longer to match), which moves the formants
+// up or down while the pitch stays; ROUGH jitters the spacing of the grains (period jitter: a hoarse, rough voice).
 class WsPsola{
   constructor(sr){
     this.sr=sr; this.N=1<<16; this.mask=this.N-1; this.bL=new Float32Array(this.N); this.bR=new Float32Array(this.N); this.w=0; this.t0=0;
-    this.M=512; this.mk=new Float64Array(this.M); this.mh=0; this.mc=0; this.last=-1e9; this.pv=0;
+    this.M=512; this.mk=new Float64Array(this.M); this.mh=0; this.mc=0; this.last=-1e9; this.pv=0; this.y1=this.y2=this.y3=this.y4=0; this.px=0; this.zc=-1e9;
     this.O=8192; this.om=this.O-1; this.oL=new Float32Array(this.O); this.oR=new Float32Array(this.O); this.op=0; this.nx=0;
     this.PM=Math.min(1200,Math.round(sr/40)); this.Pm=Math.max(16,Math.round(sr/2400));
+    this.seed=(Math.random()*2147483647)|1;
   }
-  reset(){ this.t0=this.w; this.oL.fill(0); this.oR.fill(0); this.mc=0; this.nx=0; this.last=-1e9; this.pv=0; }
+  rnd(){ let x=this.seed; x^=x<<13; x^=x>>>17; x^=x<<5; this.seed=x|0; return (x>>>0)/4294967296; }
+  reset(){ this.t0=this.w; this.oL.fill(0); this.oR.fill(0); this.mc=0; this.nx=0; this.last=-1e9; this.pv=0; this.y1=this.y2=this.y3=this.y4=0; this.px=0; this.zc=-1e9; }
   mark(t){ this.mk[(this.mh+this.mc)%this.M]=t; if(this.mc<this.M) this.mc++; else this.mh=(this.mh+1)%this.M; }
-  process(L,R,n,ratio){
+  process(L,R,n,ratio,P){
+    this.fm=Math.min(2,Math.max(0.5,P&&P.fmt||1)); this.ro=P?P.psoJit||0:0;
     const mask=this.mask, bL=this.bL, bR=this.bR, PM=this.PM, Pm=this.Pm, oL=this.oL, oR=this.oR, om=this.om;
+    const ka=this.ka||(this.ka=1-Math.exp(-2*Math.PI*320/this.sr));
     for(let i=0;i<n;i++){
-      const w=this.w, v=L[i]+R[i]; bL[w&mask]=L[i]; bR[w&mask]=R[i];
-      if(this.pv<0 && v>=0 && w-this.last>=Pm){ this.mark(w); this.last=w; }
+      const w=this.w; bL[w&mask]=L[i]; bR[w&mask]=R[i];
+      this.y1+=(L[i]+R[i]-this.y1)*ka; this.y2+=(this.y1-this.y2)*ka; this.y3+=(this.y2-this.y3)*ka; this.y4+=(this.y3-this.y4)*ka;
+      const v=this.y4, x=L[i]+R[i];
+      if(this.px<0 && x>=0) this.zc=w; this.px=x;
+      if(this.pv<0 && v>=0){ const t=w-this.zc<PM && this.zc>this.last?this.zc:w; if(t-this.last>=Pm){ this.mark(t); this.last=t; } }
       else if(w-this.last>PM){ this.mark(w); this.last=w; }   // unvoiced: marks keep coming
       this.pv=v; this.w=w+1;
       if(--this.nx<=0) this.grain(ratio);
@@ -1371,12 +1441,23 @@ class WsPsola{
     }
     P=Math.max(Pm,Math.min(PM,Math.round(P)));
     const g=r<1?Math.min(2,Math.pow(r,-0.75)):1, oL=this.oL, oR=this.oR, om=this.om, base=this.op+PM, bL=this.bL, bR=this.bR, t0=this.t0;
-    for(let j=-P;j<P;j++){
-      const src=m+j; if(src<t0) continue;
-      const h=(0.5-0.5*Math.cos(Math.PI*(j+P)/P))*g, o=(base+j)&om;
-      oL[o]+=bL[src&mask]*h; oR[o]+=bR[src&mask]*h;
+    const f=this.fm||1;
+    if(Math.abs(f-1)<1e-3){
+      for(let j=-P;j<P;j++){
+        const src=m+j; if(src<t0) continue;
+        const h=(0.5-0.5*Math.cos(Math.PI*(j+P)/P))*g, o=(base+j)&om;
+        oL[o]+=bL[src&mask]*h; oR[o]+=bR[src&mask]*h;
+      }
+    } else {
+      // the grain read at FORMANT x speed and P/FORMANT long (at most two longest periods, the room ahead of the output)
+      const Pq=Math.max(4,Math.min(PM,Math.round(P/f))), gf=g*P/Pq;   // shorter grains overlap less: same level
+      for(let j=-Pq;j<Pq;j++){
+        const sp=m+j*f, si=Math.floor(sp); if(si<t0) continue;
+        const fr=sp-si, i0=si&mask, i1=(si+1)&mask, h=(0.5-0.5*Math.cos(Math.PI*(j+Pq)/Pq))*gf, o=(base+j)&om;
+        oL[o]+=(bL[i0]+(bL[i1]-bL[i0])*fr)*h; oR[o]+=(bR[i0]+(bR[i1]-bR[i0])*fr)*h;
+      }
     }
-    this.nx=Math.max(1,Math.round(P/r));
+    this.nx=Math.max(1,Math.round(P/r*(this.ro>0?1+0.3*this.ro*(this.rnd()*2-1):1)));
   }
 }
 
@@ -1393,6 +1474,7 @@ class WsPsola{
 // lowest strong partial, BLUR averages the spectrum over time. HYBRID (after the noise-morphing method from Aalto University):
 // peaks that stand out are sines and keep locked phases; everything else is noise and gets new random phases, so
 // stretched noise stays noise instead of turning metallic. TONAL and NOISE set the level of each part.
+const PH0=q=>{ const TP=2*Math.PI; return q-TP*Math.floor(q/TP); };
 class WsPV{
   constructor(fft,sr,N,ov){
     this.N=N; this.ov=ov; this.H=N/ov; this.mask=N-1; this.fft=fft; this.sr=sr;
@@ -1434,12 +1516,17 @@ class WsPV{
       let d=ph-prev[k]-k*om; prev[k]=ph; d-=TP*Math.round(d/TP); frq[k]=k*om+d;
       const df=m-c.pm[k]; if(df>0) fl+=df; sm+=m; c.pm[k]=m;
     }
-    // a transient frame: phases restart from the input's (TRANSIENTS; AUTO = CRISP in GENERAL and HYBRID, SMOOTH in the others)
+    // a transient frame (SENS sets how sudden it must be): phases restart from the input's (TRANSIENTS; AUTO = CRISP
+    // in GENERAL and HYBRID, SMOOTH in the others)
     const tr=P.tsTr==='crisp'||P.tsTr==='mixed'||P.tsTr==='smooth'?P.tsTr:(mode==='general'||mode==='hybrid'?'crisp':'smooth');
-    const reset=(mode==='general'||mode==='poly'||mode==='pads'||mode==='hybrid') && tr!=='smooth' && fl/sm>0.45;
+    const flux=fl/sm, sens=P.pvSens===undefined?0.5:P.pvSens;
+    const reset=(mode==='general'||mode==='poly'||mode==='pads'||mode==='hybrid') && tr!=='smooth' && flux>0.75-0.6*sens;
     const kRes=reset&&tr==='mixed'?Math.round(500/(this.sr/this.N)):0;
     let M=mag;
-    if(mode==='pads'){ const ms=c.ms; for(let k=0;k<B;k++) ms[k]=0.6*ms[k]+0.4*mag[k]; M=ms; }
+    // PADS: SMOOTH sets how slowly the spectrum follows the input; EXTREMESTRETCH: SMOOTH the same, from none
+    if(mode==='pads'){ const ms=c.ms, a=0.2+0.78*(P.pdSm===undefined?0.5:P.pdSm); for(let k=0;k<B;k++) ms[k]=a*ms[k]+(1-a)*mag[k]; M=ms; }
+    else if(mode==='extreme' && P.exSm>0.001){ const ms=c.ms, a=0.95*P.exSm; for(let k=0;k<B;k++) ms[k]=a*ms[k]+(1-a)*mag[k]; M=ms; }
+    else if(mode==='extreme') c.ms.set(mag);
     else if(mode==='prism' && P.prBlur>0.001){
       // BLUR: each bin's magnitude follows the input slowly (20 ms … 3 s)
       const ms=c.ms, a=1-Math.exp(-this.H/(0.02*Math.pow(150,P.prBlur)*this.sr));
@@ -1472,10 +1559,14 @@ class WsPV{
     const sinT=this.sinT, TK=4096/TP;
     xr.fill(0,0,B); xi.fill(0,0,B);
     if(mode==='extreme'){
+      // ONSETS (PaulXStretch's onset detection): a sudden frame keeps the input's phases instead of random ones, so
+      // attacks survive the smear
+      const on=P.exOn>0.001 && flux>0.9-0.6*P.exOn;
       for(let k=0;k<B;k++){
         const o=Math.round(k*shift); if(o>=B) break;
         const m=M[k]*gainAt(k,o); if(m===0) continue;
-        const t=this.rnd()*4096, ti=t|0, ci=(ti+1024)&4095;
+        let t; if(on){ let q=PH0(prev[k]); t=q*TK; } else t=this.rnd()*4096;
+        const ti=t|0, ci=(ti+1024)&4095;
         xr[o]+=m*sinT[ci]; xi[o]+=m*sinT[ti];
       }
     } else {
@@ -1484,11 +1575,12 @@ class WsPV{
       for(let k=1;k<B-1;k++) if(M[k]>M[k-1] && M[k]>=M[k+1] && M[k]>1e-9) pk[np++]=k;
       const binHz=this.sr/this.N, f0b=this.f0/binHz;
       // SPECTRAL: SPREAD (a blur across frequency, about ±SPREAD x 15% of each bin's frequency), the random share of
-      // the phase and its make-up gain, HARMONICS (a comb on the harmonics of the note, H.TUNE semitones away)
-      let BL=M, eg=1, ph=0, gR=1, harm=0, hb=1, e1=0, e2=0;
+      // the phase and its make-up gain, HARMONICS (a comb on the harmonics of the note, H.TUNE semitones away), and
+      // OCT −1 / OCT +1 (PaulXStretch's octave mixer: every partial also an octave down and up, at those levels)
+      let BL=M, eg=1, ph=0, gR=1, harm=0, hb=1, e1=0, e2=0, od=0, ou=0;
       const tonal=mode==='hybrid'?P.hyT:1, noise=mode==='hybrid'?P.hyN*this.kN:1;
       if(mode==='spectral'){
-        ph=P.sgPh; gR=Math.pow(this.kN,ph); harm=P.sgHarm; hb=f0b*Math.pow(2,P.sgHT/12);
+        ph=P.sgPh; gR=Math.pow(this.kN,ph); harm=P.sgHarm; hb=f0b*Math.pow(2,P.sgHT/12); od=P.sgOD||0; ou=P.sgOU||0;
         const spr=P.sgSpr;
         if(spr>0.001){
           const pre=this.pre, bl=c.bl; let a1=0, a2=0;
@@ -1496,56 +1588,79 @@ class WsPV{
           for(let k=0;k<B;k++){ const r=1+Math.round(k*spr*0.15), lo=k-r<0?0:k-r, hi=k+r+1>B?B:k+r+1, v=(pre[hi]-pre[lo])/(hi-lo); bl[k]=v; a1+=M[k]*M[k]; a2+=v*v; }
           BL=bl; eg=Math.min(8,Math.max(1,Math.sqrt(a1/(a2+1e-12))));
         }
+        if((od>0 || ou>0) && !c.ophD){ c.ophD=new Float64Array(B); c.ophU=new Float64Array(B); c.nphD=new Float64Array(B); c.nphU=new Float64Array(B); c.kD=new Int32Array(B); c.kU=new Int32Array(B); }
       }
-      // HYBRID: a peak is a sine when it stands well above its neighbourhood (±8 bins); its main lobe keeps locked
-      // phases, the rest of its region is noise
-      let avg=null;
+      // HYBRID: a peak is a sine when it stands SPLIT times above its neighbourhood (±8 bins); its main lobe keeps
+      // locked phases, the rest of its region is noise
+      let avg=null; const split=mode==='hybrid'?(P.hySplit||2.8):0;
       if(mode==='hybrid'){
         const pre=this.pre, bl=c.bl; pre[0]=0; for(let k=0;k<B;k++) pre[k+1]=pre[k]+M[k];
         for(let k=0;k<B;k++){ const lo=k-8<0?0:k-8, hi=k+9>B?B:k+9; bl[k]=(pre[hi]-pre[lo])/(hi-lo); }
         avg=bl;
       }
+      // DRIFT (GENERAL, POLYPHONIC, PADS): every partial's phase wanders a little on its own (a slow random detune of
+      // a few hertz), which spreads a single sound into an ensemble
+      const drift=mode==='general'||mode==='poly'||mode==='pads'?P.pvDrift||0:0, dv=drift>0?(c.dv||(c.dv=new Float32Array(B))):null;
       // PRISM: each peak's true frequency (in bins) goes through SHIFT and STRETCH. STRETCH pivots on the lowest
       // strong partial (the sound's fundamental), which stays where it is. Partials are followed from frame to frame
       // (a peak takes the output phase of the nearest peak of the frame before), so one that wanders between bins
-      // keeps one continuous phase instead of cancelling itself
+      // keeps one continuous phase instead of cancelling itself. TRACE (after CDP's spectral trace) keeps only the
+      // strongest partials: from all of them at 0 to the loudest alone at 100%.
       const prism=mode==='prism', pS=prism?P.prStr:0, pH=prism?P.prShift/binHz:0, fr=++c.fr, iph=c.iph, ipf=c.ipf;
-      let kref=1;
-      if(prism && pS!==0 && np){ let mx=0; for(let i=0;i<np;i++) if(M[pk[i]]>mx) mx=M[pk[i]]; for(let i=0;i<np;i++){ const k=pk[i]; if(M[k]>0.1*mx){ kref=Math.max(1,frq[k]/om*shift); break; } } }
+      let kref=1, trTh=0, eAll=0, eKeep=0;
+      if(prism && np && (pS!==0 || P.prTrace>0.001)){
+        let mx=0; for(let i=0;i<np;i++) if(M[pk[i]]>mx) mx=M[pk[i]];
+        if(pS!==0) for(let i=0;i<np;i++){ const k=pk[i]; if(M[k]>0.1*mx){ kref=Math.max(1,frq[k]/om*shift); break; } }
+        if(P.prTrace>0.001) trTh=mx*Math.pow(10,-4*(1-P.prTrace))*0.999;
+      }
+      const put=(o,m,q)=>{
+        if(harm>0){
+          // distance from the nearest harmonic, in harmonics; a narrow band (±0.12) is kept around each
+          const h=o/hb, d=h<0.5?1:Math.abs(h-Math.round(h)); e1+=m*m;
+          m*=1-harm+harm*Math.exp(-d*d*70); e2+=m*m;
+        }
+        q-=TP*Math.floor(q/TP);
+        const t=q*TK, ti=t|0, tf=t-ti, ci=(ti+1024)&4095;
+        xr[o]+=m*(sinT[ci]+(sinT[ci+1]-sinT[ci])*tf); xi[o]+=m*(sinT[ti]+(sinT[ti+1]-sinT[ti])*tf);
+      };
       for(let i=0;i<np;i++){
         const k=pk[i], lo=i===0?0:((pk[i-1]+k)>>1)+1, hi=i===np-1?B-1:((k+pk[i+1])>>1);
         let ft=k*shift;
         if(prism){ ft=frq[k]/om*shift; if(pS!==0) ft*=Math.pow(Math.max(1e-3,ft)/kref,pS); ft+=pH; }
         const ko=Math.round(ft); if(ko>=B){ if(prism) for(let q=i;q<np;q++) nph[q]=NaN; break; } if(ko<1){ nph[i]=NaN; continue; }
-        const D=ko-k, sine=!avg || M[k]>2.8*avg[k];
+        if(trTh>0){ const e=M[k]*M[k]; eAll+=e; if(M[k]<trTh){ nph[i]=NaN; continue; } eKeep+=e; }
+        const D=ko-k, sine=!avg || M[k]>split*avg[k];
         let th;
         if(prism){ let src=-1; if(ipf[k]===fr-1) src=k; else if(ipf[k-1]===fr-1) src=k-1; else if(k+1<B && ipf[k+1]===fr-1) src=k+1; else if(k>1 && ipf[k-2]===fr-1) src=k-2; else if(k+2<B && ipf[k+2]===fr-1) src=k+2;
           th=(src>=0?iph[src]:PH[k])+ft*om; }
         else th=(reset && k>=kRes)?PH[k]:oph[ko]+frq[k]*shift;
+        if(dv){ const v=dv[ko]=dv[ko]*0.85+(this.rnd()-0.5)*drift; th+=v; }
         th-=TP*Math.floor(th/TP); nph[i]=th;
+        // the octave copies run phase accumulators of their own, at half and twice the partial's frequency
+        let kD=-1, kU=-1, thD=0, thU=0;
+        if(od>0){ kD=Math.round(ft*0.5); if(kD>=1){ thD=c.ophD[kD]+frq[k]*shift*0.5; thD-=TP*Math.floor(thD/TP); } else kD=-1; }
+        if(ou>0){ kU=Math.round(ft*2); if(kU<B-1){ thU=c.ophU[kU]+frq[k]*shift*2; thU-=TP*Math.floor(thU/TP); } else kU=-1; }
+        if(od>0 || ou>0){ c.kD[i]=kD; c.kU[i]=kU; c.nphD[i]=thD; c.nphU[i]=thU; }
         for(let j=lo;j<=hi;j++){
           const o=j+D; if(o<0) continue; if(o>=B) break;
           let m=BL[j]*eg*gainAt(j,o); if(m===0) continue;
-          let q;
-          if(avg && !(sine && j>=k-2 && j<=k+2)){ q=this.rnd()*TP; m*=noise; }
-          else {
-            q=th+(PH[j]-PH[k]); if(avg) m*=tonal;
-            if(ph>0){ q+=ph*(this.rnd()-0.5)*TP; m*=gR; }
-          }
-          if(harm>0){
-            // distance from the nearest harmonic, in harmonics; a narrow band (±0.12) is kept around each
-            const h=o/hb, d=h<0.5?1:Math.abs(h-Math.round(h)); e1+=m*m;
-            m*=1-harm+harm*Math.exp(-d*d*70); e2+=m*m;
-          }
-          q-=TP*Math.floor(q/TP);
-          const t=q*TK, ti=t|0, tf=t-ti, ci=(ti+1024)&4095;
-          xr[o]+=m*(sinT[ci]+(sinT[ci+1]-sinT[ci])*tf); xi[o]+=m*(sinT[ti]+(sinT[ti+1]-sinT[ti])*tf);
+          if(avg && !(sine && j>=k-2 && j<=k+2)){ put(o,m*noise,this.rnd()*TP); continue; }
+          const lk=PH[j]-PH[k]; let q=th+lk; if(avg) m*=tonal;
+          if(ph>0){ q+=ph*(this.rnd()-0.5)*TP; m*=gR; }
+          put(o,m,q);
+          if(kD>=0){ const p=kD+j-k; if(p>=1 && p<B) put(p,m*od,thD+lk+(ph>0?ph*(this.rnd()-0.5)*TP:0)); }
+          if(kU>=0){ const p=kU+j-k; if(p>=1 && p<B) put(p,m*ou,thU+lk+(ph>0?ph*(this.rnd()-0.5)*TP:0)); }
         }
       }
       if(prism){ for(let i=0;i<np;i++){ const k=pk[i], v=nph[i]; if(v===v){ iph[k]=v; ipf[k]=fr; } } }
       else for(let i=0;i<np;i++){ const ko=Math.round(pk[i]*shift); if(ko>=B) break; oph[ko]=nph[i]; }
-      // HARMONICS keeps the frame's energy, so the comb changes the colour, not the loudness
-      if(harm>0 && e2>1e-12){ const g=Math.min(4,Math.sqrt(e1/e2)); for(let k=0;k<B;k++){ xr[k]*=g; xi[k]*=g; } }
+      if(od>0 || ou>0) for(let i=0;i<np;i++){ if(Math.round(pk[i]*shift)>=B) break; if(od>0 && c.kD[i]>=0) c.ophD[c.kD[i]]=c.nphD[i]; if(ou>0 && c.kU[i]>=0) c.ophU[c.kU[i]]=c.nphU[i]; }
+      // HARMONICS keeps the frame's energy, so the comb changes the colour, not the loudness; TRACE gives back up to
+      // twice the level it took away
+      let g=1;
+      if(harm>0 && e2>1e-12) g*=Math.min(4,Math.sqrt(e1/e2));
+      if(trTh>0 && eKeep>1e-12) g*=Math.min(2,Math.sqrt(eAll/eKeep));
+      if(g!==1) for(let k=0;k<B;k++){ xr[k]*=g; xi[k]*=g; }
     }
     xi[0]=0; xi[B-1]=0;
   }
@@ -1575,7 +1690,9 @@ class WsPV{
 // input. A segment stops where the next one begins, so hits are never smeared or doubled. When it runs out of
 // material first (always, when the sound is slowed down), LOOP decides what fills the gap: OFF leaves silence, FWD
 // loops its second half, B&F plays that half back and forth. ENVELOPE fades every segment out, as Live's Transient
-// Envelope does (100% = no fade), which also hides the loops.
+// Envelope does (100% = no fade), which also hides the loops. LOOP SIZE sets how much of a segment's end loops (Live
+// loops from the middle: 50%), FADE the crossfade from one segment to the next (short = hard cuts), SWING delays
+// every second grid line (with a grid in PRESERVE).
 class WsBeats{
   constructor(sr){
     this.sr=sr; this.N=1<<17; this.mask=this.N-1; this.bL=new Float32Array(this.N); this.bR=new Float32Array(this.N); this.w=0; this.t0=0;
@@ -1583,11 +1700,11 @@ class WsBeats{
     this.q=new Float64Array(16); this.qh=0; this.qn=0;
     // three readers: the segment playing, a loop joint fading in, and one fading out
     this.rd=[0,1,2].map(()=>({on:0,p:0,d:1,g:0,gs:0,e:1,ph:0,a:0,b:0,s0:0}));
-    this.cur=-1; this.eF=0; this.eS=0; this.cool=0; this.gc=0;
+    this.cur=-1; this.eF=0; this.eS=0; this.cool=0; this.gc=0; this.gi=0;
   }
   reset(){
     this.t0=this.w; this.qh=0; this.qn=0; this.push(this.w); for(const r of this.rd) r.on=0;
-    this.cur=-1; this.eF=0; this.eS=0; this.cool=0; this.gc=0;
+    this.cur=-1; this.eF=0; this.eS=0; this.cool=0; this.gc=0; this.gi=0;
   }
   push(t){ if(this.qn<16){ this.q[(this.qh+this.qn)&15]=t; this.qn++; } }
   free(){ let b=0, bg=Infinity; for(let i=0;i<3;i++){ const r=this.rd[i]; if(!r.on) return i; if(i!==this.cur && r.g<bg){ bg=r.g; b=i; } } return b; }
@@ -1606,7 +1723,8 @@ class WsBeats{
     const trans=gl===0, sens=P.bSens, thr=1.25+4*(1-sens), floor=2e-3*(1.6-sens);
     const kF=1-Math.exp(-1/(0.0015*sr)), kS=1-Math.exp(-1/(0.06*sr)), cool=Math.round(0.05*sr), hold=Math.round(0.4*sr);
     const lp=P.bLoop, ev=P.bEnv, ek=ev>=0.999?1:Math.exp(-1/(0.01*Math.pow(300,ev)*sr)), far=this.N-4096;
-    const guard=Math.max(0,ratio-1)*K+8, Lmin=Math.round(0.03*sr*ratio);
+    const lsz=P.bLSz===undefined?0.5:P.bLSz, guard=Math.max(0,ratio-1)*K+8, Lmin=Math.round(0.03*sr*ratio*Math.min(1,2*lsz));
+    const kx=Math.max(8,Math.round((P.bXf||0.002)*sr)), sw=gl>0?(P.bSw||0):0;
     for(let i=0;i<n;i++){
       const w=this.w; bL[w&mask]=L[i]; bR[w&mask]=R[i];
       if(trans){
@@ -1616,21 +1734,21 @@ class WsBeats{
       this.w=w+1;
       // segment starts: the oldest waiting hit once it is 60 ms old; else the grid; else every 0.4 s, so a held
       // sound without hits keeps moving
-      if(this.qn && w>=this.q[this.qh]+Dl){ const s=this.q[this.qh]; this.qh=(this.qh+1)&15; this.qn--; this.start(s,K>>1); }
+      if(this.qn && w>=this.q[this.qh]+Dl){ const s=this.q[this.qh]; this.qh=(this.qh+1)&15; this.qn--; this.start(s,kx); }
       else if(this.cur>=0 || (!trans && !this.qn)){
         this.gc++;
-        if(!trans && this.gc>=gl) this.start(w-Dl,K>>1);
-        else if(trans && this.gc>=hold) this.start(w-Dl,K*4);
+        if(!trans && this.gc>=gl*(1+((this.gi&1)?-sw:sw))){ this.start(w-Dl,kx); this.gi++; }
+        else if(trans && this.gc>=hold) this.start(w-Dl,Math.max(kx,K*4));
       }
       // where the material of the segment playing ends: the next hit or grid line, or what has been written so far
-      const hi=w-guard, nx=this.qn?this.q[this.qh]:!trans?w+(gl-this.gc)-Dl:Infinity, lim=nx<hi?nx:hi;
+      const hi=w-guard, nx=this.qn?this.q[this.qh]:!trans?w+(gl*(1+((this.gi&1)?-sw:sw))-this.gc)-Dl:Infinity, lim=nx<hi?nx:hi;
       let oL=0, oR=0;
       for(let j=0;j<3;j++){
         const r=rd[j]; if(!r.on) continue;
         if(j===this.cur){
           if(r.ph===0 && r.p>=lim){
             // out of material: OFF fades away, FWD and B&F loop the second half of what was played
-            const b=r.p, a=Math.max(r.s0,Math.min(b-Lmin,(r.s0+b)*0.5));
+            const b=r.p, a=Math.max(r.s0,b-Math.max(Lmin,(b-r.s0)*lsz));
             if(lp==='off' || b-a<16){ r.ph=3; r.gs=-1/K; this.cur=-1; }
             else if(lp==='bf'){ r.ph=2; r.a=a; r.b=b; r.d=-1; }
             else { r.ph=1; r.a=a; r.b=b; }
@@ -1661,13 +1779,14 @@ class WsBeats{
 
 // TEXTURE (after Ableton Live's Texture warp mode): overlapping grains GRAIN long. FLUX scatters their timing,
 // length, start in the past and place in the stereo field; REVERSE plays that share of them backwards, DETUNE gives
-// each its own pitch (up to ± the cents shown), SHIMMER sends that share an octave up. With little FLUX each grain's
+// each its own pitch (up to ± the cents shown), SHIMMER sends that share an octave up, DENSITY sets how many overlap
+// (FLUX adds more), WIDTH how far they spread in the stereo field. With little FLUX each grain's
 // start is searched (as in WSOLA) for the best match with the grain it overlaps, so a pitched sound stays in tune
 // instead of beating at the grain rate; FLUX narrows the search until, at 100%, grains land anywhere.
 class WsTexture{
   constructor(sr){
     this.sr=sr; this.N=1<<18; this.mask=this.N-1; this.bL=new Float32Array(this.N); this.bR=new Float32Array(this.N); this.T=0; this.t0=0;
-    const G=48; this.G=G; this.act=new Uint8Array(G); this.pos=new Float64Array(G); this.inc=new Float32Array(G); this.age=new Float32Array(G);
+    const G=64; this.G=G; this.act=new Uint8Array(G); this.pos=new Float64Array(G); this.inc=new Float32Array(G); this.age=new Float32Array(G);
     this.len=new Float32Array(G); this.gl=new Float32Array(G); this.gr=new Float32Array(G); this.ct=new Float32Array(G); this.next=0;
     this.win=new Float32Array(1026); for(let i=0;i<1026;i++) this.win[i]=0.5-0.5*Math.cos(2*Math.PI*Math.min(i,1024)/1024);
     this.seed=(Math.random()*2147483647)|1; this.lastF=-1; this.lastR=-1; this.rho=0.5;
@@ -1675,7 +1794,7 @@ class WsTexture{
   reset(){ this.act.fill(0); this.t0=this.T; this.next=0; this.lastF=-1; this.lastR=-1; this.rho=0.5; }
   rnd(){ let x=this.seed; x^=x<<13; x^=x>>>17; x^=x<<5; this.seed=x|0; return (x>>>0)/4294967296; }
   spawn(r,P){
-    const sr=this.sr, W=Math.max(0.005,Math.min(0.4,P.txSize))*sr, fx=P.txFlux, ovl=4+4*fx;
+    const sr=this.sr, W=Math.max(0.005,Math.min(0.4,P.txSize))*sr, fx=P.txFlux, ovl=(P.txDens||4)*(1+fx);
     const len=Math.max(32,W*(1+0.9*fx*(this.rnd()*2-1)));
     this.next=Math.max(1,(W/ovl)*(1+0.9*fx*(this.rnd()*2-1)));
     let g=-1; for(let i=0;i<this.G;i++) if(!this.act[i]){ g=i; break; }
@@ -1708,14 +1827,14 @@ class WsTexture{
     this.pos[g]=a; this.inc[g]=sg*inc; this.ct[g]=ct; if(rev) this.lastR=g; else this.lastF=g;
     this.rho+=(rho-this.rho)*0.25;
     this.act[g]=1; this.age[g]=0; this.len[g]=len;
-    const pan=(this.rnd()*2-1)*0.6*fx, pa=(pan+1)*Math.PI/4; this.gl[g]=Math.min(1,Math.cos(pa)*Math.SQRT2); this.gr[g]=Math.min(1,Math.sin(pa)*Math.SQRT2);
+    const pan=(this.rnd()*2-1)*(P.txSpr===undefined?0.25:P.txSpr), pa=(pan+1)*Math.PI/4; this.gl[g]=Math.min(1,Math.cos(pa)*Math.SQRT2); this.gr[g]=Math.min(1,Math.sin(pa)*Math.SQRT2);
   }
   process(L,R,n,ratio,P){
     const mask=this.mask, bL=this.bL, bR=this.bR, wt=this.win, G=this.G;
     const act=this.act, pos=this.pos, inc=this.inc, age=this.age, len=this.len, gl=this.gl, gr=this.gr, t0=this.t0;
     // grains that match add in amplitude, unlike ones (noise, reversed, detuned, scattered) in power: the make-up
     // follows the measured likeness of recent grains
-    const fx=P.txFlux, o=4+4*fx, dec=1-this.rho;
+    const fx=P.txFlux, o=(P.txDens||4)*(1+fx), dec=1-this.rho;
     const gain=Math.pow(2/o,1-dec)*Math.pow(1/Math.sqrt(o*0.375),dec);
     for(let i=0;i<n;i++){
       const T=this.T; bL[T&mask]=L[i]; bR[T&mask]=R[i];
@@ -2751,15 +2870,20 @@ class WsVoice{
   tsApply(c,L,R,n){
     if(c.k==='off') return;
     const E=this.E, P=E.P, r=P.eng==='gr'?P.pitch*this.cl.keyRatio():P.eng==='sp'?P.pitch*this.sp.pr/Math.max(1e-3,this.sp.speed):P.pitch*this.ratio/P.rate, r4=Math.min(4,Math.max(0.25,r));
-    if(c.k==='ps'){ if(!this.ps){ this.ps=new WsPShift(E.sr); this.ps.reset(); } this.ps.process(L,R,n,Math.min(16,Math.max(0.0625,r)),c.win||P.psWin); }
+    if(c.k==='ps'){ if(!this.ps){ this.ps=new WsPShift(E.sr); this.ps.reset(); } this.ps.process(L,R,n,Math.min(16,Math.max(0.0625,r)),c.win||P.psWin,P.psPD,P.psTD); }
     else if(c.k==='gr'){
       if(!this.gr){ this.gr=new WsGrains(E.sr); this.gr.reset(); }
       const w=c.mode==='warp';
-      this.gr.process(L,R,n,w?0:1,Math.min(4,Math.max(0.0625,r)),w?P.w1Win:P.tgWin,w?P.w1Ovl:P.tgOvl,w?P.w1Rand:P.tgRand);
+      this.gr.process(L,R,n,w?0:1,Math.min(4,Math.max(0.0625,r)),w?P.w1Win:P.tgWin,w?P.w1Ovl:P.tgOvl,w?P.w1Rand:P.tgRand,P);
     }
     else if(c.k==='smear'){ if(!this.sm){ this.sm=new WsSmear(E.fft,E.sr); this.sm.reset(); } this.sm.process(L,R,n,P,r4); }
-    else if(c.k==='wsola'){ if(!this.ws){ this.ws=new WsWsola(E.sr); this.ws.reset(); } this.ws.process(L,R,n,r4,c.W,c.rhythmic,c.S); }
-    else if(c.k==='psola'){ if(!this.pso){ this.pso=new WsPsola(E.sr); this.pso.reset(); } this.pso.process(L,R,n,r4); }
+    else if(c.k==='wsola'){
+      if(!this.ws){ this.ws=new WsWsola(E.sr); this.ws.reset(); }
+      // GRAIN scales the grain (in 32-sample steps, so a sweep does not redraw the window every block); SEARCH 50% = as made
+      const W=Math.max(64,32*Math.round(c.W*(P.wsGrain||1)/32)), S=Math.round(c.S*2*(P.wsSrch===undefined?0.5:P.wsSrch));
+      this.ws.process(L,R,n,r4,W,c.rhythmic,S,P);
+    }
+    else if(c.k==='psola'){ if(!this.pso){ this.pso=new WsPsola(E.sr); this.pso.reset(); } this.pso.process(L,R,n,r4,P); }
     else if(c.k==='beats'){ if(!this.bt){ this.bt=new WsBeats(E.sr); this.bt.reset(); } this.bt.process(L,R,n,r4,P,E); }
     else if(c.k==='tex'){ if(!this.tx){ this.tx=new WsTexture(E.sr); this.tx.reset(); } this.tx.process(L,R,n,Math.min(4,Math.max(0.0625,r)),P); }
     else if(c.k==='pv'){
@@ -2871,6 +2995,7 @@ class WsEngine{
     this.P={pos:0.16,size:6,repeat:1,rate:1,scan:0,panRnd:0.2,master:0.8,chan:'both',order:'orig',xf:0.01,curve:'s',morph:false,steps:8,
       ts:'off',pitch:1,psWin:0.1,w1Win:0.08,w1Ovl:4,w1Rand:0.1,tgWin:0.06,tgOvl:6,tgRand:0.3,smBins:4,smFeed:0.3,smFreeze:0,jSize:0,jRev:0,jPos:0,
       tsTr:'auto',bSens:0.5,bEnv:1,bGrid:'trans',bLoop:'fwd',txSize:0.08,txFlux:0.35,txRev:0,txDet:0,txOct:0,sgPh:1,sgSpr:0,sgHarm:0,sgHT:0,sgFrz:0,prShift:0,prStr:0,prBlur:0,hyT:1,hyN:1,
+      psPD:0,psTD:0,w1Shp:0,w1Spr:0,tgPR:0,tgRev:0,smFT:0.093,smDmp:0,wsGrain:1,wsSrch:0.5,wsJit:0,rhSens:0.5,rhPunch:0,psoJit:0,pvSens:0.5,pvDrift:0,pdSm:0.5,exOn:0,exSm:0,sgOD:0,sgOU:0,prTrace:0,hySplit:2.8,txDens:4,txSpr:0.25,bLSz:0.5,bXf:0.002,bSw:0,
       poly:6,atk:0.01,rel:0.4,loop:false,ls:0,le:1,
       dp:'none',mulN:3,divN:2,harmN:4,harmA:0.6,fracN:3,fracA:0.5,refS:'sine',refA:2,pitA:0.5,quiA:2,avgN:4,telN:4,repN:4,delN:2,delS:'first',omB:4,omA:1,revN:4,shuN:1,shuD:'abcd-dcba',envN:8,envS:'fall',envA:1,
       tsQ:'good',fmt:1,fCor:false,scrub:'skip',glide:0.15,dec:0.5,sus:1,
@@ -2888,6 +3013,8 @@ class WsEngine{
     this.tsCfg=WsVoice.tsCfg(this.P,sr); this.ffts={};
     this.pos=this.P.pos; this.data=[]; this.gen=0; this.voices=[]; this.clock=0; this.focus=null;
     this.loaded=false; this.pend=null; this.touch=false;
+    // TOUCH PLAY: a finger on the waveform plays the sample at its own pitch while no key note is held
+    this.tPlay=false; this.tdOn=false; this.tdWait=0; this.tdBlock=false;
     this.gate=0; this.m=0.8; this.L=new Float32Array(4096); this.R=new Float32Array(4096); this.fft=new WsFFT(2048);
     this.noise=0; this.nTarget=0; this.nT=0; this.sizeMult=1;
     this.dxL=0; this.dyL=0; this.dxR=0; this.dyR=0; this.pkL=0; this.pkR=0; this.rc=0; this.sc=0; this.post=null;
@@ -2947,8 +3074,14 @@ class WsEngine{
     else if(m.type==='main'){ this.mLen=m.len>0&&m.on?m.len*this.sr/1000:0; this.mOrg=this.frames-(m.age||0)*this.sr/1000; if(m.bar>0) this.barSec=m.bar/1000; if(m.q>0) this.qSec=m.q/1000; }
     // band-limited copies of the sample for ANTI-ALIAS (made in the page, an octave down each)
     else if(m.type==='mips'){ this.pendMips=m.mips; this.attachMips(); }
-    else if(m.type==='alloff'){ for(const v of this.voices) if(v.id!=='drone') v.release(false); }
-    else if(m.type==='touch') this.touch=!!m.on;
+    else if(m.type==='alloff'){ for(const v of this.voices) if(v.id!=='drone') v.release(false); this.tdStop(true); this.tdBlock=true; }
+    else if(m.type==='touch'){
+      // a finger on the waveform plays the sample from there (note C4, the pitch it was recorded at), unless key
+      // notes are sounding: then it only moves their position. play:false (gesture loops with notes running) never plays
+      this.touch=!!m.on; this.tdWait=0;
+      if(this.touch){ this.tPlay=m.play!==false; this.tdBlock=false; if(this.tPlay && !this.keysHeld()) this.tdStart(); }
+      else { this.tPlay=false; this.tdStop(false); }
+    }
     // extra fingers on the waveform: each is a read position every sounding voice plays as well
     else if(m.type==='tap'){
       let t=null; for(const x of this.taps) if(x.id===m.id){ t=x; break; }
@@ -2987,7 +3120,16 @@ class WsEngine{
     for(const v of this.voices){ v.build(); v.base.reset(); }
     const e=this.early; this.early=[]; for(const a of e) this.noteOn(a[0],a[1],a[2],a[3],a[4]);
   }
+  keysHeld(){ for(const v of this.voices) if(v.state===1 && v.id!=='drone') return true; return false; }
+  tdStart(){ this.noteOn('drone',1,1,60,true); this.tdOn=true; }
+  // a key note takes over at once (15 ms); lifting the finger releases it as a note would
+  tdStop(fast){
+    if(!this.tdOn) return; this.tdOn=false;
+    this.early=this.early.filter(e=>e[0]!=='drone');
+    if(fast){ for(const v of this.voices) if(v.id==='drone' && v.state===1) v.release(true); } else this.noteOff('drone');
+  }
   noteOn(id,ratio,vel,note,drone){
+    if(!drone && this.tdOn) this.tdStop(true);
     const vs=this.voices, P=this.P, sp=P.eng==='sp', cls=sp && P.spMode==='classic';
     if(!vs.length){ this.early.push([id,ratio,vel,note,drone]); return; }   // no sample yet: play once it lands
     // SIMPLER SLICE: a key without a slice is silent
@@ -3058,6 +3200,11 @@ class WsEngine{
   static clip(x){ const a=x<0?-x:x; if(a<=0.85) return x; const y=0.85+0.15*Math.tanh((a-0.85)/0.15); return x<0?-y:y; }
   process(oL,oR,n){
     this.frames+=n;
+    // TOUCH PLAY comes back 120 ms after the last key note is let go, while the finger stays on the waveform
+    if(this.tdOn && this.voices.length && !this.early.length && !this.voices.some(v=>v.id==='drone' && v.state===1)) this.tdOn=false;
+    if(this.touch && this.tPlay && !this.tdOn && !this.tdBlock){
+      if(this.keysHeld()) this.tdWait=0; else if((this.tdWait+=n)>=0.12*this.sr){ this.tdWait=0; this.tdStart(); }
+    }
     if(this.L.length<n){ this.L=new Float32Array(n); this.R=new Float32Array(n); }
     const L=this.L, R=this.R, P=this.P;
     let any=false; for(const v of this.voices) if(v.state){ any=true; break; }
@@ -3638,6 +3785,7 @@ const touching=new Set();
 const DEFAULTS={pos:0.16,size:6,repeat:1,rate:1,scan:0,panRnd:0.2,master:0.8,chan:'both',order:'orig',xf:0.01,curve:'s',morph:false,steps:8,
   ts:'off',pitch:1,psWin:0.1,w1Win:0.08,w1Ovl:4,w1Rand:0.1,tgWin:0.06,tgOvl:6,tgRand:0.3,smBins:4,smFeed:0.3,smFreeze:0,jSize:0,jRev:0,jPos:0,
   tsTr:'auto',bSens:0.5,bEnv:1,bGrid:'trans',bLoop:'fwd',txSize:0.08,txFlux:0.35,txRev:0,txDet:0,txOct:0,sgPh:1,sgSpr:0,sgHarm:0,sgHT:0,sgFrz:0,prShift:0,prStr:0,prBlur:0,hyT:1,hyN:1,
+  psPD:0,psTD:0,w1Shp:0,w1Spr:0,tgPR:0,tgRev:0,smFT:0.093,smDmp:0,wsGrain:1,wsSrch:0.5,wsJit:0,rhSens:0.5,rhPunch:0,psoJit:0,pvSens:0.5,pvDrift:0,pdSm:0.5,exOn:0,exSm:0,sgOD:0,sgOU:0,prTrace:0,hySplit:2.8,txDens:4,txSpr:0.25,bLSz:0.5,bXf:0.002,bSw:0,
   poly:6,atk:0.01,rel:0.4,tuning:'equal',loop:false,ls:0,le:1,tsQ:'good',fmt:1,fCor:false,scrub:'skip',glide:0.15,
   dp:'none',mulN:3,divN:2,harmN:4,harmA:0.6,fracN:3,fracA:0.5,refS:'sine',refA:2,pitA:0.5,quiA:2,avgN:4,telN:4,repN:4,delN:2,delS:'first',omB:4,omA:1,revN:4,shuN:1,shuD:'abcd-dcba',envN:8,envS:'fall',envA:1};
 const REGION=['loop','ls','le','spSl','spEd','spBpm'];   // belongs to the sample (loop region, SIMPLER slices), so presets and INIT leave it alone
@@ -3673,6 +3821,35 @@ const SPECS={
   tgRand:{label:'SCATTER',min:0,max:1,fmt:pct},
   smBins:{label:'BINS',min:1,max:64,exp:1,int:1,fmt:v=>v+' bins'},
   smFeed:{label:'FEED',min:0,max:0.95,fmt:pct},
+  // more for every mode (v31)
+  psPD:{label:'P.DISP',min:0,max:12,fmt:v=>'±'+v.toFixed(1)+' st'},
+  psTD:{label:'T.DISP',min:0,max:1,fmt:pct},
+  w1Shp:{label:'SHAPE',min:0,max:1,fmt:v=>v<0.02?'hann':v<0.49?'flat '+Math.round(v*200)+'%':v<=0.51?'flat':'perc '+Math.round((v-0.5)*200)+'%'},
+  w1Spr:{label:'SPREAD',min:0,max:1,fmt:pct},
+  tgPR:{label:'P.RAND',min:0,max:12,fmt:v=>'±'+v.toFixed(1)+' st'},
+  tgRev:{label:'REVERSE',min:0,max:1,fmt:pct},
+  smFT:{label:'FB TIME',min:0.045,max:0.65,exp:1,fmt:fms},
+  smDmp:{label:'DAMP',min:0,max:1,fmt:pct},
+  wsGrain:{label:'GRAIN',min:0.5,max:2,exp:1,detent:1,fmt:v=>'×'+v.toFixed(2)},
+  wsSrch:{label:'SEARCH',min:0,max:1,detent:0.5,fmt:v=>v<0.005?'off':pct(v)},
+  wsJit:{label:'JITTER',min:0,max:1,fmt:pct},
+  rhSens:{label:'SENS',min:0,max:1,fmt:pct},
+  rhPunch:{label:'PUNCH',min:0,max:1,fmt:v=>'+'+(20*Math.log10(1+3*v)).toFixed(1)+' dB'},
+  psoJit:{label:'ROUGH',min:0,max:1,fmt:pct},
+  pvSens:{label:'SENS',min:0,max:1,fmt:pct},
+  pvDrift:{label:'DRIFT',min:0,max:1,fmt:pct},
+  pdSm:{label:'SMOOTH',min:0,max:1,fmt:pct},
+  exOn:{label:'ONSETS',min:0,max:1,fmt:v=>v<0.005?'off':pct(v)},
+  exSm:{label:'SMOOTH',min:0,max:1,fmt:pct},
+  sgOD:{label:'OCT −1',min:0,max:1,fmt:pct},
+  sgOU:{label:'OCT +1',min:0,max:1,fmt:pct},
+  prTrace:{label:'TRACE',min:0,max:1,fmt:v=>v<0.005?'off':pct(v)},
+  hySplit:{label:'SPLIT',min:1.5,max:8,exp:1,detent:2.8,fmt:v=>'×'+v.toFixed(1)},
+  txDens:{label:'DENSITY',min:2,max:12,detent:4,fmt:v=>'×'+v.toFixed(1)},
+  txSpr:{label:'WIDTH',min:0,max:1,fmt:pct},
+  bLSz:{label:'LOOP SIZE',min:0.05,max:1,detent:0.5,fmt:pct},
+  bXf:{label:'FADE',min:0.0005,max:0.03,exp:1,fmt:fms},
+  bSw:{label:'SWING',min:0,max:0.75,fmt:pct},
   // BEATS, TEXTURE, SPECTRAL, PRISM, HYBRID
   bSens:{label:'SENS',min:0,max:1,fmt:pct},
   bEnv:{label:'ENVELOPE',min:0,max:1,fmt:v=>v>=0.999?'none':pct(v)},
@@ -3746,7 +3923,11 @@ const MOD_GROUPS=[
   ['FX','',[['fxA','FX 1'],['fxB','FX 2']]],
   ['TIME STRETCH','',[['pitch','PITCH'],['fmt','FORMANT'],['psWin','PITCHSHIFT WINDOW'],['w1Win','WARP1 WINDOW'],['w1Ovl','WARP1 OVERLAP'],['w1Rand','WARP1 RAND'],['tgWin','TGRAINS WINDOW'],['tgOvl','TGRAINS DENSITY'],['tgRand','TGRAINS SCATTER'],['smBins','SMEAR BINS'],['smFeed','SMEAR FEED'],['smFreeze','SMEAR FREEZE'],
     ['bSens','BEATS SENS'],['bEnv','BEATS ENVELOPE'],['txSize','TEXTURE GRAIN'],['txFlux','TEXTURE FLUX'],['txRev','TEXTURE REVERSE'],['txDet','TEXTURE DETUNE'],['txOct','TEXTURE SHIMMER'],
-    ['sgPh','SPECTRAL PHASE'],['sgSpr','SPECTRAL SPREAD'],['sgHarm','SPECTRAL HARMONICS'],['sgHT','SPECTRAL H.TUNE'],['sgFrz','SPECTRAL FREEZE'],['prShift','PRISM SHIFT'],['prStr','PRISM STRETCH'],['prBlur','PRISM BLUR'],['hyT','HYBRID TONAL'],['hyN','HYBRID NOISE']]],
+    ['sgPh','SPECTRAL PHASE'],['sgSpr','SPECTRAL SPREAD'],['sgHarm','SPECTRAL HARMONICS'],['sgHT','SPECTRAL H.TUNE'],['sgFrz','SPECTRAL FREEZE'],['prShift','PRISM SHIFT'],['prStr','PRISM STRETCH'],['prBlur','PRISM BLUR'],['hyT','HYBRID TONAL'],['hyN','HYBRID NOISE'],
+    ['psPD','PITCHSHIFT P.DISP'],['psTD','PITCHSHIFT T.DISP'],['w1Shp','WARP1 SHAPE'],['w1Spr','WARP1 SPREAD'],['tgPR','TGRAINS P.RAND'],['tgRev','TGRAINS REVERSE'],['smFT','SMEAR FB TIME'],['smDmp','SMEAR DAMP'],
+    ['wsGrain','WSOLA GRAIN'],['wsSrch','WSOLA SEARCH'],['wsJit','BASIC JITTER'],['rhSens','RHYTHMIC SENS'],['rhPunch','RHYTHMIC PUNCH'],['psoJit','MONO ROUGH'],['pvSens','TRANSIENT SENS'],['pvDrift','PV DRIFT'],['pdSm','PADS SMOOTH'],
+    ['exOn','EXTREME ONSETS'],['exSm','EXTREME SMOOTH'],['sgOD','SPECTRAL OCT −1'],['sgOU','SPECTRAL OCT +1'],['prTrace','PRISM TRACE'],['hySplit','HYBRID SPLIT'],['txDens','TEXTURE DENSITY'],['txSpr','TEXTURE WIDTH'],
+    ['bLSz','BEATS LOOP SIZE'],['bXf','BEATS FADE'],['bSw','BEATS SWING']]],
   ['WAVESET','ws',[['size','SIZE'],['repeat','REPEAT'],['rate','RATE'],['scan','SCAN'],['glide','GLIDE'],['xf','XF LEN'],['steps','STEPS'],['jSize','J.SIZE'],['jRev','J.REV'],['jPos','J.POS'],['panRnd','PAN RND']]],
   ['PROCESS · CDP','ws',[['mulN','MULTIPLY'],['divN','DIVIDE'],['harmN','HARMONICS'],['harmA','HARMONIC ROLLOFF'],['fracN','FRACTAL SCALING'],['fracA','FRACTAL LOUDNESS'],['refA','REFORM EXAGGERATE'],['pitA','PITCH OCTAVES'],['quiA','QUIRK POWER'],['avgN','AVERAGE CYCLES'],['telN','TELESCOPE CYCLES'],['repN','REPLACE CYCLES'],['delN','DELETE CYCLES'],['omA','OMIT A'],['omB','OMIT B'],['revN','REVERSE CYCLES'],['shuN','SHUFFLE CYCLES'],['envN','ENVEL CYCLES'],['envA','ENVEL EXPONENT']]],
   ['SIMPLER','sp',[['spTr','TRANSPOSE'],['spDet','DETUNE'],['spPEnv','PITCH ENV'],['spLen','S LENGTH'],['spLoopLen','LOOP LENGTH'],['spFade','LOOP FADE'],['spGain','GAIN'],['spPan','PAN'],['spSpread','SPREAD'],['spRate','SPEED'],['spFIn','FADE IN'],['spFOut','FADE OUT'],['spGlT','GLIDE TIME']]],
@@ -3900,29 +4081,32 @@ const DIST={
   shuffle:{name:'SHUFFLE',knobs:['shuN'],segs:['shuD'],desc:'<em>DISTORT SHUFFLE</em>. Groups are reordered by a domain-image: <em>abcd-dcba</em> plays four groups backwards, <em>abcd-aacccbdd</em> repeats some and stretches time. Each letter is CYCLES/LETTER wavecycles.'},
   envel:{name:'ENVEL',knobs:['envN','envA'],segs:['envS'],desc:'<em>DISTORT ENVEL</em>. An envelope rising, falling or troughed is imposed on each group of CYCLES wavecycles; EXPONENT bends it.'},
 };
-const TS_KNOBS={off:[],ps:['pitch','psWin'],warp:['pitch','w1Win','w1Ovl','w1Rand'],tg:['pitch','tgWin','tgOvl','tgRand'],smear:['pitch','smBins','smFeed','smFreeze'],
-  basic:['pitch'],mono:['pitch'],rhythmic:['pitch'],general:['pitch','fmt'],poly:['pitch','fmt'],pads:['pitch','fmt'],extreme:['pitch','fmt'],efficient:['pitch'],
-  beats:['pitch','bSens','bEnv'],texture:['pitch','txSize','txFlux','txRev','txDet','txOct'],spectral:['pitch','sgPh','sgSpr','sgHarm','sgHT','sgFrz'],prism:['pitch','prShift','prStr','prBlur'],hybrid:['pitch','fmt','hyT','hyN']};
+const TS_KNOBS={off:[],ps:['pitch','psWin','psPD','psTD'],warp:['pitch','w1Win','w1Ovl','w1Rand','w1Shp','w1Spr'],tg:['pitch','tgWin','tgOvl','tgRand','tgPR','tgRev'],
+  smear:['pitch','smBins','smFeed','smFreeze','smFT','smDmp'],
+  basic:['pitch','wsGrain','wsSrch','wsJit'],mono:['pitch','fmt','psoJit'],rhythmic:['pitch','wsGrain','rhSens','rhPunch'],general:['pitch','fmt','pvSens','pvDrift'],
+  poly:['pitch','fmt','pvSens','pvDrift'],pads:['pitch','fmt','pdSm','pvDrift','pvSens'],extreme:['pitch','fmt','exOn','exSm'],efficient:['pitch','wsGrain','wsSrch'],
+  beats:['pitch','bSens','bEnv','bLSz','bXf','bSw'],texture:['pitch','txSize','txFlux','txDens','txRev','txDet','txOct','txSpr'],
+  spectral:['pitch','sgPh','sgSpr','sgHarm','sgHT','sgFrz','sgOD','sgOU'],prism:['pitch','prShift','prStr','prBlur','prTrace'],hybrid:['pitch','fmt','hyT','hyN','hySplit','pvSens']};
 const TS_Q=['basic','rhythmic','general','poly','pads','extreme','spectral','prism','hybrid'], TS_PV=['general','poly','pads','extreme','spectral','prism','hybrid'], TS_TR=['general','poly','pads','hybrid'];
 const TS_DESC={
   off:'Varispeed. <em>RATE</em> and the keys change speed and pitch together: higher keys read the sample faster. Pick another mode to keep the duration and transpose only.',
-  ps:'Delay-line pitch shifter on the waveset stream. <em>RATE</em> now sets speed only and <em>PITCH</em> the transposition. Longer windows sound smoother but blur attacks.',
-  warp:'Overlapping Hann grains follow the stream, like Warp1. <em>PITCH</em> transposes, <em>WINDOW</em> sets grain length, <em>OVERLAP</em> the number of grains, <em>RAND</em> jitters their timing and length.',
-  tg:'Scattered grains, like TGrains. Each grain starts up to 0.75 s back in time and lands somewhere in the stereo field; <em>SCATTER</em> sets how far.',
-  smear:'2048-point phase vocoder. <em>BINS</em> averages neighbouring magnitudes, <em>FREEZE</em> holds the spectrum, <em>FEED</em> sends the output back in after 50 ms, <em>PITCH</em> moves the bins.',
-  basic:'<em>BASIC</em> (Max stretch~), made here as WSOLA: overlapping grains read at the new pitch, each placed where it best continues the one before, so they add without phasing. A good default.',
-  mono:'<em>MONOPHONIC</em>: pitch-synchronous grains (PSOLA), two cycles long, cut at the stream\u2019s own zero crossings. For one voice or one line: clean, and the formants stay put.',
-  rhythmic:'<em>RHYTHMIC</em>: short grains, and every transient starts a grain of its own exactly on time, so hits stay sharp and are not doubled.',
-  general:'<em>GENERAL</em>: phase vocoder with the phases locked around each partial, reset to the input\u2019s on transients. A balance of clean partials and attacks.',
-  poly:'<em>POLYPHONIC</em>: phase vocoder with a longer window and finer frequency resolution, so chords and several notes stay apart.',
-  pads:'<em>PADS</em>: long-window phase vocoder with the spectrum smoothed over time; it prefers smoothness to attacks.',
-  extreme:'<em>EXTREMESTRETCH</em>: very long windows with random phases, as in Paulstretch: the sound becomes a still, blurred texture. Best with slow RATE or SCAN.',
-  efficient:'<em>EFFICIENT</em>: short grains with a narrow search; the lowest CPU of the Max modes.',
-  beats:'<em>BEATS</em> (after Ableton Live): the sound is cut at its hits, or on the clock\u2019s grid (<em>PRESERVE</em> 1/4 \u2026 1/32), and every piece plays from its start at the original speed and pitch, so drums keep their attack at any RATE. <em>SENS</em> sets how quiet a hit can be and still count. When a piece runs out before the next one starts (always, when slowed down), <em>LOOP</em> fills the gap: OFF leaves silence, FWD loops its second half, B&amp;F plays that half back and forth. <em>ENVELOPE</em> fades every piece out (100% = no fade), which also hides the loops. It plays 60 ms behind the keys, to see each hit coming.',
-  texture:'<em>TEXTURE</em> (after Ableton Live): a cloud of overlapping grains, for pads, noise and sounds without clear pitch. <em>GRAIN</em> sets their length; <em>FLUX</em> how irregular they are in time, length, place in the past and in the stereo field. <em>REVERSE</em> plays that share of the grains backwards, <em>DETUNE</em> gives each one its own pitch (up to \u00b1 the cents shown), <em>SHIMMER</em> sends that share an octave up.',
-  spectral:'<em>SPECTRAL</em> (after PaulXStretch): a long-window phase vocoder. <em>PHASE</em> goes from locked (clean partials) to random (Paulstretch\u2019s endless smear). <em>SPREAD</em> blurs each partial into a band of noise. <em>HARMONICS</em> keeps only narrow bands on the harmonics of the key you play, so any sound, even noise, sings that note; <em>H.TUNE</em> moves them. <em>FREEZE</em> holds the spectrum (all of it above 50%).',
-  prism:'<em>PRISM</em> (after CDP\u2019s spectral STRETCH, SHIFT and BLUR): every partial is moved on its own. <em>SHIFT</em> adds the same number of hertz to all of them, which breaks the harmonic series into bells and metal; <em>STRETCH</em> widens (+) or narrows (\u2212) the spacing of the partials above the sound\u2019s lowest strong one, which stays put; <em>BLUR</em> averages the spectrum over time, from 20 ms to 3 s.',
-  hybrid:'<em>HYBRID</em> (after the noise-morphing method from Aalto University): peaks that stand out are treated as sines and keep locked phases; the rest is noise and gets new random phases every frame, so stretched breath, cymbals and room stay noise instead of turning metallic. <em>TONAL</em> and <em>NOISE</em> set the level of each part: take the noise away for pure tones, or the tones away for a whisper.'
+  ps:'Delay-line pitch shifter on the waveset stream (SuperCollider’s PitchShift). <em>RATE</em> now sets speed only and <em>PITCH</em> the transposition. Longer windows sound smoother but blur attacks. As in PitchShift, <em>P.DISP</em> gives every grain a random pitch of its own (± the semitones shown: chorus, then clouds) and <em>T.DISP</em> a random delay of up to one window (smear, rough doubling).',
+  warp:'Overlapping grains follow the stream, like Warp1. <em>PITCH</em> transposes, <em>WINDOW</em> sets grain length, <em>OVERLAP</em> the number of grains, <em>RAND</em> jitters their timing and length. <em>SHAPE</em> draws the grain window, as Warp1’s envelope buffer does: Hann at 0, flatter up to 50% (fuller, buzzier), then percussive up to 100% (a fast attack and a decay: grains become ticks and stutters). <em>SPREAD</em> scatters the grains in the stereo field.',
+  tg:'Scattered grains, like TGrains. Each grain starts up to 0.75 s back in time and lands somewhere in the stereo field; <em>SCATTER</em> sets how far. <em>P.RAND</em> gives every grain its own pitch (± the semitones shown, as a random TGrains rate) and <em>REVERSE</em> plays that share of the grains backwards.',
+  smear:'2048-point phase vocoder. <em>BINS</em> averages neighbouring magnitudes, <em>FREEZE</em> holds the spectrum, <em>FEED</em> sends the output back in, to come round again every <em>FB TIME</em> (45 ms \u2026 0.65 s: from comb-like resonance to spectral echoes), <em>DAMP</em> darkens every pass, as a tape echo loses its highs. <em>PITCH</em> moves the bins.',
+  basic:'<em>BASIC</em> (Max stretch~), made here as WSOLA: overlapping grains read at the new pitch, each placed where it best continues the one before, so they add without phasing. A good default. <em>GRAIN</em> scales the grain length (shorter: tighter attacks; longer: smoother tones), <em>SEARCH</em> how far a grain may move to match (off = plain overlapping grains, phasey), <em>JITTER</em> pulls every grain back in time by a random amount (rough, chorused).',
+  mono:'<em>MONOPHONIC</em>: pitch-synchronous grains (PSOLA), two cycles long, cut at the stream’s own zero crossings. For one voice or one line: clean, and the formants stay put. <em>FORMANT</em> reads every grain faster or slower, which moves the formants without changing the pitch (a smaller or larger throat); <em>ROUGH</em> jitters the spacing of the grains, for a hoarse, rough voice.',
+  rhythmic:'<em>RHYTHMIC</em>: short grains, and every transient starts a grain of its own exactly on time, so hits stay sharp and are not doubled. <em>GRAIN</em> scales the grain length, <em>SENS</em> sets how quiet a hit can be and still count, <em>PUNCH</em> lifts the first 12 ms of every hit (up to +12 dB).',
+  general:'<em>GENERAL</em>: phase vocoder with the phases locked around each partial, reset to the input’s on transients. A balance of clean partials and attacks. <em>SENS</em> sets how sudden a change must be to count as a transient; <em>DRIFT</em> lets every partial wander a few hertz on its own, which spreads one sound into an ensemble.',
+  poly:'<em>POLYPHONIC</em>: phase vocoder with a longer window and finer frequency resolution, so chords and several notes stay apart. <em>DRIFT</em> lets every partial wander a little on its own (an ensemble); <em>SENS</em> works with TRANSIENTS set to CRISP or MIXED.',
+  pads:'<em>PADS</em>: long-window phase vocoder with the spectrum smoothed over time; it prefers smoothness to attacks. <em>SMOOTH</em> sets how slowly the spectrum follows the sound (high: a slow, blooming wash), <em>DRIFT</em> lets the partials wander (an ensemble); <em>SENS</em> works with TRANSIENTS set to CRISP or MIXED.',
+  extreme:'<em>EXTREMESTRETCH</em>: very long windows with random phases, as in Paulstretch: the sound becomes a still, blurred texture. Best with slow RATE or SCAN. <em>ONSETS</em> (PaulXStretch’s onset detection) keeps the input’s phases on sudden frames, so attacks survive the smear; <em>SMOOTH</em> makes the spectrum follow the sound more slowly.',
+  efficient:'<em>EFFICIENT</em>: short grains with a narrow search; the lowest CPU of the Max modes. <em>GRAIN</em> scales the grain length, <em>SEARCH</em> how far a grain may move to match.',
+  beats:'<em>BEATS</em> (after Ableton Live): the sound is cut at its hits, or on the clock’s grid (<em>PRESERVE</em> 1/4 … 1/32), and every piece plays from its start at the original speed and pitch, so drums keep their attack at any RATE. <em>SENS</em> sets how quiet a hit can be and still count. When a piece runs out before the next one starts (always, when slowed down), <em>LOOP</em> fills the gap: OFF leaves silence, FWD loops its end, B&amp;F plays it back and forth; <em>LOOP SIZE</em> sets how much of the end loops (50% = from the middle, as in Live). <em>ENVELOPE</em> fades every piece out (100% = no fade), which also hides the loops. <em>FADE</em> is the crossfade from one piece to the next (short: hard cuts), <em>SWING</em> delays every second grid line. It plays 60 ms behind the keys, to see each hit coming.',
+  texture:'<em>TEXTURE</em> (after Ableton Live): a cloud of overlapping grains, for pads, noise and sounds without clear pitch. <em>GRAIN</em> sets their length; <em>FLUX</em> how irregular they are in time, length and place in the past; <em>DENSITY</em> how many overlap. <em>REVERSE</em> plays that share of the grains backwards, <em>DETUNE</em> gives each one its own pitch (up to ± the cents shown), <em>SHIMMER</em> sends that share an octave up, <em>WIDTH</em> spreads them in the stereo field.',
+  spectral:'<em>SPECTRAL</em> (after PaulXStretch): a long-window phase vocoder. <em>PHASE</em> goes from locked (clean partials) to random (Paulstretch’s endless smear). <em>SPREAD</em> blurs each partial into a band of noise. <em>HARMONICS</em> keeps only narrow bands on the harmonics of the key you play, so any sound, even noise, sings that note; <em>H.TUNE</em> moves them. <em>FREEZE</em> holds the spectrum (all of it above 50%). <em>OCT −1</em> and <em>OCT +1</em> (PaulXStretch’s octave mixer) add every partial an octave down and up, for organ-like depth and shine.',
+  prism:'<em>PRISM</em> (after CDP’s spectral STRETCH, SHIFT, BLUR and TRACE): every partial is moved on its own. <em>SHIFT</em> adds the same number of hertz to all of them, which breaks the harmonic series into bells and metal; <em>STRETCH</em> widens (+) or narrows (−) the spacing of the partials above the sound’s lowest strong one, which stays put; <em>BLUR</em> averages the spectrum over time, from 20 ms to 3 s; <em>TRACE</em> keeps only the strongest partials, down to the loudest one alone: a sound becomes a few clean sines.',
+  hybrid:'<em>HYBRID</em> (after the noise-morphing method from Aalto University): peaks that stand out are treated as sines and keep locked phases; the rest is noise and gets new random phases every frame, so stretched breath, cymbals and room stay noise instead of turning metallic. <em>TONAL</em> and <em>NOISE</em> set the level of each part: take the noise away for pure tones, or the tones away for a whisper. <em>SPLIT</em> sets how far a peak must stand out to count as a sine (low: more is tone; high: more is noise); <em>SENS</em> how sudden a transient must be.'
 };
 const TS_FOOT=' <em>QUALITY</em> sets the window length (longer is smoother, slower to react). <em>FORMANT</em> moves the spectral envelope; <em>FORMANTS</em> KEEP holds it in place when you transpose, so voices keep their character.';
 const TS_FOOT_NF=' <em>QUALITY</em> sets the window length (longer is smoother, slower to react). <em>FORMANTS</em> KEEP holds the spectral envelope in place when you transpose.';
@@ -4098,7 +4282,9 @@ function makeSeg(key,host,opts){
 ['poly','atk','dec','sus','rel'].forEach(k=>makeKnob(k,$('#k-keys')));
 makeSeg('tuning',$('#seg-tuning'),[['equal','EQUAL','Equal temperament'],['just','JUST','Just intonation, 5-limit']]);
 ['pitch','psWin','w1Win','w1Ovl','w1Rand','tgWin','tgOvl','tgRand','smBins','smFeed','smFreeze','fmt','bSens','bEnv','txSize','txFlux','txRev','txDet','txOct',
-  'sgPh','sgSpr','sgHarm','sgHT','sgFrz','prShift','prStr','prBlur','hyT','hyN'].forEach(k=>makeKnob(k,$('#k-ts')));
+  'sgPh','sgSpr','sgHarm','sgHT','sgFrz','prShift','prStr','prBlur','hyT','hyN',
+  'psPD','psTD','w1Shp','w1Spr','tgPR','tgRev','smFT','smDmp','wsGrain','wsSrch','wsJit','rhSens','rhPunch','psoJit','pvSens','pvDrift','pdSm','exOn','exSm',
+  'sgOD','sgOU','prTrace','hySplit','txDens','txSpr','bLSz','bXf','bSw'].forEach(k=>makeKnob(k,$('#k-ts')));
 // dropdowns: same contract as a segmented control (P[key], changed, render, disable)
 function makeSelect(key,sel,groups){
   for(const [glabel,opts] of groups){
@@ -4154,10 +4340,16 @@ function renderMorph(){
 morphBtn.addEventListener('click',()=>{ P.morph=!P.morph; renderMorph(); changed('morph',!P.morph); });
 
 function updateTS(){
-  const show=TS_KNOBS[P.ts]||[];
+  const show=TS_KNOBS[P.ts]||[], kh=$('#k-ts');
   [...new Set(Object.values(TS_KNOBS).flat())].forEach(k=>{ knobs[k].el.hidden=!show.includes(k); });
+  // each mode's knobs in its own order (shared ones such as PITCH and SENS sit where that mode wants them)
+  if(kh.dataset.mode!==P.ts){ kh.dataset.mode=P.ts; show.forEach(k=>kh.appendChild(knobs[k].el)); }
   $('#c-tsQ').hidden=!TS_Q.includes(P.ts); $('#c-fCor').hidden=!TS_PV.includes(P.ts); $('#c-tsTr').hidden=!TS_TR.includes(P.ts);
   $('#c-bGrid').hidden=$('#c-bLoop').hidden=P.ts!=='beats'; knobs.bSens.el.classList.toggle('off',P.bGrid!=='trans');
+  // controls that do nothing in the present setting are dimmed: SWING without a grid, the transient SENS when the
+  // mode's TRANSIENTS come out SMOOTH, LOOP SIZE with LOOP OFF
+  knobs.bSw.el.classList.toggle('off',P.bGrid==='trans'); knobs.bLSz.el.classList.toggle('off',P.bLoop==='off');
+  const trE=P.tsTr!=='auto'?P.tsTr:(P.ts==='general'||P.ts==='hybrid'?'crisp':'smooth'); knobs.pvSens.el.classList.toggle('off',trE==='smooth');
   $('#d-ts').innerHTML=(TS_DESC[P.ts]||'')+(TS_PV.includes(P.ts)?(show.includes('fmt')?TS_FOOT:TS_FOOT_NF):TS_Q.includes(P.ts)?' <em>QUALITY</em> sets the grain length.':'')+(TS_TR.includes(P.ts)?TS_TRF:'');
 }
 function renderScrub(){ knobs.glide.el.classList.toggle('off',P.scrub!=='fluid'); }
@@ -4179,7 +4371,7 @@ function afterParam(J,key){
   if(['grMode','fxT','l1Sync','l2Sync','loop','ls','le'].includes(key)) renderGrUI();
   if(/^r\d+[SD]$/.test(key)) renderRoutes();
   if(key==='grSides'||key==='grTilt'||key==='grCurve') drawWinPic();
-  if(key==='ts'||key==='bGrid') updateTS();
+  if(key==='ts'||key==='bGrid'||key==='bLoop'||key==='tsTr') updateTS();
   if(key==='scrub') renderScrub();
   if(key==='dp'||key==='refS') updateDist();
   if(key==='order'||key==='chan') { baseDirty=true; ovDirty=true; }
@@ -5420,6 +5612,14 @@ function fracAt(x,w){
   return Math.min(1,Math.max(0,f));
 }
 function posFromX(x,w){ P.pos=fracAt(x,w); send({type:'params',p:{pos:P.pos}}); dirty=true; gRecord(I,{k:'p',key:'pos',v:P.pos}); markState(); }
+// TOUCH PLAY: the first finger on the waveform also plays the sample (the engine decides: not while key notes
+// sound, and never while this player's gesture loops play notes). The first touch can start the audio.
+function gLoopNotes(J){ const G=J.G; return !!G.play && G.layers.some(L=>!L.mute && L.ev.some(e=>e.k==='on'||e.k==='fon')); }
+function touchOn(){
+  const J=I, go=()=>sendTo(J.i,{type:'touch',on:true,play:!gLoopNotes(J)});
+  if(!ctx || ctx.state!=='running' || !nodeReady){ audioFromGesture().then(ok=>{ if(ok && baseHeld && I===J) go(); }); }
+  else go();
+}
 function endScrub(){ clearTimeout(promoT); if(!baseHeld) return; baseHeld=false; waveDrag=null; touching.delete('pos'); send({type:'touch',on:false}); gRecord(I,{k:'touch',on:false}); }
 function tapOn(pid,x,w){
   const id='t'+(++tapSeq), pos=fracAt(x,w);
@@ -5502,7 +5702,7 @@ wave.addEventListener('pointerdown',e=>{
     return;
   }
   if(P.eng==='sp' && P.spMode==='slice'){ slDown(e.pointerId,x,y,r.width); return; }
-  if(!baseHeld){ baseHeld=true; waveDrag=e.pointerId; touching.add('pos'); gRecord(I,{k:'touch',on:true}); posFromX(x,r.width); send({type:'touch',on:true}); return; }
+  if(!baseHeld){ baseHeld=true; waveDrag=e.pointerId; touching.add('pos'); gRecord(I,{k:'touch',on:true}); posFromX(x,r.width); touchOn(); return; }
   if(P.eng==='sp') return;   // SIMPLER: one finger sets where notes start
   let mine=0; for(const t of liveTaps.values()) if(t.inst===cur) mine++;
   if(mine<MAX_FINGERS-1) tapOn(e.pointerId,x,r.width);
@@ -6083,6 +6283,45 @@ window.addEventListener('blur',()=>{ if(!hold){ qwDown.forEach(m=>noteOff(m)); }
 const keysBtn=$('#keys-btn');
 function syncDock(){ document.documentElement.style.setProperty('--dock-h',(dock.hidden?0:dock.offsetHeight)+'px'); if(!dock.hidden && keysEl.clientWidth && Math.abs(keysEl.clientWidth-lastKeysW)>40) buildKeys(); }
 new ResizeObserver(syncDock).observe(dock);
+// HOME-SCREEN APP (iOS): WebKit can keep a shrunken viewport after the on-screen keyboard closes, after a rotation
+// or after the screen is unlocked, and then the fixed keyboard dock floats partway up the screen. After those moments
+// (and whenever a finger lifts while the dock is not at the bottom) the page is made to measure the viewport again:
+// the full-height <body> leaves the layout for an instant and comes back, which is what restores it, with the scroll
+// position kept. The tallest height seen at the current width is the bottom the dock belongs to.
+const STANDALONE=(()=>{ try{ return navigator.standalone===true || matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches; }catch(e){ return false; } })();
+let vpW=innerWidth, vpMax=innerHeight, vpT=[]; const vpDown=new Set();
+function vpNote(){ if(Math.abs(innerWidth-vpW)>2){ vpW=innerWidth; vpMax=innerHeight; } else if(innerHeight>vpMax) vpMax=innerHeight; }
+function typingNow(){ const a=document.activeElement; if(!a || a===document.body) return false; if(a.tagName==='TEXTAREA' || a.isContentEditable) return true;
+  return a.tagName==='INPUT' && !/^(button|checkbox|radio|range|file|color|submit|reset)$/i.test(a.type||''); }
+function dockLow(){ if(dock.hidden) return false; const b=dock.getBoundingClientRect().bottom; return b<Math.max(vpMax,innerHeight)-4; }
+function vpReflow(){
+  const sx=scrollX, sy=scrollY, b=document.body;
+  b.style.display='none'; void b.offsetHeight; b.style.display=''; void b.offsetHeight;
+  scrollTo(sx,Math.min(sy,Math.max(0,document.documentElement.scrollHeight-innerHeight)));
+}
+function vpHeal(force,accept){
+  vpNote();
+  if(typingNow() || vpDown.size) return false;
+  // a page scrolled past its end (the keyboard leaves that behind) is pulled back first
+  const maxY=Math.max(0,document.documentElement.scrollHeight-innerHeight); if(scrollY>maxY+1) scrollTo(scrollX,maxY);
+  const vv=window.visualViewport, short=innerHeight<vpMax-4 || (vv && vv.scale<1.01 && vv.height<innerHeight-4);
+  if(!(force || (STANDALONE && (short || dockLow())))) return false;
+  vpReflow(); vpNote(); syncDock();
+  // still shorter after the last try: that is the real height now (a resized window), so it is not tried again
+  if(accept && innerHeight<vpMax-4) vpMax=innerHeight;
+  return true;
+}
+function vpSoon(){ vpT.forEach(clearTimeout); vpT=[150,500,1200].map((ms,i)=>setTimeout(()=>vpHeal(false,i===2),ms)); }
+window.addEventListener('resize',()=>{ vpNote(); vpSoon(); });
+window.addEventListener('orientationchange',vpSoon);
+window.addEventListener('pageshow',vpSoon);
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') vpSoon(); });
+document.addEventListener('focusout',e=>{ const t=e.target; if(t && (t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable)) vpSoon(); },true);
+if(window.visualViewport) visualViewport.addEventListener('resize',()=>{ if(!typingNow()) vpSoon(); });
+document.addEventListener('pointerdown',e=>{ vpDown.add(e.pointerId); },true);
+const vpUp=e=>{ vpDown.delete(e.pointerId); if(!vpDown.size && STANDALONE && !typingNow() && dockLow()) setTimeout(()=>vpHeal(false,true),60); };
+document.addEventListener('visibilitychange',()=>vpDown.clear());
+document.addEventListener('pointerup',vpUp,true); document.addEventListener('pointercancel',vpUp,true);
 function setKeys(on){ dock.hidden=!on; keysBtn.setAttribute('aria-pressed',String(on)); try{ localStorage.setItem('wavesetPlayer.keys',on?'1':'0'); }catch(e){} if(!on) allOff(); syncDock(); if(on) buildKeys(); }
 keysBtn.addEventListener('click',()=>setKeys(dock.hidden));
 
@@ -6221,7 +6460,7 @@ function gChase(J,L,k,now){
     else if(!hasT && e.k==='touch'){ tc=e.on; hasT=true; }
   }
   if(hasV) gSetP(J,k,v);
-  if(k==='pos' && tc!==undefined && tc!==J.G.touchOn){ J.G.touchOn=tc; sendTo(J.i,{type:'touch',on:tc}); }
+  if(k==='pos' && tc!==undefined && tc!==J.G.touchOn){ J.G.touchOn=tc; sendTo(J.i,{type:'touch',on:tc,play:!gLoopNotes(J)}); }
 }
 // MAIN-length layers that join mid-cycle set their controls to where they are on the grid right away
 function gChaseIn(J,list,now){
@@ -6266,7 +6505,7 @@ function gFire(J,L,e){
     if(gOwner(G,e.key)!==L) return;   // a later layer recorded this control
     gSetP(J,e.key,e.v);
   }
-  else if(e.k==='touch'){ if(gOwner(G,'pos')===L && !(mine && touching.has('pos'))){ G.touchOn=e.on; sendTo(J.i,{type:'touch',on:e.on}); } }
+  else if(e.k==='touch'){ if(gOwner(G,'pos')===L && !(mine && touching.has('pos'))){ G.touchOn=e.on; sendTo(J.i,{type:'touch',on:e.on,play:!gLoopNotes(J)}); } }
   else if(e.k==='on') gNote(J,L,e.n,e.vel,true);
   else if(e.k==='off') gNote(J,L,e.n,0,false);
   else if(e.k==='fon'){ const f={id:'g'+L.id+':'+e.id,p:e.p,vel:e.vel,el:null}; const o=L.free.get(e.id); if(o&&o.el) o.el.remove(); L.free.set(e.id,f); if(mine) freeDot(f,true); sendTo(J.i,{type:'on',id:f.id,note:Math.round(e.p),ratio:ratioOfP(e.p,J.P),vel:e.vel}); }
@@ -7917,7 +8156,7 @@ keysBtn.addEventListener('click',()=>setTimeout(secApply,0));
 let secW=innerWidth; window.addEventListener('resize',()=>{ if(innerWidth!==secW){ secW=innerWidth; secBase.clear(); secApply(); } });
 secReady=true; secApply();
 
-window.__ws={get tabOrder(){ return tabOrder.slice(); },get secAll(){ return {inst:inst.map(J=>[...J.secs].sort()),page:[...secGlobal].sort(),keys:!dock.hidden}; },get aud(){ return {AUD,broken:audioBroken,wake:!!wakeLock,bg:!!(bgEl&&!bgEl.paused)}; },heal:()=>audioHeal(),breakAudio:()=>{ audioBroken=true; renderAudioState(); },get secs(){ return {min:[...I.secs,...secGlobal],solo:I.secSolo}; },get ctx(){ return ctx; },get nodeReady(){ return nodeReady; },inst,M,ed:{ED,EL,model:()=>{ const L=edLayer(); return L?edModel(L):null; },geo:()=>edGeo(),rows:()=>{ const L=edLayer(); return L?edRows(edModel(L)):null; },posRange:()=>edPosRange(),ctlRange:()=>edCtlRange(),targets:()=>edTargets(),tx:(t)=>{ const L=edLayer(); return edTX(edGeo(),t,L.src.S); },yv:v=>edYV(edGeo(),v),yu:u=>edYU(edGeo(),u)},get cur(){ return cur; },snapshot,selectInst,restoreSession,sessionZip,unzip,undo,redo,get undoN(){ return undoStack.length; },takeZip,get takes(){ return takes; }};
+window.__ws={vpHeal,get vp(){ return {STANDALONE,vpMax,vpW,low:dockLow()}; },get tabOrder(){ return tabOrder.slice(); },get secAll(){ return {inst:inst.map(J=>[...J.secs].sort()),page:[...secGlobal].sort(),keys:!dock.hidden}; },get aud(){ return {AUD,broken:audioBroken,wake:!!wakeLock,bg:!!(bgEl&&!bgEl.paused)}; },heal:()=>audioHeal(),breakAudio:()=>{ audioBroken=true; renderAudioState(); },get secs(){ return {min:[...I.secs,...secGlobal],solo:I.secSolo}; },get ctx(){ return ctx; },get nodeReady(){ return nodeReady; },inst,M,ed:{ED,EL,model:()=>{ const L=edLayer(); return L?edModel(L):null; },geo:()=>edGeo(),rows:()=>{ const L=edLayer(); return L?edRows(edModel(L)):null; },posRange:()=>edPosRange(),ctlRange:()=>edCtlRange(),targets:()=>edTargets(),tx:(t)=>{ const L=edLayer(); return edTX(edGeo(),t,L.src.S); },yv:v=>edYV(edGeo(),v),yu:u=>edYU(edGeo(),u)},get cur(){ return cur; },snapshot,selectInst,restoreSession,sessionZip,unzip,undo,redo,get undoN(){ return undoStack.length; },takeZip,get takes(){ return takes; }};
 })();
 // ==/UI==
 </script>
