@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>CRGT Sample Workstation</title>
-<meta name="crgt-offline" content="v29">
+<meta name="crgt-offline" content="v35">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -23,7 +23,8 @@
    at reduced opacity, never new hues. One palette on every device, whatever the system or viewer theme: Black Beauty
    and Printer's Ink surfaces with Cloud Dancer (Color of the Year 2026) ink. One warm accent (Brandied Melon, the
    terracotta family) marks what you change; blue marks where the sound is, green the loop, violet the grains, red
-   recording. Surfaces are flat colour blocks separated by hairlines; the only shadows lift the floating windows.
+   recording. Surfaces are flat colour blocks separated by hairlines; the only shadows lift the floating windows,
+   which have a cooler slate palette of their own (Total Eclipse, Dark Sapphire, Ombre Blue: see the v35 block).
    Type follows Claude's own pairing with open faces: Lora, the closest free match to its Tiempos serif, for names
    and reading text; Inter, the usual stand-in for its Styrene sans, for controls; JetBrains Mono, its code face,
    for every number, so changing values never change width. */
@@ -712,6 +713,30 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
 .aux-pre{gap:6px}
 .aux-pre .btn{min-width:0;padding:0 9px}
 @media (max-width:1179px){.tabs-side.clock{flex:1 1 100%}}
+/* ===== v35: the pop-up windows have a palette of their own ===== */
+/* Every floating window (FX, LFO, MATRIX, SHAPE, the gesture editor), every sheet (help, sessions, save) and the
+   sample-rate pop-over sits on a cooler, deeper slate than the instrument behind it: PANTONE blue-blacks and slate
+   greys from the same Fashion, Home + Interiors book, with the same Cloud Dancer ink and Brandied Melon accent, so a
+   window reads as a layer of its own and still belongs to the same family. The tokens are redefined on the window,
+   so everything inside it (knobs, menus, buttons, the patch) takes them up. */
+.fwin,.sheet-card,.rate-pop{
+  --bg:#262B37;        /* PANTONE 19-4020 TCX Dark Sapphire */
+  --panel:#2D313D;     /* PANTONE 19-4010 TCX Total Eclipse */
+  --inset:#262B37;     /* PANTONE 19-4020 TCX Dark Sapphire */
+  --head:#282D3C;      /* PANTONE 19-3923 TCX Navy Blazer */
+  --line:#434854;      /* PANTONE 19-4014 TCX Ombre Blue */
+  --edge:#4E545B;      /* PANTONE 19-4215 TCX Turbulence */
+  --muted:#98A0A5;     /* PANTONE 15-4305 TCX Quarry */
+  --dim:#7F8792;       /* PANTONE 15-4307 TCX Tradewinds */
+  --on-bg:#434854;     /* PANTONE 19-4014 TCX Ombre Blue */
+  --lane-w:#2D313D;    /* PANTONE 19-4010 TCX Total Eclipse */
+  --lane-b:#262B37;    /* PANTONE 19-4020 TCX Dark Sapphire */
+  --lane-edge:#434854; /* PANTONE 19-4014 TCX Ombre Blue */
+  --lift:0 1px 2px rgba(12,16,26,.4),0 18px 44px rgba(12,16,26,.6);
+  --sel-arrow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2398A0A5' stroke-width='1.4'/%3E%3C/svg%3E");
+  background:var(--panel);border-color:var(--edge);color:var(--ink);box-shadow:var(--lift)}
+.fwin .fw-h{background:var(--head)}
+.fwin.drag{border-color:var(--accent)}
 </style>
 
 <div class="wrap">
@@ -2717,7 +2742,7 @@ class GrFx{
   constructor(sr){
     this.sr=sr;
     this.fx='none'; this.fxPrev='none'; this.fxX=0; this.A=new Float32Array(128); this.B=new Float32Array(128);
-    this.dl=null; this.dr=null; this.dw=0; this.dt=0.3*sr; this.dlp=[0,0];
+    this.dl=null; this.dr=null; this.dw=0; this.dt=-1; this.dlp=[0,0]; this.rhx=[0,0]; this.rhy=[0,0];
     this.dsl=0; this.dsr=0; this.rh=[0,0]; this.racc=0;
     this.rv=null; this.rw=0; this.rdamp=null;
   }
@@ -2727,7 +2752,7 @@ class GrFx{
     if(fx==='delay'){
       if(!this.dl){ this.dl=new Float32Array(1<<17); this.dr=new Float32Array(1<<17); }
       const M=(1<<17)-1, dl=this.dl, dr=this.dr, tgt=Math.min(M-4,0.01*Math.pow(200,a)*sr), fb=0.95*b, sm=1-Math.exp(-1/(0.06*sr));
-      let w=this.dw, t=this.dt, pl=this.dlp[0], pr=this.dlp[1]; const lp=1-Math.exp(-2*Math.PI*6000/sr);
+      let w=this.dw, t=this.dt<0?tgt:this.dt, pl=this.dlp[0], pr=this.dlp[1]; const lp=1-Math.exp(-2*Math.PI*6000/sr);
       for(let i=0;i<n;i++){
         t+=(tgt-t)*sm;
         const rp=w-t, k=Math.floor(rp), f=rp-k, i0=k&M, i1=(k+1)&M;
@@ -2736,7 +2761,7 @@ class GrFx{
         dl[w&M]=L[i]+Math.tanh(pl*fb); dr[w&M]=R[i]+Math.tanh(pr*fb);
         L[i]+=yl*0.6; R[i]+=yr*0.6; w++;
       }
-      this.dw=w; this.dt=t; this.dlp[0]=pl; this.dlp[1]=pr;
+      this.dw=w; this.dt=t; this.dlp[0]=Math.abs(pl)<1e-20?0:pl; this.dlp[1]=Math.abs(pr)<1e-20?0:pr;
     }
     else if(fx==='dist'){
       const g=1+60*b*b, comp=1/Math.pow(g,0.55), c=1-Math.exp(-2*Math.PI*200*Math.pow(100,a)/sr);
@@ -2756,17 +2781,19 @@ class GrFx{
       const T=0.3*Math.pow(60,a), amt=b, len=this.rlen, buf=this.rv, dmp=this.rdamp, o=this.ro, d=0.35;
       if(T!==this.rT){ this.rT=T; this.rg=len.map(l=>Math.pow(10,-3*l/(T*sr))); }
       const gk=this.rg;
-      let w=this.rw;
+      let w=this.rw; const hx=this.rhx, hy=this.rhy, dc=1-2*Math.PI*8/sr;
       for(let i=0;i<n;i++){
         for(let j=0;j<8;j++){ const y=buf[j][(w-len[j])&8191]; dmp[j]+=(y-dmp[j])*(1-d); o[j]=dmp[j]*gk[j]; }
         // fast Hadamard (8)
         for(let h=1;h<8;h<<=1) for(let j=0;j<8;j+=h<<1) for(let k=j;k<j+h;k++){ const x=o[k], y=o[k+h]; o[k]=x+y; o[k+h]=x-y; }
         const xl=L[i], xr=R[i], s=0.35355339;
-        for(let j=0;j<8;j++) buf[j][w&8191]=o[j]*s+((j&1)?xr:xl)*0.5;
+        // the room never gets DC (an offset would pile up in it)
+        hy[0]=xl-hx[0]+dc*hy[0]; hx[0]=xl; hy[1]=xr-hx[1]+dc*hy[1]; hx[1]=xr;
+        for(let j=0;j<8;j++) buf[j][w&8191]=o[j]*s+((j&1)?hy[1]:hy[0])*0.5;
         const wl=(o[0]+o[2]+o[4]+o[6])*0.12, wr=(o[1]+o[3]+o[5]+o[7])*0.12;
         L[i]=xl*(1-0.5*amt)+wl*amt; R[i]=xr*(1-0.5*amt)+wr*amt; w++;
       }
-      this.rw=w;
+      this.rw=w; for(let j=0;j<8;j++) if(Math.abs(dmp[j])<1e-20) dmp[j]=0; for(let j=0;j<2;j++) if(Math.abs(hy[j])<1e-20) hy[j]=0;
     }
   }
   effect(L,R,n,P){
@@ -2803,9 +2830,9 @@ const FX_DEFS=[
     ['PITCH',0.5,u=>{ const st=Math.round((u-0.5)*48); return ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'][((st%12)+12)%12]+(3+Math.floor(st/12)); }],
     ['SCALE',0,u=>FX_SCALES[fxStep(u,FX_SCALES.length)][0],FX_SCALES.length],['DECAY',0.45,u=>fxMs(fxExp(u,0.05,10))],['WAVES',0.6,fxPc],['DETUNE',0,u=>'±'+Math.round(u*50)+' ct'],
     ['NOISE',0,fxPc],['TILT',0.5,fxBi],['WET',1,fxPc]],10,
-    'RING, filter and resonators: a filter that morphs from low-pass through band-pass to high-pass (<em>CUTOFF</em>, <em>RESO</em>, <em>SLOPE</em>), into a bank of 16 tuned resonators: <em>PITCH</em> and <em>SCALE</em> tune them, <em>DECAY</em> sets how long they ring, <em>WAVES</em> balances the plain filter against them, <em>DETUNE</em> spreads their tuning, <em>NOISE</em> excites them with noise that follows the sound, <em>TILT</em> leans them to the low or the high ones.'],
+    'RING, filter and resonators: a filter that morphs from low-pass through band-pass to high-pass (<em>CUTOFF</em>, <em>RESO</em>, <em>SLOPE</em>), into a bank of 16 tuned resonators: <em>PITCH</em> and <em>SCALE</em> tune them, <em>DECAY</em> sets how long they ring (they stay about as loud as what goes in, short or long), <em>WAVES</em> balances the plain filter against them, <em>DETUNE</em> spreads their tuning, <em>NOISE</em> excites them with noise that follows the sound, <em>TILT</em> leans them to the low or the high ones.'],
   ['deform','DEFORM','drive · crush · noise',[['DRIVE',0.25,fxPc],['COMPRESS',0,fxPc],['CRUSH',0,fxPc],['CRUSH TYPE',0,u=>['BITS','REDUX','BOTH'][fxStep(u,3)],3],['TILT',0.5,fxBi],
-    ['NOISE',0,fxPc],['N.DECAY',0.4,u=>fxMs(fxExp(u,0.005,2))],['N.TONE',0.5,fxBi],['WET',1,fxPc]],8,
+    ['NOISE',0,fxPc],['N.DECAY',0.4,u=>fxMs(6.91*fxExp(u,0.005,2))],['N.TONE',0.5,fxBi],['WET',1,fxPc]],8,
     'DEFORM, colour: <em>DRIVE</em> saturates, <em>COMPRESS</em> squeezes, <em>CRUSH</em> reduces the bits (BITS), the rate (REDUX) or both. <em>TILT</em> chooses whether the lows or the highs are coloured more. <em>NOISE</em> adds noise that follows the sound, with its own <em>N.DECAY</em> and <em>N.TONE</em> (dark … bright).'],
   ['vast','VAST','delay · reverb',[['DELAY',0.3,fxPc],['TIME',0.55,u=>fxMs(fxExp(u,0.01,2))],['REVERB',0.3,fxPc],['SIZE',0.5,fxPc],['FEEDBACK',0.35,u=>Math.round(u*150)+'%'],
     ['SPREAD',0.3,fxPc],['TONE',0.5,fxBi],['DECAY',0.45,u=>fxMs(fxExp(u,0.2,20))],['WET',1,fxPc]],8,
@@ -2886,38 +2913,70 @@ class FxSvf{
 }
 
 class FxRing{
-  constructor(sr){ this.sr=sr; this.f=new FxSvf(); const B=16; this.B=B; this.y1=new Float64Array(B); this.y2=new Float64Array(B); this.c1=new Float64Array(B); this.c2=new Float64Array(B);
-    this.gk=new Float64Array(B); this.pL=new Float64Array(B); this.pR=new Float64Array(B); this.key=''; this.env=0; this.seed=12345; this.det=new Float64Array(B);
-    for(let b=0;b<B;b++){ this.seed=(this.seed*16807)%2147483647; this.det[b]=this.seed/2147483647*2-1; const pan=(b%2?1:-1)*(0.25+0.5*((b*7)%5)/4), a=(pan+1)*Math.PI/4; this.pL[b]=Math.cos(a); this.pR[b]=Math.sin(a); }
-    this.ns=7; }
+  // a filter (LP › BP › HP) into a bank of 16 tuned resonators. Each resonator is a state-variable band-pass whose
+  // Q follows from DECAY (every one rings for the same time), scaled so a broad sound (drums, noise, speech) excites
+  // the bank at about the same loudness whatever DECAY is; a level guard keeps a note that lands right on a
+  // resonator from blowing up, and lets the ringing die away at its own speed.
+  constructor(sr){ this.sr=sr; this.f=new FxSvf(); const B=16; this.B=B;
+    this.s1=new Float64Array(B); this.s2=new Float64Array(B); this.g=new Float64Array(B); this.a1=new Float64Array(B); this.gn=new Float64Array(B);
+    this.pL=new Float64Array(B); this.pR=new Float64Array(B); this.det=new Float64Array(B); this.key=''; this.env=0; this.ns=7; this.ie=0; this.oe=0; this.lg=1; this.rT=0.999; this.pi=0; this.po=0; this.ph=0; this.ag=1;
+    let seed=12345; for(let b=0;b<B;b++){ seed=(seed*16807)%2147483647; this.det[b]=seed/2147483647*2-1; const pan=(b%2?1:-1)*(0.25+0.5*((b*7)%5)/4), a=(pan+1)*Math.PI/4; this.pL[b]=Math.cos(a); this.pR[b]=Math.sin(a); }
+  }
+  static freqs(u){
+    const root=130.81*Math.pow(2,Math.round((u[3]-0.5)*48)/12), sc=FX_SCALES[fxStep(u[4],FX_SCALES.length)][1], out=[];
+    for(let b=0;b<16;b++) out.push(sc?root*Math.pow(2,(sc[b%sc.length]+12*Math.floor(b/sc.length))/12):root*(b+1));
+    return out;
+  }
   bank(u){
     const key=u[3].toFixed(3)+u[4].toFixed(3)+u[5].toFixed(3)+u[7].toFixed(3)+u[9].toFixed(3); if(key===this.key) return; this.key=key;
-    const sr=this.sr, root=130.81*Math.pow(2,Math.round((u[3]-0.5)*48)/12), sc=FX_SCALES[fxStep(u[4],FX_SCALES.length)][1], T=fxExp(u[5],0.05,10), r=Math.pow(10,-3/(T*sr)), tilt=(u[9]-0.5)*2;
+    const sr=this.sr, T=fxExp(u[5],0.05,10), tilt=(u[9]-0.5)*2, F=FxRing.freqs(u), norm=Math.sqrt(T*sr/6.9078)*0.3;
+    this.rT=Math.pow(10,-3/(Math.max(0.5,T)*sr));
+    const fr=F.map((v,b)=>Math.min(0.45*sr,v*Math.pow(2,u[7]*50*this.det[b]/1200))), bw=6.9078/(Math.PI*T);
     for(let b=0;b<this.B;b++){
-      const f0=sc?root*Math.pow(2,(sc[b%sc.length]+12*Math.floor(b/sc.length))/12):root*(b+1);
-      const f=Math.min(0.45*sr,f0*Math.pow(2,u[7]*50*this.det[b]/1200)), w=2*Math.PI*f/sr;
-      // a band-pass with zeros at DC and Nyquist and its peak at 1 whatever its pitch and DECAY
-      this.c1[b]=2*r*Math.cos(w); this.c2[b]=-r*r; this.gk[b]=(1-r*r)*0.5*Math.pow(2,(b/(this.B-1)-0.5)*tilt*4);
+      const f=fr[b], g=Math.tan(Math.PI*f/sr), Q=Math.max(0.6,Math.PI*f*T/6.9078), k=1/Q;
+      this.g[b]=g; this.a1[b]=1/(1+g*(g+k));
+      // short DECAY: wide resonators overlap their neighbours and add up, so each is turned down by how many it overlaps
+      let sp=Infinity; for(let j=0;j<this.B;j++) if(j!==b){ const d=Math.abs(fr[j]-f); if(d<sp) sp=d; }
+      const ov=1+Math.min(16,bw/Math.max(1,sp));
+      // k x band-pass peaks at 1; x norm: the same loudness for a broad sound whatever DECAY; TILT leans it ±12 dB
+      this.gn[b]=k*norm/Math.pow(ov,0.75)*Math.pow(2,(b/(this.B-1)-0.5)*tilt*2);
     }
   }
   process(L,R,n,u){
     const sr=this.sr, f=this.f, B=this.B; f.set(fxExp(u[0],30,20000),u[1],sr); this.bank(u);
-    const m=u[2], waves=u[6], noise=u[8], ka=1-Math.exp(-1/(0.002*sr)), kr=1-Math.exp(-1/(0.15*sr)), y1=this.y1, y2=this.y2, c1=this.c1, c2=this.c2, gk=this.gk;
-    let env=this.env, ns=this.ns, x1=this.x1||0, x2=this.x2||0;
+    const m=u[2], waves=u[6], noise=u[8], ka=1-Math.exp(-1/(0.002*sr)), kr=1-Math.exp(-1/(0.15*sr)), s1=this.s1, s2=this.s2, G=this.g, A1=this.a1, gn=this.gn, pL=this.pL, pR=this.pR;
+    const rT=this.rT, orl=Math.exp(-1/(0.03*sr)), gat=1-Math.exp(-1/(0.0005*sr)), grl=1-Math.exp(-1/(0.25*sr));
+    const kp=1-Math.exp(-1/(0.3*sr)), kh=Math.exp(-1/(1.0*sr)), kg=1-Math.exp(-1/(0.4*sr));
+    let env=this.env, ns=this.ns, ie=this.ie, oe=this.oe, lg=this.lg, pi=this.pi, po=this.po, ph=this.ph, ag=this.ag;
     for(let i=0;i<n;i++){
-      f.tick(L[i],0); const al=m<0.5?f.lp+(f.bp-f.lp)*m*2:f.bp+(f.hp-f.bp)*(m-0.5)*2;
-      f.tick(R[i],1); const ar=m<0.5?f.lp+(f.bp-f.lp)*m*2:f.bp+(f.hp-f.bp)*(m-0.5)*2;
+      f.tick(L[i],0); let al=m<0.5?f.lp+(f.bp-f.lp)*m*2:f.bp+(f.hp-f.bp)*(m-0.5)*2;
+      f.tick(R[i],1); let ar=m<0.5?f.lp+(f.bp-f.lp)*m*2:f.bp+(f.hp-f.bp)*(m-0.5)*2;
+      // a filter pushed hard at high RESO saturates (softly, never past ±2) instead of screaming
+      if(al>1.2) al=1.2+0.8*Math.tanh((al-1.2)/0.8); else if(al<-1.2) al=-1.2-0.8*Math.tanh((-al-1.2)/0.8);
+      if(ar>1.2) ar=1.2+0.8*Math.tanh((ar-1.2)/0.8); else if(ar<-1.2) ar=-1.2-0.8*Math.tanh((-ar-1.2)/0.8);
       if(waves>0.001){
         const x=(al+ar)*0.5, e=(x<0?-x:x); env+=(e-env)*(e>env?ka:kr);
-        ns=(ns*16807)%2147483647; const xin=x+(noise>0?noise*noise*env*4*(ns/1073741823.5-1):0);
+        ns=(ns*16807)%2147483647; const xin=x+(noise>0?noise*noise*env*3*(ns/1073741823.5-1):0);
         let bl=0, br=0;
-        const xd=xin-x2; x2=x1; x1=xin;
-        for(let b=0;b<B;b++){ const y=gk[b]*xd+c1[b]*y1[b]+c2[b]*y2[b]; y2[b]=y1[b]; y1[b]=y; bl+=y*this.pL[b]; br+=y*this.pR[b]; }
-        bl=Math.tanh(bl*2); br=Math.tanh(br*2);
+        for(let b=0;b<B;b++){ const g=G[b], v1=(s1[b]+g*(xin-s2[b]))*A1[b], v2=s2[b]+g*v1; s1[b]=2*v1-s1[b]; s2[b]=2*v2-s2[b]; const y=v1*gn[b]; bl+=y*pL[b]; br+=y*pR[b]; }
+        // slow level match: while sound comes in, the ringing is brought to about its loudness (−36 … +12 dB);
+        // when it stops the gain holds, so the ringing dies away at its own speed
+        pi+=(xin*xin-pi)*kp; po+=((bl*bl+br*br)*0.5-po)*kp; ph=pi>ph?pi:ph*kh;
+        if(pi>1e-9 && pi>0.2*ph){ let t=Math.sqrt(pi/(po+1e-12)); t=t<0.016?0.016:t>4?4:t; ag+=(t-ag)*kg; }
+        bl*=ag; br*=ag;
+        // level guard: never far louder than what came in (that ceiling falls only as fast as the ringing does, or slower)
+        const xe=(xin<0?-xin:xin); ie=xe>ie?xe:ie*rT;
+        const o=Math.max(bl<0?-bl:bl,br<0?-br:br); oe=o>oe?o:oe*orl;
+        const c=2.5*ie+1e-9, t=oe>c?c/oe:1; lg+=(t-lg)*(t<lg?gat:grl);
+        bl*=lg; br*=lg;
+        // soft above 0.7, never past 1
+        if(bl>0.7) bl=0.7+0.3*Math.tanh((bl-0.7)/0.3); else if(bl<-0.7) bl=-0.7-0.3*Math.tanh((-bl-0.7)/0.3);
+        if(br>0.7) br=0.7+0.3*Math.tanh((br-0.7)/0.3); else if(br<-0.7) br=-0.7-0.3*Math.tanh((-br-0.7)/0.3);
         L[i]=al+(bl-al)*waves; R[i]=ar+(br-ar)*waves;
       } else { L[i]=al; R[i]=ar; }
     }
-    this.env=env; this.ns=ns; this.x1=Math.abs(x1)<1e-20?0:x1; this.x2=Math.abs(x2)<1e-20?0:x2; f.flush(); for(let b=0;b<B;b++){ if(Math.abs(y1[b])<1e-20) y1[b]=0; if(Math.abs(y2[b])<1e-20) y2[b]=0; }
+    this.env=env; this.ns=ns; this.ie=ie<1e-12?0:ie; this.oe=oe<1e-12?0:oe; this.lg=lg; this.pi=pi<1e-15?0:pi; this.po=po<1e-15?0:po; this.ph=ph<1e-15?0:ph; this.ag=ag; f.flush();
+    for(let b=0;b<B;b++){ if(Math.abs(s1[b])<1e-20) s1[b]=0; if(Math.abs(s2[b])<1e-20) s2[b]=0; }
   }
   tail(u){ return u[6]>0.001?fxExp(u[5],0.05,10)+0.1:0.05; }
 }
@@ -2944,7 +3003,7 @@ class FxDeform{
       if(doHold){ acc+=1; if(acc>=hold){ acc-=hold; hd[0]=yl; hd[1]=yr; } yl=hd[0]; yr=hd[1]; }
       if(doBits){ yl=Math.round(yl*q)/q; yr=Math.round(yr*q)/q; }
       if(nz>0.001){
-        const x=(L[i]<0?-L[i]:L[i])+(R[i]<0?-R[i]:R[i]); ne+=(x-ne)*(x>ne?kna:knr);
+        const x=((L[i]<0?-L[i]:L[i])+(R[i]<0?-R[i]:R[i]))*0.5; ne+=(x-ne)*(x>ne?kna:knr);
         ns=(ns*16807)%2147483647; const wn=ns/1073741823.5-1; nf+=(wn-nf)*kt; const v=nt>0?wn-nf*(1-nt):nf;
         const s=v*ne*nz*nz*1.5; yl+=s; yr+=s;
       }
@@ -2953,12 +3012,12 @@ class FxDeform{
     this.ce=ce; this.ne=ne; this.nf=nf; this.ns=ns; this.acc=acc;
     for(const a of [lp,lq]){ if(Math.abs(a[0])<1e-20) a[0]=0; if(Math.abs(a[1])<1e-20) a[1]=0; }
   }
-  tail(u){ return 0.05+(u[5]>0.001?fxExp(u[6],0.005,2):0); }
+  tail(u){ return 0.05+(u[5]>0.001?6.91*fxExp(u[6],0.005,2):0); }
 }
 
 class FxVast{
   constructor(sr){
-    this.sr=sr; this.DN=1; while(this.DN<2.1*sr) this.DN<<=1; this.dl=new Float32Array(this.DN); this.dr=new Float32Array(this.DN); this.dw=0; this.dt=0.3*sr; this.tl=[0,0]; this.th=[0,0];
+    this.sr=sr; this.DN=1; while(this.DN<2.1*sr) this.DN<<=1; this.dl=new Float32Array(this.DN); this.dr=new Float32Array(this.DN); this.dw=0; this.dt=-1; this.tl=[0,0]; this.th=[0,0]; this.hx=[0,0]; this.hy=[0,0];
     const ms=[29.7,37.1,41.1,43.7,53.3,59.9,67.7,73.1]; this.base=ms.map(m=>m*sr/1000); this.RN=1; while(this.RN<73.1*1.6*sr/1000+8) this.RN<<=1;
     this.rv=ms.map(()=>new Float32Array(this.RN)); this.rd=new Float64Array(8); this.ro=new Float64Array(8); this.rw=0; this.rk=''; this.len=new Int32Array(8); this.rg=new Float64Array(8);
     this.ap=[0,1,2,3].map(()=>new Float32Array(2048)); this.apL=[142,107,379,277].map(v=>Math.round(v*sr/44100)); this.apw=0;
@@ -2975,9 +3034,11 @@ class FxVast{
     const lpk=tone<0?1-Math.exp(-2*Math.PI*(800+19000*(1+tone)*(1+tone))/sr):1, hpk=tone>0?1-Math.exp(-2*Math.PI*(20+600*tone)/sr):0, damp=tone<0?0.2-0.6*tone:0.2*(1-tone);
     this.room(u);
     const len=this.len, gk=this.rg, buf=this.rv, rd=this.rd, o=this.ro, RM=this.RN-1, ap=this.ap, apL=this.apL;
-    let w=this.dw, t=this.dt, rw=this.rw, aw=this.apw; const tl=this.tl, th=this.th;
+    let w=this.dw, t=this.dt<0?tgt:this.dt, rw=this.rw, aw=this.apw; const tl=this.tl, th=this.th, hx=this.hx, hy=this.hy, dc=1-2*Math.PI*8/sr;
     for(let i=0;i<n;i++){
-      const xl=L[i], xr=R[i];
+      // DC never reaches the echoes or the room (a sample with an offset would pile up in them)
+      const il0=L[i], ir0=R[i]; hy[0]=il0-hx[0]+dc*hy[0]; hx[0]=il0; hy[1]=ir0-hx[1]+dc*hy[1]; hx[1]=ir0;
+      const xl=hy[0], xr=hy[1];
       // delay: two taps (the right a little later with SPREAD), feedback crossed over with SPREAD (ping-pong)
       t+=(tgt-t)*sm;
       const tL=t*(1-0.25*spr), p1=w-tL, k1=Math.floor(p1), f1=p1-k1, p2=w-t, k2=Math.floor(p2), f2=p2-k2;
@@ -3007,7 +3068,7 @@ class FxVast{
     }
     this.dw=w; this.dt=t; this.rw=rw; this.apw=aw;
     for(let j=0;j<8;j++) if(Math.abs(rd[j])<1e-20) rd[j]=0;
-    for(const a of [tl,th]){ if(Math.abs(a[0])<1e-20) a[0]=0; if(Math.abs(a[1])<1e-20) a[1]=0; }
+    for(const a of [tl,th,hy]){ if(Math.abs(a[0])<1e-20) a[0]=0; if(Math.abs(a[1])<1e-20) a[1]=0; }
   }
   tail(u){ const fb=u[4]*1.5, t=fxExp(u[1],0.01,2), dt=u[0]>0.001?(fb>=0.95?30:t*Math.log(0.001)/Math.log(Math.max(0.01,fb))+t):0; return Math.min(30,Math.max(dt,u[2]>0.001?fxExp(u[7],0.2,20):0)+0.1); }
 }
@@ -3029,7 +3090,12 @@ class FxComp{
     const sr=this.sr, a=u[0], thr=Math.pow(10,-a*40/20), ratio=1+a*9, ex=1-1/ratio, mk=Math.pow(10,a*16/20);
     const ka=1-Math.exp(-1/(fxExp(u[1],0.0005,0.1)*sr)), kr=1-Math.exp(-1/(fxExp(u[2],0.02,1.5)*sr));
     let e=this.e;
-    for(let i=0;i<n;i++){ const x=Math.max(L[i]<0?-L[i]:L[i],R[i]<0?-R[i]:R[i]); e+=(x-e)*(x>e?ka:kr); const g=(e>thr?Math.pow(thr/e,ex):1)*mk; L[i]*=g; R[i]*=g; }
+    for(let i=0;i<n;i++){ const x=Math.max(L[i]<0?-L[i]:L[i],R[i]<0?-R[i]:R[i]); e+=(x-e)*(x>e?ka:kr); const g=(e>thr?Math.pow(thr/e,ex):1)*mk;
+      // what a slow ATTACK lets through at full make-up gain is caught softly above 1 (never past 1.5)
+      let l=L[i]*g, r=R[i]*g;
+      if(l>1) l=1+0.5*Math.tanh((l-1)*2); else if(l<-1) l=-1-0.5*Math.tanh((-l-1)*2);
+      if(r>1) r=1+0.5*Math.tanh((r-1)*2); else if(r<-1) r=-1-0.5*Math.tanh((-r-1)*2);
+      L[i]=l; R[i]=r; }
     this.e=e<1e-20?0:e;
   }
   tail(u){ return fxExp(u[2],0.02,1.5); }
@@ -3039,13 +3105,15 @@ class FxComp{
 class FxClassic{
   constructor(sr,type){ this.g=new GrFx(sr); this.t={cdelay:'delay',cdist:'dist',credux:'reduce',creverb:'reverb'}[type]; this.q={fxA:0,fxB:0}; }
   process(L,R,n,u){ this.q.fxA=u[0]; this.q.fxB=u[1]; this.g.run(this.t,L,R,n,this.q); }
-  tail(u){ return this.t==='reverb'?Math.min(20,0.3*Math.pow(60,u[0])):this.t==='delay'?4:0.2; }
+  tail(u){ if(this.t==='reverb') return Math.min(20,0.3*Math.pow(60,u[0]))+0.1;
+    if(this.t==='delay'){ const t=0.01*Math.pow(200,u[0]), fb=0.95*u[1]; return Math.min(30,t+(fb>0.01?t*Math.log(0.001)/Math.log(fb):0)+0.1); }
+    return 0.2; }
 }
 
 class FxRack{
   constructor(sr){
     this.sr=sr; this.s=[];
-    for(let i=0;i<FX_N;i++) this.s.push({type:'none',dev:null,lv:0,g:-1,u:new Float64Array(FX_P),bL:new Float32Array(128),bR:new Float32Array(128)});
+    for(let i=0;i<FX_N;i++) this.s.push({type:'none',dev:null,lv:0,g:-1,w:-1,u:new Float64Array(FX_P),bL:new Float32Array(128),bR:new Float32Array(128)});
     for(const k of ['dL','dR','aL','aR','xL','xR']) this[k]=new Float32Array(128);
     this.topo={order:[],src:[],out:[0]}; this.cur=new Int32Array(FX_N+1).fill(-2); this.gf=0;
   }
@@ -3073,7 +3141,13 @@ class FxRack{
     return {order,src,out};
   }
   // how long the rack goes on sounding once its input is silent
-  tail(P){ let t=0; for(const k of this.topo.order){ const s=this.s[k-1]; if(s.dev && s.dev.tail) t=Math.max(t,s.dev.tail(s.u)); } return t; }
+  // along each path the tails add up (an echo into a room rings as long as both), OUT waits for the longest path
+  tail(P){
+    const T=this.topo, tl=new Float64Array(FX_N+1);
+    for(const k of T.order){ const s=this.s[k-1]; let t=0; for(const j of T.src[k]) if(tl[j]>t) t=tl[j];
+      if(s.dev && s.dev.tail && !P['x'+k+'B']) t+=s.dev.tail(s.u); tl[k]=t; }
+    let t=0; for(const j of T.out) if(tl[j]>t) t=tl[j]; return Math.min(60,t);
+  }
   active(P){ if(this.gf<1 || this.changed(P)) return true; const T=this.topo; return T.order.length>0 || T.out.length!==1 || T.out[0]!==0; }
   // the mix of what is wired into a node, or into OUT: sources mixed equally
   mix(list,oL,oR,n){
@@ -3093,7 +3167,7 @@ class FxRack{
     const ch=this.changed(P), gf0=this.gf;
     if(ch && gf0<=0){
       this.topo=FxRack.topo(P); for(let k=0;k<=FX_N;k++) this.cur[k]=this.sigOf(P,k);
-      const inT=new Set(this.topo.order); this.s.forEach((s,i)=>{ if(!inT.has(i+1)){ s.lv=0; s.g=-1; } });
+      const inT=new Set(this.topo.order); this.s.forEach((s,i)=>{ if(!inT.has(i+1)){ s.lv=0; s.g=-1; s.w=-1; } });
     }
     const gf1=ch&&gf0>0?Math.max(0,gf0-fstep):Math.min(1,gf0+fstep); this.gf=gf1;
     dL.set(L.subarray(0,n)); dR.set(R.subarray(0,n));
@@ -3108,11 +3182,12 @@ class FxRack{
       if(!s.dev || (l0<=0 && l1<=0)){ bL.set(xL.subarray(0,n)); bR.set(xR.subarray(0,n)); continue; }
       // a device fading out because another takes its node keeps its own settings until it is gone
       const u=s.u; if(type===s.type) for(let j=0;j<FX_P;j++){ const v=P[key+'p'+j]; u[j]=typeof v==='number'?v:0.5; }
-      const def=FX_BY[s.type], wi=def?def[4]:-1, wet=wi>=0?u[wi]:1;
+      const def=FX_BY[s.type], wi=def?def[4]:-1, w1=wi>=0?u[wi]:1, w0=s.w<0?w1:s.w; s.w=w1;
       const gu=P[key+'G'], g1=FxRack.lvl(typeof gu==='number'?gu:0.8), g0=s.g<0?g1:s.g; s.g=g1;
       aL.set(xL.subarray(0,n)); aR.set(xR.subarray(0,n)); s.dev.process(aL,aR,n,u,false);
+      // LEVEL and WET glide across the block (no zipper noise when they are turned or modulated)
       for(let j=0;j<n;j++){
-        const t=j/n, lv=l0+(l1-l0)*t, g=g0+(g1-g0)*t, x=xL[j], y=xR[j];
+        const t=j/n, lv=l0+(l1-l0)*t, g=g0+(g1-g0)*t, wet=w0+(w1-w0)*t, x=xL[j], y=xR[j];
         bL[j]=x+((x+(aL[j]-x)*wet)*g-x)*lv; bR[j]=y+((y+(aR[j]-y)*wet)*g-y)*lv;
       }
     }
@@ -4753,8 +4828,9 @@ function cleanP(p){
 // The canvases read the same Pantone tokens as the page, and read them again when the theme changes (system
 // setting or the viewer's own light/dark switch), so the waveform always sits on the page's paper.
 const C={};
-function readColors(){ const cs=getComputedStyle(document.documentElement);
-  ['bg','panel','inset','line','edge','ink','accent','muted','dim','hot','loop','grain','pos','wave'].forEach(k=>{ C[k]=cs.getPropertyValue('--'+k).trim()||'#888888'; }); }
+const CW={};   // the same names, as the pop-up windows define them (their canvases draw with these)
+function readColors(){ const cs=getComputedStyle(document.documentElement), fw=document.querySelector('.fwin'), cw=fw?getComputedStyle(fw):cs;
+  ['bg','panel','inset','line','edge','ink','accent','muted','dim','hot','loop','grain','pos','wave'].forEach(k=>{ C[k]=cs.getPropertyValue('--'+k).trim()||'#888888'; CW[k]=cw.getPropertyValue('--'+k).trim()||C[k]; }); }
 readColors();
 function themeChanged(){ readColors(); baseDirty=true; ovDirty=true; dirty=true; drawWinPic(); }
 try{ matchMedia('(prefers-color-scheme: dark)').addEventListener('change',themeChanged); }catch(e){}
@@ -6132,6 +6208,7 @@ function renderAux(){
 }
 function drawAux(){
   if(fwAux.w.hidden || !auxC.getClientRects().length) return;
+  const C=CW;   // it sits in a window: the window's palette
   fit(auxC); const g=auxC.getContext('2d'), W=auxC.width, H=auxC.height, d=scale(auxC), a=P[auxKey()]||[], N=a.length||1, pad=8*d, yOf=v=>pad+(1-v)/2*(H-2*pad);
   g.fillStyle=C.inset; g.fillRect(0,0,W,H);
   g.fillStyle=C.line; for(let k=1;k<auxSteps;k++) g.fillRect(Math.round(k/auxSteps*W),0,Math.max(1,Math.round(d*0.6)),H);
@@ -8085,6 +8162,7 @@ function edZoomUI(){
 }
 function drawEd(){
   if(fwEd.w.hidden || !edC.getClientRects().length) return;
+  const C=CW;   // it sits in a window: the window's palette
   const L=edLayer(); edView(L);
   if(ED.drag && ED.drag.kind==='edit') edAuto();
   edZoomUI();
