@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>CRGT Sample Workstation</title>
-<meta name="crgt-offline" content="v36">
+<meta name="crgt-offline" content="v36.1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -686,6 +686,16 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
 .ed-act{position:absolute;left:0;top:0;z-index:2;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:5px;max-width:calc(100% - 8px);background:var(--panel);border:1px solid var(--edge);border-radius:10px;box-shadow:var(--lift);touch-action:manipulation}
 .ed-act .ed-zt{font-size:11px;letter-spacing:.06em;padding:0 5px}
 .ed-tools{gap:6px;align-items:center}
+/* v36.1: the editor can fill the screen; the lanes then take every pixel left */
+.fw-max{appearance:none;flex:0 0 auto;margin-left:0;width:40px;height:36px;background:transparent;border:1px solid var(--line);border-radius:8px;color:var(--muted);font:400 17px/1 var(--f-sans)}
+.fw-max:active{background:var(--on-bg)}
+.fw-max[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
+#fw-ed.max{left:max(6px,env(safe-area-inset-left,0px))!important;top:max(6px,env(safe-area-inset-top,0px))!important;width:calc(100vw - 12px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px))!important;height:calc(100vh - 12px);height:calc(100dvh - 12px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));max-height:none}
+#fw-ed.max .fw-b{flex:1 1 auto}
+#fw-ed.max .ed-box{flex:1 1 auto;height:auto;min-height:220px}
+#fw-ed.max .ed-desc{display:none}
+#ed-big .btn{min-width:0}
+#ed-undo,#ed-redo{font-size:17px;min-width:40px}
 .edt-tabs{gap:0;flex-wrap:wrap;flex:0 1 auto;min-width:0;max-width:100%}
 .edt-tab{border-radius:0;margin-left:-1px}
 .edt-tab:first-child{border-radius:5px 0 0 5px;margin-left:0}
@@ -1062,10 +1072,11 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
   </div>
 </div>
 <div class="fwin" id="fw-ed" hidden role="dialog" aria-labelledby="we-h">
-  <div class="fw-h"><span class="gl" id="we-h">Gesture editor · Player 1 · A</span><span class="fw-g" aria-hidden="true">⠿</span><button class="fw-x" type="button" aria-label="Close the gesture editor">×</button></div>
+  <div class="fw-h"><span class="gl" id="we-h">Gesture editor · Player 1 · A</span><span class="fw-g" aria-hidden="true">⠿</span><button class="fw-max" id="ed-max" type="button" aria-pressed="false" aria-label="Fill the screen" title="Fill the screen: the lanes get all the room (or double-tap the title)">⤢</button><button class="fw-x" type="button" aria-label="Close the gesture editor">×</button></div>
   <div class="fw-b">
     <div class="row ed-row">
       <button class="btn sm" id="ed-play" type="button" aria-pressed="false" title="Play or stop this player's loops, as ▶ PLAY below">▶ PLAY</button>
+      <span class="grp" role="group" aria-label="Undo and redo"><button class="btn sm nud" id="ed-undo" type="button" aria-label="Undo" title="Undo (⌘Z)" disabled>↶</button><button class="btn sm nud" id="ed-redo" type="button" aria-label="Redo" title="Redo (⇧⌘Z)" disabled>↷</button></span>
       <button class="btn sm" id="ed-new" type="button" title="An empty take to draw notes into (as an empty MIDI clip): MAIN's length, or a bar at the tempo">NEW TAKE</button>
       <button class="btn sm" id="ed-q" type="button" aria-pressed="false" title="Pull the layer's gestures to the grid (what you played is kept)">QUANTIZE</button>
       <label class="lsel"><span>GRID</span><select class="sel" id="ed-grid" aria-label="Grid"><option value="off">OFF</option><option value="1/4">1/4</option><option value="1/8">1/8</option><option value="1/8T">1/8T</option><option value="1/16">1/16</option><option value="1/16T">1/16T</option><option value="1/32">1/32</option></select></label>
@@ -1138,6 +1149,8 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
         <label class="lsel"><span>SNAP</span><select class="sel" id="ed-snap" aria-label="Snap positions in the sample to" title="Where positions in the sample snap: onsets, zero crossings or the loop's edges"><option value="onsets">ONSETS</option><option value="zero">ZERO X</option><option value="loop">LOOP</option><option value="off">OFF</option></select></label>
         <select class="sel" id="ed-by" aria-label="Onsets found by"><option value="trans">TRANSIENT</option><option value="loud">LOUDNESS</option><option value="chroma">CHROMA</option><option value="bright">BRIGHTNESS</option><option value="timbre">TIMBRE</option><option value="noise">NOISINESS</option></select>
         <label class="lsel"><span>CONTROL</span><select class="sel" id="ed-key" aria-label="Control lane"></select></label>
+        <span class="ed-zt" aria-hidden="true">BIG LANE</span>
+        <span class="grp" id="ed-big" role="group" aria-label="The lane that gets most of the room"><button class="btn sm" type="button" data-big="">EVEN</button><button class="btn sm" type="button" data-big="notes">NOTES</button><button class="btn sm" type="button" data-big="pos">POSITION</button><button class="btn sm" type="button" data-big="ctl">CONTROL</button></span>
       </span>
     </div>
     <p class="edt-info" id="edt-info" aria-live="polite"></p>
@@ -1149,7 +1162,7 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
         <button class="btn sm" id="ed-del" type="button" title="Delete (⌫)">DELETE</button>
       </div>
     </div>
-    <p class="desc ed-desc">Tap a note for its tools; drag to move it, its ends to resize; double-tap empty space (or DRAW) to add one. Hold, then drag to select several; tap a key at the left to hear it and pick its notes; tap empty space for the PASTE marker; tap VEL to switch to CHANCE. The tools act on the selection, or on every note. Keys: B draw · 0 mute · ⌘C ⌘V · ⌘E chop · ⌘J join · ⇧↑ ⇧↓ octave.</p>
+    <p class="desc ed-desc">Tap a note for its tools; drag to move it, its ends to resize; double-tap empty space (or DRAW) to add one. Hold, then drag to select several; tap a key at the left to hear it and pick its notes; tap empty space for the PASTE marker; tap VEL to switch to CHANCE. The tools act on the selection, or on every note. Keys: B draw · 0 mute · ⌘C ⌘V · ⌘E chop · ⌘J join · ⇧↑ ⇧↓ octave. ⤢ fills the screen; the arrows at the bottom of POS and CTRL make that lane big; DRAW there draws automation (CONTROL can show any knob).</p>
   </div>
 </div>
 <div class="fwin" id="fw-fx" hidden role="dialog" aria-labelledby="wf-h">
@@ -8233,15 +8246,18 @@ const ED={grid:'1/16',snap:'onsets',by:'trans',zoom:1,v0:0,vw:{notes:null,pos:nu
   key:'',sel:null,more:new Set(),draw:false,lastLen:0,lastVel:0.8,actK:'',actWH:null,work:null,map:null,drag:null,ptrs:new Map(),last:null,tap:{t:0,x:-99,y:-99,z:''},cache:null,ver:0,keys:null,ui:'',
   // v36 note tools: SCALE and its KEY, FOLD, PREVIEW, the lower lane (VEL or CHANCE), the tools' tab and settings,
   // the notes COPY holds, and the insert marker (where PASTE puts them; -1: none)
-  scl:'off',sk:0,fold:false,prev:true,vlane:'vel',tab:'pitch',arp:'up',chord:'triad',strum:20,eu:{p:5,s:8,r:0},clip:null,cur:-1,toolK:'',info:''};
+  scl:'off',sk:0,fold:false,prev:true,vlane:'vel',tab:'pitch',arp:'up',chord:'triad',strum:20,eu:{p:5,s:8,r:0},clip:null,cur:-1,toolK:'',info:'',
+  // v36.1: the window filling the screen, and the lane that takes most of the room (null: as you shared them)
+  max:false,big:null};
 try{ const s=JSON.parse(localStorage.getItem('wavesetPlayer.ed')||'{}'); if(GRIDS[s.grid]||s.grid==='off') ED.grid=s.grid; if(['onsets','zero','loop','off'].includes(s.snap)) ED.snap=s.snap; if(['trans','loud','chroma','bright','timbre','noise'].includes(s.by)) ED.by=s.by;
   if(s.lh && LANES.every(k=>typeof s.lh[k]==='number' && s.lh[k]>0)) LANES.forEach(k=>{ ED.lh[k]=s.lh[k]; });
   if(typeof s.scl==='string' && (s.scl==='off' || ED_SCALES.some(x=>x[0]===s.scl))) ED.scl=s.scl; if(Number.isInteger(s.sk) && s.sk>=0 && s.sk<12) ED.sk=s.sk;
   if(typeof s.fold==='boolean') ED.fold=s.fold; if(typeof s.prev==='boolean') ED.prev=s.prev; if(s.vlane==='vel'||s.vlane==='chance') ED.vlane=s.vlane;
   if(['edit','pitch','time','vel','xf','gen','lanes'].includes(s.tab)) ED.tab=s.tab; if(['up','down','updown','random','played'].includes(s.arp)) ED.arp=s.arp;
   if(Object.keys(ED_CHORDS).includes(s.chord)) ED.chord=s.chord; if([10,20,40,80].includes(s.strum)) ED.strum=s.strum;
+  if(typeof s.max==='boolean') ED.max=s.max; if(['notes','pos','ctl'].includes(s.big)) ED.big=s.big;
   if(s.eu && [s.eu.p,s.eu.s,s.eu.r].every(Number.isInteger) && s.eu.s>=2 && s.eu.s<=16 && s.eu.p>=1 && s.eu.p<=s.eu.s && s.eu.r>=0 && s.eu.r<16) ED.eu={p:s.eu.p,s:s.eu.s,r:s.eu.r}; }catch(e){}
-const edSave=()=>{ try{ localStorage.setItem('wavesetPlayer.ed',JSON.stringify({grid:ED.grid,snap:ED.snap,by:ED.by,lh:ED.lh,scl:ED.scl,sk:ED.sk,fold:ED.fold,prev:ED.prev,vlane:ED.vlane,tab:ED.tab,arp:ED.arp,chord:ED.chord,strum:ED.strum,eu:ED.eu})); }catch(e){} };
+const edSave=()=>{ try{ localStorage.setItem('wavesetPlayer.ed',JSON.stringify({grid:ED.grid,snap:ED.snap,by:ED.by,lh:ED.lh,scl:ED.scl,sk:ED.sk,fold:ED.fold,prev:ED.prev,vlane:ED.vlane,tab:ED.tab,arp:ED.arp,chord:ED.chord,strum:ED.strum,eu:ED.eu,max:ED.max,big:ED.big})); }catch(e){} };
 const edClamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 function edLayer(){ const L=gLayer(I); return L&&L.src?L:null; }
 // the selection: one gesture, or several notes (hold then drag on empty space, ⇧-click, ⌘A). ED.sel leads.
@@ -8258,6 +8274,8 @@ function edView(L){
   if(ED.lk) ED.views.set(ED.lk,{zoom:ED.zoom,v0:ED.v0,vw:ED.vw,fit:ED.fit});
   const v=ED.views.get(k); ED.zoom=v?v.zoom:1; ED.v0=v?v.v0:0; ED.vw=v?v.vw:{notes:null,pos:null,ctl:null}; ED.fit=v?v.fit:false; ED.lk=k; ED.cur=-1;
 }
+// a control the CONTROL lane can draw: a knob or switch of the player (the position has its own lane)
+const edCanCtl=k=>k!=='pos' && k!=='amp' && (k in DEFAULTS) && (!!SPECS[k] || !!CHOICES[k]);
 // knob value <-> 0..1 for the control lane
 function uOfK(k,v){ const s=SPECS[k];
   if(typeof v==='boolean') return v?1:0;
@@ -8289,11 +8307,24 @@ function edGeo(){
   fit(edC); const d=scale(edC)||1, W=edC.width/d, H=edC.height/d;
   // the lanes fill the window's height in the shares you gave them (drag between two lanes)
   // a lane with nothing in it (no positions, no recorded controls) shrinks to a strip and its room goes to the notes
-  const Lr=edLayer(), mr=Lr?edModel(Lr):null, fix={};
-  if(mr && !mr.pos.length && !mr.taps.length) fix.POS=LMIN.POS;
-  if(mr && !mr.params.size) fix.PAR=LMIN.PAR;
-  const avail=Math.max(140,H-EL.RUL-4*EL.GAP-1), free=LANES.filter(k=>!(k in fix)), rest=avail-LANES.reduce((a,k)=>a+(fix[k]||0),0), sum=free.reduce((a,k)=>a+ED.lh[k],0); let used=0;
-  LANES.forEach(k=>{ if(k in fix){ EL[k]=fix[k]; return; } EL[k]=k===free[free.length-1]?rest-used:Math.round(ED.lh[k]/sum*rest); used+=EL[k]; });
+  // (it opens again as soon as you touch it, and never shrinks while it is the BIG LANE)
+  const Lr=edLayer(), mr=Lr?edModel(Lr):null, fix={}, big=ED.big?{notes:'NOTES',pos:'POS',ctl:'PAR'}[ED.big]:null;
+  // (the heights follow the lane you work in only once a gesture is over: nothing moves under your finger)
+  if(!ED.drag) ED.lf=ED.focus; const lf=ED.lf||'notes';
+  if(mr && !mr.pos.length && !mr.taps.length && lf!=='pos' && big!=='POS') fix.POS=LMIN.POS;
+  if(mr && !mr.params.size && lf!=='ctl' && big!=='PAR') fix.PAR=LMIN.PAR;
+  const avail=Math.max(140,H-EL.RUL-4*EL.GAP-1);
+  if(big){
+    // BIG LANE: the others keep a working strip, the big one takes all the rest
+    const small={NOTES:Math.max(LMIN.NOTES,Math.round(avail*0.16)),VEL:LMIN.VEL+4,POS:Math.max(LMIN.POS,Math.round(avail*0.1)),PAR:Math.max(LMIN.PAR,Math.round(avail*0.09))};
+    let s=0; LANES.forEach(k=>{ if(k!==big){ EL[k]=fix[k]||small[k]; s+=EL[k]; } }); EL[big]=Math.max(LMIN[big],avail-s);
+  } else {
+    const free=LANES.filter(k=>!(k in fix)), rest=avail-LANES.reduce((a,k)=>a+(fix[k]||0),0), sum=free.reduce((a,k)=>a+ED.lh[k],0); let used=0;
+    LANES.forEach(k=>{ if(k in fix){ EL[k]=fix[k]; return; } EL[k]=k===free[free.length-1]?rest-used:Math.round(ED.lh[k]/sum*rest); used+=EL[k]; });
+    // the automation lane you are working in gets room for two fingers (at least 30%), taken from the notes
+    const fk=lf==='pos'?'POS':lf==='ctl'?'PAR':null, want=Math.round(avail*0.3);
+    if(fk && !(fk in fix) && EL[fk]<want){ const d=Math.min(want-EL[fk],EL.NOTES-LMIN.NOTES); if(d>0){ EL[fk]+=d; EL.NOTES-=d; } }
+  }
   const yN=EL.RUL+EL.GAP, yV=yN+EL.NOTES+EL.GAP, yP=yV+EL.VEL+EL.GAP, yC=yP+EL.POS+EL.GAP;
   return {d,W,H,yN,yV,yP,yC,x0:EL.GUT,w:Math.max(10,W-EL.GUT-9)};
 }
@@ -8517,10 +8548,14 @@ function drawEd(){
   }
   x.restore();
   // control lane
-  const keys=[...m.params.keys()], kstr=keys.join(',');
-  if(kstr!==ED.keys){ ED.keys=kstr; edKeySel.textContent=''; if(!keys.length){ const o=document.createElement('option'); o.value=''; o.textContent='— none —'; edKeySel.appendChild(o); }
-    for(const k of keys){ const o=document.createElement('option'); o.value=k; o.textContent=(SPECS[k]&&SPECS[k].label)||k.toUpperCase(); edKeySel.appendChild(o); } }
-  if(!keys.includes(ED.key)) ED.key=keys[0]||''; edKeySel.value=ED.key; edKeySel.disabled=!keys.length;
+  const keys=[...m.params.keys()], extra=ED.key && !keys.includes(ED.key) && edCanCtl(ED.key)?ED.key:'', kstr=keys.join(',')+'|'+I.P.eng+'|'+extra;
+  if(kstr!==ED.keys){ ED.keys=kstr; edKeySel.textContent=''; const opt=(par,k,t)=>{ const o=document.createElement('option'); o.value=k; o.textContent=t; par.appendChild(o); };
+    if(!keys.length) opt(edKeySel,'','— none recorded —');
+    if(keys.length){ const og=document.createElement('optgroup'); og.label='IN THIS TAKE'; for(const k of keys) opt(og,k,(SPECS[k]&&SPECS[k].label)||k.toUpperCase()); edKeySel.appendChild(og); }
+    // any other control, to draw its automation (DRAW) or add points (double-tap)
+    for(const [gn,e,l] of MOD_GROUPS){ if(e && e!==I.P.eng) continue; const ks=l.filter(([k])=>!keys.includes(k) && edCanCtl(k)); if(!ks.length) continue;
+      const og=document.createElement('optgroup'); og.label='ADD · '+gn; for(const [k,lb] of ks) opt(og,k,lb); edKeySel.appendChild(og); } }
+  if(!keys.includes(ED.key) && !extra) ED.key=keys[0]||''; edKeySel.value=ED.key; edKeySel.disabled=false;
   const cp=m.params.get(ED.key)||[], [ca,cb]=edCtlRange();
   if(cp.length){ clip(g.x0,g.yC,g.w,EL.PAR);
     const yU=u=>edYU(g,u); x.strokeStyle=hexA(C.accent,0.6); x.lineWidth=1.4; x.beginPath();
@@ -8529,13 +8564,19 @@ function drawEd(){
     x.restore(); }
   x.fillStyle=C.dim; x.fillText(ED.key?((SPECS[ED.key]&&SPECS[ED.key].label)||ED.key.toUpperCase()).slice(0,7):'CTRL',4,g.yC+8);
   // how far each lane is zoomed, where its view sits (bar at the right edge), and the lane ↕ acts on
-  if(pb-pa<0.999){ x.fillStyle=C.accent; x.fillText(edFmtZ(1/(pb-pa)),4,g.yP+EL.POS-8); }
-  if(cb-ca<0.999 && EL.PAR>=34){ x.fillStyle=C.accent; x.fillText(edFmtZ(1/(cb-ca)),4,g.yC+EL.PAR-8); }
+  // (above the BIG LANE arrows when the lane is tall enough)
+  if(pb-pa<0.999){ x.fillStyle=C.accent; x.fillText(edFmtZ(1/(pb-pa)),4,EL.POS>=48?g.yP+EL.POS-26:g.yP+EL.POS-8); }
+  if(cb-ca<0.999 && EL.PAR>=34){ x.fillStyle=C.accent; x.fillText(edFmtZ(1/(cb-ca)),4,EL.PAR>=48?g.yC+EL.PAR-26:g.yC+EL.PAR-8); }
   const bar=(y,h,f0,f1)=>{ x.fillStyle=hexA(C.edge,0.6); x.fillRect(g.x0+g.w+3,y,3,h); x.fillStyle=hexA(C.accent,0.8); x.fillRect(g.x0+g.w+3,y+f0*h,3,Math.max(4,(f1-f0)*h)); };
   bar(g.yN,EL.NOTES,(R.max-R.top)/(R.max+1),(R.max-R.top+R.n)/(R.max+1));
   if(pb-pa<0.999) bar(g.yP,EL.POS,pa,pb);
   if(cb-ca<0.999) bar(g.yC,EL.PAR,1-cb,1-ca);
   const fy=ED.focus==='pos'?[g.yP,EL.POS]:ED.focus==='ctl'?[g.yC,EL.PAR]:[g.yN,EL.NOTES]; x.fillStyle=hexA(C.accent,0.7); x.fillRect(0,fy[0],2,fy[1]);
+  // the BIG LANE buttons (bottom right of the POSITION and CONTROL gutters): arrows out to enlarge, in to share again
+  for(const [ln,y0,hh] of [['pos',g.yP,EL.POS],['ctl',g.yC,EL.PAR]]){ const on=ED.big===ln, bx=g.x0-33, by=y0+hh-17, cx=bx+9, cy=by+7.5;
+    x.fillStyle=on?hexA(C.accent,0.25):hexA(C.inset,0.85); x.fillRect(bx,by,18,15); x.strokeStyle=on?C.accent:C.dim; x.lineWidth=1; x.strokeRect(bx+0.5,by+0.5,17,14);
+    x.fillStyle=on?C.accent:C.muted; const tri=(yy,dir)=>{ x.beginPath(); x.moveTo(cx-3.5,yy); x.lineTo(cx+3.5,yy); x.lineTo(cx,yy+dir*3.5); x.closePath(); x.fill(); };
+    if(on){ tri(cy-5.5,1); tri(cy+5.5,-1); } else { tri(cy-2,-1); tri(cy+2,1); } }
   // ruler: seconds, the zoom, the playhead
   x.fillStyle=C.panel; x.fillRect(g.x0,0,g.w,EL.RUL); x.fillStyle=C.line; x.fillRect(g.x0,EL.RUL-1,g.w,1);
   const span=S/ED.zoom, st=[0.001,0.002,0.005,0.01,0.02,0.05,0.1,0.25,0.5,1,2,5,10,20,30,60].find(s=>span/1000/s<=Math.max(3,g.w/90))||120, stop=g.x0+g.w-(ED.zoom>1.01?52:20);
@@ -8767,7 +8808,9 @@ function edDouble(g,m,lane,hit,px,py){
 function edZone(g,px,py){
   if(py<EL.RUL) return {k:px<g.x0?'none':'ruler',lane:null};
   const sep=[[g.yV-EL.GAP/2,0],[g.yP-EL.GAP/2,1],[g.yC-EL.GAP/2,2]].find(s=>Math.abs(py-s[0])<=4), lane=edLane(g,py);
-  if(px<g.x0-12) return {k:lane==='vel'?'vgut':lane?'gutter':'none',lane,sep};
+  if(px<g.x0-12){
+    if((lane==='pos'||lane==='ctl') && px>=g.x0-38){ const b=lane==='pos'?g.yP+EL.POS:g.yC+EL.PAR; if(py>=b-20) return {k:'bigbtn',lane,sep}; }
+    return {k:lane==='vel'?'vgut':lane?'gutter':'none',lane,sep}; }
   return {k:'lane',lane,sep};
 }
 // two fingers: zoom (time when side by side, the lane under them when one above the other) and scroll
@@ -8775,8 +8818,11 @@ function edPinchStart(){
   const D0=ED.drag; if(D0 && D0.hold) clearTimeout(D0.hold);
   if(D0 && D0.kind==='edit'){ if(D0.moved || D0.added) edCommit(); else edCancel(D0.selRaw,D0.moreRaw); }
   if(D0 && D0.kind==='vpaint'){ if(D0.hits) edCommit(); else edCancel(D0.selRaw,D0.moreRaw); }
+  if(D0 && D0.kind==='adraw') edADrawEnd(D0);
   const L=edLayer(); if(!L){ ED.drag={kind:'idle',id:-1}; return; }
-  const g=edGeo(), m=edModel(L), [a,b]=[...ED.ptrs.values()], mx=(a.x+b.x)/2, my=(a.y+b.y)/2, dx=Math.abs(a.x-b.x), dy=Math.abs(a.y-b.y), lane=edLane(g,my);
+  const g=edGeo(), m=edModel(L), [a,b]=[...ED.ptrs.values()], mx=(a.x+b.x)/2, my=(a.y+b.y)/2, dx=Math.abs(a.x-b.x), dy=Math.abs(a.y-b.y);
+  // the lane between the fingers; if that is a gap, a ruler or VEL, the lane under the first finger, else the one touched last
+  const ok=l=>l==='notes'||l==='pos'||l==='ctl', l1=edLane(g,my), l2=edLane(g,a.y), lane=ok(l1)?l1:ok(l2)?l2:(dy>24 && dy>=0.5*dx?ED.focus:null);
   ED.drag={kind:'pinch',g,m,S:m.S,mx0:mx,my0:my,dx0:Math.max(dx,1),dy0:Math.max(dy,1),z0:ED.zoom,t0:edXTu(g,mx,m.S),
     lane:lane==='notes'||lane==='pos'||lane==='ctl'?lane:null,zt:dx>24 && dx>=0.5*dy,zv:dy>24 && dy>=0.5*dx,vs:edSnapView(m),vm:false};
   if(ED.drag.lane) ED.focus=ED.drag.lane;
@@ -8807,12 +8853,15 @@ edBox.addEventListener('pointerdown',e=>{
     ED.drag=Object.assign(base,{kind:'ruler',z0:ED.zoom,t0:edXTu(g,px,S)}); return; }
   if(kind==='sep'){
     if(dbl){ ED.lh=Object.assign({},EL0); edSave(); drawEd(); return; }
+    if(ED.big){ LANES.forEach(k=>{ ED.lh[k]=EL[k]; }); ED.big=null; edBigUI(); }
     ED.drag=Object.assign(base,{kind:'split',i:z.sep[1],h0:LANES.map(k=>EL[k])}); return; }
+  if(kind==='bigbtn'){ edSetBig(ED.big===lane?null:lane); return; }
   if(kind==='vgut'){ ED.vlane=ED.vlane==='chance'?'vel':'chance'; edSave(); renderEd(); msg(ED.vlane==='chance'?'CHANCE lane: how often each note plays (drag a stem; selected notes follow).':'VELOCITY lane.',2200); return; }
   if(kind==='gutter'){
     if(dbl && lane!=='notes'){ if(ED.vw[lane]) ED.vw[lane]=null; else if(!edFitLane(m,lane)) ED.vw[lane]=null; ED.fit=false; drawEd(); return; }
     ED.drag=Object.assign(base,{kind:'gutter',lane,vs:edSnapView(m),add:e.shiftKey||e.metaKey||e.ctrlKey}); return; }
   if(kind!=='lane') return;
+  if(ED.draw && (lane==='pos' || (lane==='ctl' && ED.key))){ edADrawStart(base,lane,px,py); return; }
   if(lane==='vel' && ED.draw && m.notes.length){ const sr=ED.sel, mr=new Set(ED.more); edBegin(); ED.drag=Object.assign(base,{kind:'vpaint',lx:px,ly:py,hits:0,selRaw:sr,moreRaw:mr,done:new Set()}); edVPaint(px,py); return; }
   if(dbl){ if(lane==='notes' && !hit){ edAddDrag(e.pointerId,g,m,px,py); return; } if(lane) edDouble(g,m,lane,hit,px,py); return; }
   if(!hit){
@@ -8840,6 +8889,7 @@ edBox.addEventListener('pointermove',e=>{
   if(e.pointerId!==D.id || D.kind==='idle') return;
   if(D.kind==='edit'){ edMove(px,py); return; }
   if(D.kind==='vpaint'){ edVPaint(px,py); return; }
+  if(D.kind==='adraw'){ edADraw(px,py); return; }
   const dx=px-D.x0, dy=py-D.y0, g=D.g, S=D.S; if(!D.moved && Math.hypot(dx,dy)<4) return; D.moved=true;
   if(D.kind==='ruler'){ const z=edClamp(D.z0*Math.exp(dy*0.012),1,edZmax(S)); edSetT(z,D.t0/S-(px-g.x0)/(g.w*z),S); ED.fit=false; }
   else if(D.kind==='pan'){ edSetT(ED.zoom,D.t0/S-(px-g.x0)/(g.w*ED.zoom),S); ED.fit=false;
@@ -8867,6 +8917,7 @@ const edEnd=e=>{
   else if(D.kind==='pan' && !D.moved){ if(!D.add) edSetSel([]);
     // a tap on empty space in the notes: the insert marker (PASTE puts notes there)
     if(D.lane==='notes'){ const L=edLayer(); if(L){ ED.cur=edSnapT(edXT(D.g,D.x0,D.S),L.src); } } }
+  else if(D.kind==='adraw') edADrawEnd(D);
   else if(D.kind==='vpaint'){ if(D.hits) edCommit(D.hits+(ED.vlane==='chance'?' chances':' velocities')+' drawn.'); else edCancel(D.selRaw,D.moreRaw); }
   else if(D.kind==='gutter' && !D.moved && D.lane==='notes') edKeyTap(D);
   else if(D.kind==='box'){
@@ -8999,6 +9050,64 @@ edPlay.addEventListener('click',()=>{ if(!gPlayBtn.disabled) gPlayBtn.click(); r
 fwEd.w.querySelector('.fw-x').addEventListener('click',()=>renderEd());
 new ResizeObserver(drawEd).observe(edBox);
 setTimeout(()=>keyScaleMarks(),0);
+// ---------- v36.1: room for the automation lanes, and drawing automation ----------
+// FILL THE SCREEN (⤢ in the head, or double-tap the title): the window covers the page and the lanes take every pixel
+// the tools leave. BIG LANE (LANES tab, or the arrows at the bottom of the POSITION and CONTROL gutters): one lane
+// takes most of the height, the others keep a working strip; dragging a line between lanes shares them again.
+const edMaxBtn=$('#ed-max'), edBigBox=$('#ed-big');
+function edMaxUI(){ fwEd.w.classList.toggle('max',ED.max); edMaxBtn.setAttribute('aria-pressed',String(ED.max)); edMaxBtn.textContent=ED.max?'⤡':'⤢';
+  edMaxBtn.title=ED.max?'Back to a window (or double-tap the title)':'Fill the screen: the lanes get all the room (or double-tap the title)'; edMaxBtn.setAttribute('aria-label',ED.max?'Back to a window':'Fill the screen'); }
+function edSetMax(on){ ED.max=on; edSave(); edMaxUI(); requestAnimationFrame(drawEd); }
+edMaxBtn.addEventListener('click',()=>{ edSetMax(!ED.max); msg(ED.max?'The editor fills the screen: ⤡ or a double-tap on the title gives the page back.':'Back to a window.',2200); });
+{ const head=fwEd.w.querySelector('.fw-h'); let last={t:0,x:0,y:0};
+  head.addEventListener('pointerdown',e=>{ if(e.target.closest('button')) return; const now=performance.now();
+    if(now-last.t<340 && Math.hypot(e.clientX-last.x,e.clientY-last.y)<30){ last.t=0; edSetMax(!ED.max); return; } last={t:now,x:e.clientX,y:e.clientY}; }); }
+function edBigUI(){ for(const b of edBigBox.querySelectorAll('[data-big]')) b.setAttribute('aria-pressed',String((b.dataset.big||null)===ED.big)); }
+function edSetBig(l){ ED.big=l; if(l==='pos'||l==='ctl') ED.focus=l; edSave(); edBigUI(); drawEd();
+  msg(l?{notes:'NOTES',pos:'POSITION',ctl:'CONTROL'}[l]+' lane big: the others keep a strip. Tap its arrows again (or EVEN) to share.':'The lanes share the room again (drag a line between two to change it).',2400); }
+edBigBox.addEventListener('click',e=>{ const b=e.target.closest('[data-big]'); if(b) edSetBig(b.dataset.big||null); });
+edMaxUI(); edBigUI();
+$('#ed-undo').addEventListener('click',()=>{ undo(); renderEd(); }); $('#ed-redo').addEventListener('click',()=>{ redo(); renderEd(); });
+// DRAW in POSITION: a position jump at every GRID step under the stroke (a step sequence through the sample, snapped
+// by SNAP: onsets, zero crossings, the loop); with GRID OFF a jump every 1/64 of what you see. DRAW in CONTROL: a
+// point of the control at every GRID step (a staircase), or along the finger with GRID OFF. What was drawn before
+// in that stretch is replaced (position drags are kept). One UNDO step per stroke.
+function edADrawStart(base,lane,px,py){
+  const sr=ED.sel, mr=new Set(ED.more); edBegin();
+  // where the drags across the waveform are (a jump inside one belongs to it and is left alone)
+  const iv=[]; let on=null; for(const e of ED.work){ if(e.k==='touch'){ if(e.on) on=e.t; else if(on!==null){ iv.push([on,e.t]); on=null; } } } if(on!==null) iv.push([on,base.S]);
+  ED.drag=Object.assign(base,{kind:'adraw',lane,lx:px,ly:py,steps:new Map(),made:new Set(),cut:0,iv,selRaw:sr,moreRaw:mr,lastT:-1e9});
+  edADraw(px,py);
+}
+function edADraw(px,py){
+  const D=ED.drag, L=edLayer(); if(!L || !D) return; const g=D.g, S=D.S, src=L.src, isPos=D.lane==='pos', key=isPos?'pos':ED.key;
+  const xa=Math.min(D.lx,px), xb=Math.max(D.lx,px), ta=edXT(g,xa,S), tb=edXT(g,xb,S);
+  const yAt=t=>{ const x=edTX(g,t,S), u=Math.abs(px-D.lx)>0.5?(x-D.lx)/(px-D.lx):1; return D.ly+(py-D.ly)*edClamp(u,0,1); };
+  const val=y=>isPos?edSnapV(g,edVY(g,y)):vOfK(key,edUY(g,y),P[key]);
+  const inDrag=t=>D.iv.some(([a,b])=>t>=a && t<=b);
+  const mine=e=>e.k==='p' && e.key===key && !e.gone && !D.made.has(e) && !(isPos && inDrag(e.t));
+  const cut=(a,b)=>{ for(const e of ED.work) if(e.t>=a && e.t<b && mine(e)){ e.gone=true; D.cut++; } };
+  const grid=ED.grid!=='off', st=grid?qStepMs(ED.grid,S):(isPos?Math.max(20,S/ED.zoom/64):0), g0=grid&&typeof src.ph0==='number'?src.ph0:0;
+  if(st>0){
+    // one point per step under the stroke; a step crossed again takes the new value
+    const k0=Math.ceil((g0+ta)/st-0.5), k1=Math.floor((g0+tb)/st+0.5);
+    for(let k=k0;k<=k1;k++){ const tr=k*st-g0; if(tr<-0.5 || tr>S-1) continue; const t=edClamp(tr,0,S-0.5); if(t>tb+st/2 || t<ta-st/2) continue; const v=val(yAt(t));
+      const ex=D.steps.get(k); if(ex){ ex.v=v; continue; }
+      cut(t-st/2,t+st/2); const e={k:'p',key,v,t}; if(isPos) e.lk=true; ED.work.push(e); D.made.add(e); D.steps.set(k,e); }
+  } else {
+    // GRID OFF, CONTROL: along the finger, a point at least every 10 ms
+    cut(ta,tb+0.01); const t=edXT(g,px,S);
+    if(Math.abs(t-D.lastT)>=10){ const e={k:'p',key,v:val(py),t}; ED.work.push(e); D.made.add(e); D.lastT=t; }
+  }
+  D.lx=px; D.ly=py; ED.ver++; drawEd();
+}
+function edADrawEnd(D){
+  if(!D.made.size && !D.cut){ edCancel(D.selRaw,D.moreRaw); return; }
+  ED.work.sort((a,b)=>a.t-b.t);
+  const what=D.lane==='pos'?'position jump':'point';
+  edCommit(D.made.size?`${D.made.size} ${what}${D.made.size>1?'s':''} drawn${D.cut?' (replacing '+D.cut+')':''}.`:D.cut+' removed.');
+  renderEd();
+}
 // ---------- v36: note tools (after Live's MIDI note editor: Notes panel, MIDI Transform and Generate tools) ----------
 // Every tool works on the selected notes, or on all of them when nothing is selected, and is one UNDO step. Notes
 // moved in time are locked where they sound, as a hand-moved note is. New notes take the GRID.
@@ -9390,7 +9499,9 @@ function plPaste(){
   msg(c.from===J.i?`Player ${pnum(J)} is back as you copied it.`:`Player ${pnum(J)} is now a copy of player ${pnumI(c.from)}${n?' with its '+n+' gesture layer'+(n===1?'':'s')+' (stopped: ▶ plays them)':''}. Change anything: the two are separate. UNDO brings back what it had.`,5000);
 }
 $('#pl-copy').addEventListener('click',plCopy); pasteBtn.addEventListener('click',plPaste);
-function renderUndo(){ undoBtn.disabled=!undoStack.length; redoBtn.disabled=!redoStack.length; }
+function renderUndo(){ undoBtn.disabled=!undoStack.length; redoBtn.disabled=!redoStack.length;
+  // the editor has its own (when it fills the screen, the page's are under it)
+  const u=document.getElementById('ed-undo'), r=document.getElementById('ed-redo'); if(u){ u.disabled=undoBtn.disabled; r.disabled=redoBtn.disabled; } }
 function undo(){ if(!undoStack.length) return; redoStack.push(undoSnap()); applyUndo(undoStack.pop()); undoKey=''; renderUndo(); msg('Undone.',1500); }
 function redo(){ if(!redoStack.length) return; undoStack.push(undoSnap()); applyUndo(redoStack.pop()); undoKey=''; renderUndo(); msg('Redone.',1500); }
 undoBtn.addEventListener('click',undo); redoBtn.addEventListener('click',redo);
