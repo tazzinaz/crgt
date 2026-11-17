@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CRGT Host</title>
+<meta name="description" content="CRGT Sample Workstation as an iPad app, with the iPad's MIDI: IDAM MIDI Host from a Mac by cable, USB and Bluetooth devices, Wi-Fi MIDI.">
+<link rel="icon" type="image/png" href="../icon-192.png">
+<link rel="apple-touch-icon" href="../icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,500;0,600;1,500&display=swap">
+<style>
+:root{
+  --bg:#F4F2EE; --panel:#FBFAF7; --ink:#26262A; --ink2:#5E5B57; --line:#DDD8D0; --accent:#B4664A; --accent-ink:#FFFFFF; --code:#ECE8E1;
+  --f-sans:Inter,-apple-system,system-ui,sans-serif; --f-serif:Lora,Georgia,serif; --f-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#27272A; --panel:#2F2F33; --ink:#ECEAE6; --ink2:#B4B0AA; --line:#45444A; --accent:#D18365; --accent-ink:#1E1E21; --code:#38373C; color-scheme:dark; } }
+:root[data-theme="dark"]{ --bg:#27272A; --panel:#2F2F33; --ink:#ECEAE6; --ink2:#B4B0AA; --line:#45444A; --accent:#D18365; --accent-ink:#1E1E21; --code:#38373C; color-scheme:dark; }
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-sans);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+main{max-width:46rem;margin:0 auto;padding-block:40px 64px}
+header{display:flex;gap:20px;align-items:center;margin-bottom:28px}
+header img{width:72px;height:72px;border-radius:16px;flex:0 0 auto}
+h1{font:600 2.1rem/1.15 var(--f-serif);margin:0;text-wrap:balance}
+.sub{margin:4px 0 0;color:var(--ink2)}
+h2{font:600 1.35rem/1.25 var(--f-serif);margin:44px 0 12px;text-wrap:balance}
+h3{font:600 .78rem/1.3 var(--f-sans);letter-spacing:.09em;text-transform:uppercase;color:var(--ink2);margin:26px 0 8px}
+p{margin:0 0 12px}
+a{color:var(--accent);text-underline-offset:2px}
+.lede{font-size:1.06rem}
+.ports{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:10px;margin:18px 0 6px;padding:0;list-style:none}
+.ports li{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;min-width:0}
+.ports b{display:block;font-weight:600}
+.ports span{color:var(--ink2);font-size:.92rem}
+.dl{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin:20px 0 8px}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:10px;background:var(--accent);color:var(--accent-ink);
+  font:600 .9rem/1 var(--f-sans);letter-spacing:.06em;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.meta{color:var(--ink2);font-size:.9rem}
+.ways{display:grid;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr));gap:14px}
+.way{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px 6px;min-width:0}
+.way h3{margin-top:0;color:var(--accent)}
+.way .why{color:var(--ink2);font-size:.93rem}
+ol{margin:0 0 12px;padding-left:1.4em}
+ol li{margin:0 0 8px;padding-left:.2em}
+.path{font:500 .86em/1.4 var(--f-mono);background:var(--code);border-radius:5px;padding:1px 6px;white-space:normal;overflow-wrap:anywhere}
+kbd{font:500 .84em var(--f-mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 5px;background:var(--panel)}
+.note{border-left:3px solid var(--accent);padding:2px 0 2px 14px;margin:14px 0;color:var(--ink2)}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:14px 0 18px;font:500 .84rem/1.3 var(--f-mono)}
+.flow span{background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:6px 10px}
+.flow i{font-style:normal;color:var(--accent)}
+dl{margin:0}
+dt{font-weight:600;margin-top:14px}
+dd{margin:2px 0 0;color:var(--ink2)}
+footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink2);font-size:.9rem}
+@media (max-width:480px){ h1{font-size:1.75rem} header img{width:56px;height:56px;border-radius:13px} main{padding-block:28px 48px} }
+</style>
+</head>
+<body>
+<main>
+<header>
+  <img src="../icon-192.png" alt="" width="72" height="72">
+  <div><h1>CRGT Host</h1><p class="sub">CRGT Sample Workstation as an iPad app, with the iPad's MIDI.</p></div>
+</header>
+
+<p class="lede">Safari gives web pages no MIDI, and neither does any other iPad browser. CRGT Host is the same CRGT running inside a small iPad app, so it gets the iPad's own MIDI ports. It keeps CRGT on the iPad, so it opens with no connection. When it's online, it updates CRGT from this site.</p>
+<ul class="ports">
+  <li><b>IDAM MIDI Host</b><span>From a Mac by cable, e.g. Ableton Live</span></li>
+  <li><b>USB &amp; Bluetooth</b><span>Keyboards, pads, controllers</span></li>
+  <li><b>Wi-Fi MIDI</b><span>A Mac's network session, no cable</span></li>
+  <li><b>Other iPad apps</b><span>They play CRGT through the port named CRGT</span></li>
+</ul>
+
+<div class="dl">
+  <a class="btn" href="CRGT-Host.swiftpm.zip" download>DOWNLOAD CRGT HOST</a>
+  <a class="btn ghost" href="https://github.com/tazzinaz/crgt/tree/main/host">SOURCE ON GITHUB</a>
+</div>
+<p class="meta">CRGT-Host.swiftpm.zip: an app project that opens in Swift Playground on the iPad or in Xcode on a Mac. Version 1.0, with CRGT v38 built in.</p>
+
+<h2>Install it</h2>
+<div class="ways">
+  <section class="way">
+    <h3>On the iPad · Swift Playground</h3>
+    <p class="why">Free, no Mac needed. CRGT Host runs from inside Swift Playground.</p>
+    <ol>
+      <li>Install Apple's <a href="https://apps.apple.com/app/id908519492">Swift Playground</a> from the App Store (free, iPadOS 18 or later).</li>
+      <li>On the iPad, tap <b>Download CRGT Host</b> above.</li>
+      <li>In <span class="path">Files › Downloads</span>, tap the .zip to unzip it, then tap <span class="path">CRGTHost.swiftpm</span>. It opens in Swift Playground.</li>
+      <li>Tap <b>Run</b> (▶), then give the app the whole screen with its full-screen button.</li>
+    </ol>
+  </section>
+  <section class="way">
+    <h3>From a Mac · Xcode</h3>
+    <p class="why">A real app on the home screen. Uses the same cable as IDAM.</p>
+    <ol>
+      <li>Download the .zip on the Mac, unzip it, and double-click <span class="path">CRGTHost.swiftpm</span>. It opens in Xcode.</li>
+      <li>Add your Apple ID in <span class="path">Xcode › Settings › Accounts</span>.</li>
+      <li>Connect the iPad and pick it as the run destination. Under <span class="path">Signing &amp; Capabilities</span>, choose your team.</li>
+      <li>Press <kbd>⌘R</kbd>. The first time, turn on <span class="path">Settings › Privacy &amp; Security › Developer Mode</span> on the iPad.</li>
+    </ol>
+    <p class="why">With a free Apple ID the app stops opening after 7 days. Run it from Xcode again and your sessions are still there.</p>
+  </section>
+</div>
+<p class="note">Your sessions: the app keeps its own sessions, apart from Safari and the home-screen CRGT. To move one over, in the old one use <b>SESSION › EXPORT CURRENT…</b>, then in CRGT Host use <b>SESSION › IMPORT…</b>.</p>
+
+<h2>Play it from Ableton on a Mac (IDAM)</h2>
+<div class="flow"><span>Ableton MIDI track</span><i>→</i><span>iPad (USB)</span><i>→</i><span>IDAM MIDI Host</span><i>→</i><span>CRGT player</span></div>
+<ol>
+  <li>Connect the iPad to the Mac with its cable, unlock it, and tap <b>Trust</b> if asked. Open CRGT Host. MIDI turns on by itself.</li>
+  <li>On the Mac, open <span class="path">Audio MIDI Setup › Window › Show Audio Devices</span> and click <b>Enable</b> under the iPad.</li>
+  <li>In CRGT Host, tap <b>MIDI ▾</b>: <b>IDAM MIDI Host</b> is listed under INPUTS.</li>
+  <li>In Live, open <span class="path">Settings › Link, Tempo &amp; MIDI</span>. For the iPad's <b>output</b> port, turn <b>Track</b> on.</li>
+  <li>On a MIDI track, set <b>MIDI To</b> to the iPad. Set ROUTING in CRGT to <b>PLAYER ON SCREEN</b>, or to <b>CHANNEL = PLAYER</b> so channel 1 plays player 1, channel 2 plays player 2, and so on.</li>
+  <li>To hear CRGT inside Live, set the iPad as Live's <b>Audio Input Device</b>, then monitor an audio track set to <b>In</b>.</li>
+</ol>
+<p>To turn knobs from Live: in a clip, open <span class="path">Envelopes › MIDI Ctrl</span> and draw a controller. In CRGT, tap <b>MIDI LEARN</b> and touch the knob, then play the clip.</p>
+
+<h2>Without a cable</h2>
+<dl>
+  <dt>Wi-Fi MIDI from a Mac</dt>
+  <dd>In CRGT Host, tap <b>MIDI ▾ › WI-FI MIDI</b> so it shows ON. The first time, allow Local Network. On the Mac, open <span class="path">Audio MIDI Setup › Window › Show MIDI Studio</span> and double-click <b>Network</b>. Under <b>My Sessions</b>, add a session with + and tick it. Choose the iPad under <b>Directory</b> and click <b>Connect</b>. In Live, turn on <b>Track</b> for <b>Network Session 1</b>.</dd>
+  <dt>Bluetooth from a Mac</dt>
+  <dd>In CRGT Host, tap <b>MIDI ▾ › MAC OVER BLUETOOTH…</b> and turn on advertising. On the Mac, in MIDI Studio, click the Bluetooth button (<b>Configure Bluetooth</b>) and connect to the iPad.</dd>
+  <dt>Bluetooth keyboards and controllers</dt>
+  <dd>In CRGT Host, tap <b>MIDI ▾ › BLUETOOTH DEVICES…</b> and tap the device to connect it.</dd>
+  <dt>Other iPad apps</dt>
+  <dd>Sequencers and hosts such as AUM or Loopy Pro can send MIDI to the port named <b>CRGT</b>.</dd>
+</dl>
+
+<h2>If something is off</h2>
+<dl>
+  <dt>IDAM MIDI Host is not in the list</dt>
+  <dd>Keep the iPad unlocked, and click <b>Enable</b> again in Audio MIDI Setup: it switches off when the cable comes out. The list updates as soon as the port appears.</dd>
+  <dt>MIDI arrives but there is no sound</dt>
+  <dd>Tap anywhere in CRGT once. Check that the player has a sample. With IDAM on, the iPad's sound goes to the Mac.</dd>
+  <dt>Timing feels loose</dt>
+  <dd>Set <b>LATENCY</b> to <b>LOW</b> in CRGT's AUDIO window. CRGT doesn't follow Live's tempo yet, so set the same BPM in both.</dd>
+  <dt>Wi-Fi MIDI never connects</dt>
+  <dd>Check <span class="path">Settings › Privacy &amp; Security › Local Network</span> for the app, and that both devices are on the same network.</dd>
+</dl>
+
+<footer>
+  CRGT Host is open source, in <a href="https://github.com/tazzinaz/crgt/tree/main/host">host/</a> of this repository. Each change is built for iPad by GitHub Actions. · <a href="../">Open CRGT in the browser</a>
+</footer>
+</main>
+</body>
+</html>

@@ -1,7 +1,7 @@
 // swift-tools-version: 5.9
 
 // CRGT Host: CRGT Sample Workstation as an iPad app, with the iPad's MIDI (IDAM MIDI Host from a Mac by cable,
-// USB and Bluetooth devices, Wi-Fi MIDI, other iPad apps). Opens in Swift Playgrounds on the iPad, and in Xcode on a Mac.
+// USB and Bluetooth devices, Wi-Fi MIDI, other iPad apps). Opens in Swift Playground on the iPad, and in Xcode on a Mac.
 // Setup: https://tazzinaz.github.io/crgt/host/
 
 import PackageDescription

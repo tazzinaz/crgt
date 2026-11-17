@@ -19,7 +19,12 @@ defaults:
 
 jobs:
   build:
-    runs-on: macos-15
+    # Xcode 16 (iOS 18 SDK) and the newest Xcode on GitHub's Macs (what Swift Playgrounds on the iPad is closest to)
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [macos-15, macos-26]
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
@@ -45,7 +50,8 @@ jobs:
       - name: Build the app with Xcode (unsigned)
         id: app
         run: |
-          # Xcode only sees the app product where AppleProductTypes can be imported; try it in a copy without the guard
+          # the app product: Package.swift guards it with canImport(AppleProductTypes) so `swift build` works too;
+          # build it from a copy without the guard, so a mistake in the app settings fails here instead of hiding
           APPDIR="$RUNNER_TEMP/app/CRGTHost.swiftpm"
           mkdir -p "$RUNNER_TEMP/app" && cp -R host/CRGTHost.swiftpm "$APPDIR"
           sed -i '' -e '/^#if canImport(AppleProductTypes)$/d' -e '/^#endif$/d' "$APPDIR/Package.swift"
@@ -73,6 +79,6 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: CRGT-Host-unsigned-ipa
+          name: CRGT-Host-unsigned-ipa-${{ matrix.runner }}
           path: ${{ runner.temp }}/CRGT-Host-unsigned.ipa
           if-no-files-found: error
