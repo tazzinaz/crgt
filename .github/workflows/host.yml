@@ -51,9 +51,8 @@ jobs:
           sed -i '' -e '/^#if canImport(AppleProductTypes)$/d' -e '/^#endif$/d' "$APPDIR/Package.swift"
           cd "$APPDIR"
           xcodebuild -list 2>&1 | tee "$RUNNER_TEMP/list.log" | tail -25
-          SCHEME=$(awk '/Schemes:/{f=1;next} f&&NF{gsub(/^ +| +$/,"");print}' "$RUNNER_TEMP/list.log" | grep -v '^CRGTHost$' | head -1)
-          [ -n "$SCHEME" ] || SCHEME="CRGT Host"
-          echo "scheme: $SCHEME"
+          SCHEME=CRGTHost
+          head -40 Package.swift | grep -n "AppleProductTypes" || true
           xcodebuild -scheme "$SCHEME" -destination 'generic/platform=iOS' -derivedDataPath "$RUNNER_TEMP/dd" \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build > "$RUNNER_TEMP/xcodebuild.log" 2>&1 \
             || { grep -E "error:|fatal" "$RUNNER_TEMP/xcodebuild.log" | head -60; tail -40 "$RUNNER_TEMP/xcodebuild.log"; exit 1; }
@@ -62,6 +61,7 @@ jobs:
 
       - name: Check the built app
         run: |
+          find "$RUNNER_TEMP/dd/Build/Products" -maxdepth 3 | head -30
           APP=$(find "$RUNNER_TEMP/dd/Build/Products" -maxdepth 2 -name "*.app" | head -1)
           echo "app: $APP"
           ls -la "$APP"
