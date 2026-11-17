@@ -38,6 +38,12 @@ jobs:
       - name: Bridge script matches bridge.js
         run: python3 host/tools/embed_bridge.py --check
 
+      - name: The download matches the project
+        run: |
+          mkdir -p "$RUNNER_TEMP/zip" && cd "$RUNNER_TEMP/zip" && unzip -q "$GITHUB_WORKSPACE/host/CRGT-Host.swiftpm.zip"
+          diff -r "$RUNNER_TEMP/zip/CRGTHost.swiftpm" "$GITHUB_WORKSPACE/host/CRGTHost.swiftpm" -x '.*' \
+            || { echo "::error::host/CRGT-Host.swiftpm.zip is out of date: run python3 host/tools/make_zip.py"; exit 1; }
+
       - name: UMP conversion tests
         run: |
           swiftc -O host/CRGTHost.swiftpm/Sources/CRGTHost/UMP.swift host/tests/ump/main.swift -o "$RUNNER_TEMP/ump"
@@ -52,8 +58,9 @@ jobs:
         run: |
           # the app product: Package.swift guards it with canImport(AppleProductTypes) so `swift build` works too;
           # build it from a copy without the guard, so a mistake in the app settings fails here instead of hiding
+          # built from the download itself, as people get it
           APPDIR="$RUNNER_TEMP/app/CRGTHost.swiftpm"
-          mkdir -p "$RUNNER_TEMP/app" && cp -R host/CRGTHost.swiftpm "$APPDIR"
+          mkdir -p "$RUNNER_TEMP/app" && cp -R "$RUNNER_TEMP/zip/CRGTHost.swiftpm" "$APPDIR"
           sed -i '' -e '/^#if canImport(AppleProductTypes)$/d' -e '/^#endif$/d' "$APPDIR/Package.swift"
           cd "$APPDIR"
           xcodebuild -list 2>&1 | tee "$RUNNER_TEMP/list.log" | tail -25

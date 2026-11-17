@@ -17,8 +17,7 @@ let package = Package(
             name: "CRGTHost",
             path: "Sources/CRGTHost",
             resources: [
-                .copy("Resources"),
-                .process("Assets.xcassets")
+                .copy("Resources")   // crgt.html; Assets.xcassets (the icon) is picked up by itself
             ]
         )
     ]

@@ -19,6 +19,7 @@ Setup for players: **https://tazzinaz.github.io/crgt/host/**
 | `Sources/CRGTHost/UMP.swift` | Converts between UMP words and MIDI 1.0 bytes, including sysex split across packets. Pure Swift and tested on its own. |
 | `Sources/CRGTHost/PageStore.swift` | Picks the CRGT to open: the newer of the copy built into the app (`Resources/crgt.html`) and the last one downloaded. CRGT opens with no connection. |
 | `bridge.js` | The Web MIDI the page sees (`navigator.requestMIDIAccess`, ports, `onmidimessage`, `send`, `statechange`, sysex rules), plus `window.CRGT_HOST`. It's injected before CRGT's own scripts. |
+| `tools/make_zip.py` | Packs `CRGTHost.swiftpm` as `CRGT-Host.swiftpm.zip`. CI checks that the zip matches the folder, then builds the app from the zip. |
 | `tools/embed_bridge.py` | Copies `bridge.js` into `BridgeScript.swift`. Run it after editing `bridge.js`; CI checks the two match. |
 | `tests/ump/main.swift` | UMP round-trip tests. |
 | `index.html` | The setup page on GitHub Pages. |
@@ -30,11 +31,11 @@ Inside the app, CRGT turns MIDI on at the first launch and tries to start its so
 
 GitHub Actions (`.github/workflows/host.yml`) builds every change on a Mac with Xcode 16 and with the newest Xcode. Each build:
 
-1. checks `BridgeScript.swift` against `bridge.js`;
+1. checks `BridgeScript.swift` against `bridge.js`, and the download zip against the folder;
 2. runs the UMP tests;
 3. compiles for iPad with `swift build`;
-4. builds the whole app, unsigned, with `xcodebuild`;
+4. builds the whole app, unsigned, with `xcodebuild`, from the download zip;
 5. checks its Info.plist (Bluetooth, Local Network, background audio);
 6. keeps an unsigned `.ipa` as a build artifact, for Sideloadly or AltStore.
 
-After a new CRGT build, copy its `index.html` to `Sources/CRGTHost/Resources/crgt.html` and re-zip `CRGTHost.swiftpm` as `CRGT-Host.swiftpm.zip`. Installed apps don't need this step: they download new CRGT versions themselves.
+After a new CRGT build, copy its `index.html` to `Sources/CRGTHost/Resources/crgt.html` and run `python3 host/tools/make_zip.py`. Installed apps don't need this step: they download new CRGT versions themselves.
