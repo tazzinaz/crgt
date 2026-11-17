@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>CRGT Sample Workstation</title>
-<meta name="crgt-offline" content="v37">
+<meta name="crgt-offline" content="v38">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -122,6 +122,10 @@ button:focus-visible,.knob:focus-visible,.wave-box:focus-visible{outline:2px sol
 .midi-cfg[hidden]{display:none}
 .midi-cfg .seg{align-self:flex-start}
 .midi-ins,.midi-maps{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+/* v38: CRGT Host (the iPad app) — its own row in MIDI IN; elsewhere, the way to get it */
+.midi-host{display:flex;flex-direction:column;gap:8px}
+.midi-host[hidden],.midi-get[hidden]{display:none}
+.midi-get{display:inline-flex;align-items:center;align-self:flex-start;text-decoration:none;color:var(--ink)}
 .midi-maps{flex-direction:column;align-items:stretch;gap:4px}
 .midi-map{justify-content:space-between}
 body.mlearn .knob{outline:1px dashed var(--accent);outline-offset:2px;border-radius:8px}
@@ -1291,6 +1295,12 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
   <div class="ph"><h2>MIDI IN</h2><span class="rp-now" id="midi-st"></span></div>
   <div class="rp-row"><button class="btn sm" id="midi-on" type="button" aria-pressed="false">TURN ON</button></div>
   <p class="desc" id="midi-why" hidden></p>
+  <a class="btn sm midi-get" id="midi-get" href="https://tazzinaz.github.io/crgt/host/" target="_blank" rel="noopener" hidden>CRGT HOST FOR IPAD ↗</a>
+  <div class="midi-host" id="midi-host" hidden>
+  <div class="rp-l">THIS IPAD · CRGT HOST</div>
+  <div class="midi-ins"><button class="btn sm" id="mh-net" type="button" aria-pressed="false">WI-FI MIDI · OFF</button><button class="btn sm" id="mh-bt" type="button">BLUETOOTH DEVICES…</button><button class="btn sm" id="mh-btmac" type="button">MAC OVER BLUETOOTH…</button></div>
+  <p class="desc" id="mh-st"></p>
+  </div>
   <div class="midi-cfg" id="midi-cfg">
   <div class="rp-l">INPUTS</div>
   <div class="midi-ins" id="midi-ins"></div>
@@ -5353,7 +5363,7 @@ function setupNode(){
 }
 const ratePop=$('#rate-pop'), rateBtn=$('#eng'), segSr=$('#seg-sr');
 function renderRatePop(){
-  { const m=document.querySelector('meta[name="crgt-offline"]'), v=$('#app-ver'); if(m && v.hidden){ v.hidden=false; v.textContent='Home-screen app, version '+m.content+'. It updates itself when you open it online.'; } }
+  { const m=document.querySelector('meta[name="crgt-offline"]'), v=$('#app-ver'); if(m && v.hidden){ v.hidden=false; v.textContent=window.CRGT_HOST?'CRGT Host app '+window.CRGT_HOST.version+', CRGT '+m.content+'. It looks for a new CRGT when you open it online.':'Home-screen app, version '+m.content+'. It updates itself when you open it online.'; } }
   segSr.querySelectorAll('button').forEach(b=>{ b.setAttribute('aria-pressed',String(+b.dataset.sr===srWant)); b.disabled=srBusy||!!rec; });
   {
     $('#aud-wake').setAttribute('aria-pressed',String(AUD.wake)); $('#aud-bg').setAttribute('aria-pressed',String(AUD.bg));
@@ -7561,20 +7571,25 @@ function noteOff(m){
 // the sustain pedal (CC 64) end when it lifts. PITCH BEND bends the notes held on its channel (not recorded).
 // MIDI LEARN: touch a knob and move a control (or the other way round): that CC then turns the knob, on the player
 // the notes go to, and is recorded like a hand on the knob. Settings and mappings stay on this device.
+// v38: inside CRGT Host (the iPad app in CRGT's GitHub) MIDI comes from CoreMIDI through the app: IDAM MIDI Host
+// (a Mac by cable), USB and Bluetooth devices, Wi-Fi MIDI, and other iPad apps through its CRGT port. MIDI is on there
+// from the first launch; the panel gets the app's own row (Wi-Fi MIDI, the iPad's Bluetooth MIDI screens).
+const HOST=(typeof window!=='undefined' && window.CRGT_HOST)||null;
 const MIDI={ok:typeof navigator!=='undefined' && typeof navigator.requestMIDIAccess==='function',acc:null,on:false,err:'',route:'sel',vel:'played',bend:2,
-  maps:[],off:[],learn:null,held:new Map(),sus:new Array(16).fill(false),susHeld:new Map(),bendV:new Float64Array(16),last:0,said:0};
+  maps:[],off:[],learn:null,held:new Map(),sus:new Array(16).fill(false),susHeld:new Map(),bendV:new Float64Array(16),last:0,said:-1e9,want:!!HOST,hs:null};
 // inside a frame that is not allowed MIDI (the Claude viewer), say so before anyone taps TURN ON
 try{ if(MIDI.ok && window.self!==window.top && document.featurePolicy && !document.featurePolicy.allowsFeature('midi')) MIDI.err='frame'; }catch(e){}
 try{ const s=JSON.parse(localStorage.getItem('wavesetPlayer.midi')||'{}');
   if(s.route==='sel'||s.route==='ch') MIDI.route=s.route; if(s.vel==='played'||s.vel==='fixed') MIDI.vel=s.vel; if([0,2,7,12].includes(s.bend)) MIDI.bend=s.bend;
   if(Array.isArray(s.maps)) MIDI.maps=s.maps.filter(m=>m && Number.isInteger(m.cc) && m.cc>=0 && m.cc<128 && Number.isInteger(m.ch) && m.ch>=-1 && m.ch<16 && SPECS[m.key]);
-  if(Array.isArray(s.off)) MIDI.off=s.off.filter(x=>typeof x==='string').slice(0,64); MIDI.want=!!s.on; }catch(e){}
+  if(Array.isArray(s.off)) MIDI.off=s.off.filter(x=>typeof x==='string').slice(0,64); MIDI.want=s.on===undefined?!!HOST:!!s.on; }catch(e){}
 const midiSave=()=>{ try{ localStorage.setItem('wavesetPlayer.midi',JSON.stringify({on:MIDI.on,route:MIDI.route,vel:MIDI.vel,bend:MIDI.bend,maps:MIDI.maps,off:MIDI.off})); }catch(e){} };
 const midiBtn=$('#midi-btn'), midiPop=$('#midi-pop'), midiDot=$('#midi-dot');
 // the player a channel plays (null: none — CHANNEL = PLAYER past the last player)
 const midiTarget=ch=>MIDI.route==='sel'?I:(ch<inst.length?inst[ch]:null);
 const midiInputs=()=>MIDI.acc?[...MIDI.acc.inputs.values()]:[];
 const midiUsed=inp=>!MIDI.off.includes(inp.name||inp.id);
+const midiDevice=inp=>!(HOST && inp.id==='crgt') && inp.state!=='disconnected';   // a device there now (CRGT Host's own port for other apps is always there: not one)
 function midiBlink(){ const now=performance.now(); MIDI.last=now; midiDot.classList.add('on'); clearTimeout(midiBlink.t); midiBlink.t=setTimeout(()=>midiDot.classList.remove('on'),110); }
 function midiStart(fromTap){
   if(!MIDI.ok){ MIDI.err='none'; renderMidi(); return Promise.resolve(false); }
@@ -7582,8 +7597,8 @@ function midiStart(fromTap){
   return navigator.requestMIDIAccess({sysex:false}).then(acc=>{
     MIDI.acc=acc; MIDI.on=true; MIDI.err=''; midiSave();
     acc.onstatechange=e=>{ const p=e.port; midiHook(); renderMidi(); if(p && p.type==='input') msg(`MIDI: ${p.name||'a device'} ${p.state==='connected'?'connected':'gone'}.`,2500); };
-    midiHook(); renderMidi(); const n=midiInputs().length;
-    if(fromTap) msg(n?`MIDI on: ${n} input${n>1?'s':''} (${midiInputs().map(i=>i.name).join(', ')}).`:'MIDI on: no input yet. Plug one in (or pair it over Bluetooth) and it shows up here.',3200);
+    midiHook(); renderMidi(); const dv=midiInputs().filter(midiDevice), n=dv.length;
+    if(fromTap) msg(n?`MIDI on: ${n} input${n>1?'s':''} (${dv.map(i=>i.name).join(', ')}).`:HOST?'MIDI on: no device yet. Connect the Mac by cable (IDAM), plug one in, or pair one over Bluetooth.':'MIDI on: no input yet. Plug one in (or pair it over Bluetooth) and it shows up here.',3200);
     return true;
   },err=>{ MIDI.on=false; MIDI.err=window.self!==window.top?'frame':'denied'; midiSave(); renderMidi(); if(fromTap) msg(MIDI.err==='frame'?'MIDI is blocked inside this viewer: open the CRGT app instead.':'MIDI was not allowed. It can be allowed in the browser\'s site settings.',4000); return false; });
 }
@@ -7659,20 +7674,22 @@ document.addEventListener('pointerdown',e=>{
   MIDI.learn.key=key; midiLearnTry();
 },true);
 function renderMidi(){
-  const n=MIDI.on?midiInputs().filter(midiUsed).length:0;
+  const n=MIDI.on?midiInputs().filter(i=>midiUsed(i) && midiDevice(i)).length:0;
   midiBtn.textContent='MIDI'+(MIDI.on?' · '+n:'')+' ▾'; midiBtn.appendChild(midiDot); midiBtn.classList.toggle('ok',MIDI.on && n>0);
   if(midiPop.hidden) return;
   const st=$('#midi-st'), list=$('#midi-ins'), onB=$('#midi-on');
-  st.textContent=!MIDI.ok?'NOT IN THIS BROWSER':MIDI.err==='frame'?'BLOCKED HERE':MIDI.err==='denied'?'NOT ALLOWED':MIDI.on?(n?n+' IN':midiInputs().length?'ALL IGNORED':'NO INPUT'):'OFF';
+  st.textContent=!MIDI.ok?'NOT IN THIS BROWSER':MIDI.err==='frame'?'BLOCKED HERE':MIDI.err==='denied'?'NOT ALLOWED':MIDI.on?(n?n+' IN':midiInputs().filter(midiDevice).length?'ALL IGNORED':'NO INPUT'):'OFF';
   onB.textContent=MIDI.on?'TURN OFF':'TURN ON'; onB.setAttribute('aria-pressed',String(MIDI.on)); onB.disabled=!MIDI.ok || MIDI.err==='frame';
   $('#midi-why').hidden=MIDI.ok && MIDI.err!=='frame'; $('#midi-cfg').hidden=!MIDI.ok || MIDI.err==='frame';   // nothing to set where MIDI cannot come in
-  $('#midi-why').textContent=!MIDI.ok?'This browser has no Web MIDI: Safari has none, on a Mac and on every iPad browser. Open CRGT in Chrome, Edge or Firefox on a computer, in Chrome on Android, or on the iPad in an app that adds MIDI to web pages (MIDIWeb Browser, for one).':
-    'This page runs inside the Claude viewer, which keeps MIDI out. Open the CRGT app (tazzinaz.github.io/crgt) for MIDI.';
+  $('#midi-why').textContent=!MIDI.ok?'This browser has no Web MIDI: Safari has none, on a Mac and on every iPad browser. On the iPad, CRGT Host (CRGT as an app, from its GitHub) brings MIDI from a Mac by cable (IDAM), USB and Bluetooth devices, and Wi-Fi. On a computer, open CRGT in Chrome, Edge or Firefox.':
+    'This page runs inside the Claude viewer, which keeps MIDI out. Open the CRGT app (tazzinaz.github.io/crgt) in Chrome, Edge or Firefox, or CRGT Host on the iPad.';
+  $('#midi-get').hidden=!!HOST || (MIDI.ok && MIDI.err!=='frame');
+  renderMidiHost();
   list.textContent='';
   for(const i of midiInputs()){ const b=document.createElement('button'); b.type='button'; b.className='btn sm'; b.textContent=(i.name||'Input')+(i.state==='disconnected'?' (gone)':'');
     b.setAttribute('aria-pressed',String(midiUsed(i))); b.title=midiUsed(i)?'Listening: tap to ignore this input':'Ignored: tap to listen';
     b.addEventListener('click',()=>{ const nm=i.name||i.id; MIDI.off=midiUsed(i)?[...MIDI.off,nm]:MIDI.off.filter(x=>x!==nm); midiSave(); midiHook(); renderMidi(); }); list.appendChild(b); }
-  if(MIDI.on && !midiInputs().length){ const s=document.createElement('span'); s.className='rp-st'; s.textContent='No MIDI input: plug a device in, or pair one over Bluetooth.'; list.appendChild(s); }
+  if(MIDI.on && !midiInputs().filter(midiDevice).length){ const s=document.createElement('span'); s.className='rp-st'; s.textContent=HOST?'No device yet: connect the Mac by cable (IDAM, above), plug one in, or pair one over Bluetooth.':'No MIDI input: plug a device in, or pair one over Bluetooth.'; list.appendChild(s); }
   for(const b of midiPop.querySelectorAll('[data-route]')) b.setAttribute('aria-pressed',String(b.dataset.route===MIDI.route));
   for(const b of midiPop.querySelectorAll('[data-mvel]')) b.setAttribute('aria-pressed',String(b.dataset.mvel===MIDI.vel));
   $('#midi-bend').value=String(MIDI.bend);
@@ -7683,8 +7700,28 @@ function renderMidi(){
     x.addEventListener('click',()=>{ MIDI.maps=MIDI.maps.filter(y=>y!==m); midiSave(); renderMidi(); }); r.append(t,x); ml.appendChild(r); }
   if(!MIDI.maps.length){ const s=document.createElement('span'); s.className='rp-st'; s.textContent='No controls learned yet.'; ml.appendChild(s); }
 }
+function renderMidiHost(){
+  const box=$('#midi-host'); box.hidden=!HOST; if(!HOST) return;
+  const st=MIDI.hs||{}, net=st.network||{}, peers=Array.isArray(net.peers)?net.peers:[], nb=$('#mh-net');
+  nb.setAttribute('aria-pressed',String(!!net.on)); nb.textContent='WI-FI MIDI · '+(net.on?'ON':'OFF');
+  nb.title=net.on?'Wi-Fi MIDI on: a Mac can connect from Audio MIDI Setup (tap to turn off)':'Turn on Wi-Fi MIDI, for a Mac on the same network';
+  let t='From a Mac by cable (IDAM): on the Mac, Audio MIDI Setup › Window › Show Audio Devices, then Enable under this iPad; it comes in as IDAM MIDI Host.';
+  if(net.on) t+=' Wi-Fi MIDI is on'+(net.name?' as “'+net.name+'”':'')+': on the Mac, Audio MIDI Setup › Window › Show MIDI Studio › Network, choose this iPad under Directory, Connect.'+(peers.length?' Connected: '+peers.join(', ')+'.':' Nothing connected yet.');
+  if(st.virtual) t+=' Other iPad apps play CRGT through its port, CRGT.';
+  $('#mh-st').textContent=t;
+}
+function midiHostStatus(){ if(HOST) HOST.status().then(s=>{ MIDI.hs=Object.assign({},MIDI.hs||{},s||{}); renderMidi(); },()=>{}); }
+if(HOST){
+  addEventListener('crgthoststatus',e=>{ MIDI.hs=Object.assign({},MIDI.hs||{},e.detail||{}); if(!midiPop.hidden) renderMidi(); });
+  $('#mh-net').addEventListener('click',()=>{ const on=!(MIDI.hs && MIDI.hs.network && MIDI.hs.network.on);
+    HOST.network(on).then(n=>{ MIDI.hs=Object.assign({},MIDI.hs||{},{network:n||{}}); renderMidi();
+      msg(on?'Wi-Fi MIDI on'+(n && n.name?' as “'+n.name+'”':'')+': connect to this iPad from the Mac (Audio MIDI Setup › MIDI Studio › Network).':'Wi-Fi MIDI off.',3600); },
+      ()=>msg('Wi-Fi MIDI could not be changed.',2500)); });
+  $('#mh-bt').addEventListener('click',()=>{ HOST.bluetooth('central').catch(()=>msg('The Bluetooth MIDI screen did not open.',2500)); });
+  $('#mh-btmac').addEventListener('click',()=>{ HOST.bluetooth('peripheral').catch(()=>msg('The Bluetooth MIDI screen did not open.',2500)); });
+}
 function placeMidiPop(){ const r=midiBtn.getBoundingClientRect(), w=midiPop.offsetWidth, vw=document.documentElement.clientWidth; midiPop.style.left=Math.max(8,Math.min(vw-w-8,r.right-w))+'px'; midiPop.style.top=(r.bottom+8)+'px'; }
-function openMidiPop(on){ midiPop.hidden=!on; midiBtn.setAttribute('aria-expanded',String(on)); if(on){ renderMidi(); placeMidiPop(); } }
+function openMidiPop(on){ midiPop.hidden=!on; midiBtn.setAttribute('aria-expanded',String(on)); if(on){ renderMidi(); placeMidiPop(); midiHostStatus(); } }
 midiBtn.addEventListener('click',()=>openMidiPop(midiPop.hidden));
 document.addEventListener('pointerdown',e=>{ if(!midiPop.hidden && !midiPop.contains(e.target) && !midiBtn.contains(e.target) && !MIDI.learn) openMidiPop(false); },true);
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ if(MIDI.learn) midiLearn(false); else if(!midiPop.hidden) openMidiPop(false); } });
@@ -7700,6 +7737,8 @@ $('#midi-clear').addEventListener('click',()=>{ if(!MIDI.maps.length) return; MI
 renderMidi();
 if(MIDI.want && MIDI.ok){ const go=()=>midiStart(false);
   if(navigator.permissions && navigator.permissions.query) navigator.permissions.query({name:'midi'}).then(p=>{ if(p.state==='granted') go(); },()=>{}); }
+// inside CRGT Host the app lets the sound start without a tap: start it now, so the first note from a Mac is heard
+if(HOST) setTimeout(()=>{ if(!ctx) audioFromGesture().catch(()=>{}); },300);
 function noteAt(x,y){ const el=document.elementFromPoint(x,y), k=el&&el.closest?el.closest('#keys [data-note]'):null; return k?+k.dataset.note:null; }
 function velAt(m,y){ const el=keyEl(m); if(!el) return 0.8; const r=el.getBoundingClientRect(); return 0.3+0.7*Math.min(1,Math.max(0,(y-r.top)/r.height)); }
 keysEl.addEventListener('pointerdown',e=>{
@@ -10161,12 +10200,15 @@ window.__ws={plCopy:()=>plCopy(),plPaste:()=>plPaste(),get plClip(){ return plCl
 <script>
 // the app keeps itself on the device; when a newer version is online it is fetched in the background, and a banner
 // offers to restart into it (never by itself, so a performance is not cut)
+// inside CRGT Host (the iPad app) the app keeps CRGT and fetches new versions itself: same banner, no service worker
 (function(){
-  if(!('serviceWorker' in navigator) || !(location.protocol==='https:'||location.hostname==='localhost')) return;
+  const H=window.CRGT_HOST||null;
   let reg=null, shown=false;
   function banner(){ if(shown) return; shown=true; const b=document.createElement('button'); b.type='button'; b.className='aud-back';
     b.style.background='var(--accent)'; b.style.borderColor='var(--accent)'; b.style.color='var(--on-accent)';
-    b.textContent='A new version of CRGT is ready · tap to restart into it'; b.onclick=()=>location.reload(); document.body.appendChild(b); }
+    b.textContent='A new version of CRGT is ready · tap to restart into it'; b.onclick=()=>{ if(H) H.reload().catch(()=>location.reload()); else location.reload(); }; document.body.appendChild(b); }
+  if(H){ addEventListener('crgthostupdate',banner); addEventListener('load',()=>{ if(H.updateReady()) banner(); }); return; }
+  if(!('serviceWorker' in navigator) || !(location.protocol==='https:'||location.hostname==='localhost')) return;
   addEventListener('load',async()=>{
     try{ reg=await navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}); }catch(e){ return; }
     const had=!!navigator.serviceWorker.controller;

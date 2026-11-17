@@ -1,4 +1,4 @@
-CRGT Sample Workstation, offline version (v29)
+CRGT Sample Workstation, offline version (v38)
 
 What this is
   The same app as the Claude artifact, packed to live on your iPad's home screen and run with no connection:
@@ -20,6 +20,10 @@ Your sessions
   The home-screen app keeps its own sessions, separate from the Claude artifact. To bring one over: in the artifact,
   SESSION > export the session (.zip); in the home-screen app, SESSION > load that .zip. Takes and session exports
   from the home-screen app go through the share sheet: tap SAVE, then Save to Files.
+
+MIDI on the iPad
+  Safari gives web pages no MIDI. CRGT Host, the app in host/ (CRGTHost.swiftpm), runs this same file with the iPad's
+  MIDI: IDAM MIDI Host from a Mac by cable, USB and Bluetooth devices, Wi-Fi MIDI. Setup: https://tazzinaz.github.io/crgt/host/
 
 Updating
   Replace the files in the repository with a newer build. When the app is open and online it fetches the new version
