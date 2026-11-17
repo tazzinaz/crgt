@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>CRGT Sample Workstation</title>
-<meta name="crgt-offline" content="v36.1">
+<meta name="crgt-offline" content="v37">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -97,6 +97,8 @@ button:focus-visible,.knob:focus-visible,.wave-box:focus-visible{outline:2px sol
 .msg{color:var(--muted);font-size:11.5px;line-height:16px;min-width:0;flex:1 1 auto;height:32px;overflow:hidden;
   display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;align-self:center}
 @media (max-width:699px){.msg{height:48px;-webkit-line-clamp:3}}
+/* a phone: the message gets the whole line, the MIDI / CPU / AUDIO pills go under it */
+@media (max-width:560px){.status{flex-wrap:wrap}.status .msg{flex:1 1 100%;height:32px}}
 .pill{font:500 10px/1 var(--f-mono);letter-spacing:.1em;padding:4px 7px;border-radius:3px;border:1px solid var(--line);color:var(--dim);white-space:nowrap}
 .pill.ok{color:var(--accent);border-color:var(--dim)}
 .pill-btn{appearance:none;background:transparent;cursor:pointer;position:relative}
@@ -112,6 +114,18 @@ button:focus-visible,.knob:focus-visible,.wave-box:focus-visible{outline:2px sol
 .rate-pop .rp-st{font:500 10px/1.3 var(--f-mono);color:var(--muted)}
 .rate-pop{max-height:calc(100vh - 90px);overflow-y:auto;overscroll-behavior:contain}
 .rate-pop>*{flex-shrink:0}   /* it scrolls; its rows keep their height */
+/* v37: MIDI in — the activity dot, the inputs, the learned controls, knobs waiting to learn */
+#midi-btn{display:inline-flex;align-items:center;gap:5px}
+.mdot{width:6px;height:6px;border-radius:50%;background:var(--line);transition:background .08s}
+.mdot.on{background:var(--accent)}
+.midi-cfg{display:flex;flex-direction:column;gap:10px}
+.midi-cfg[hidden]{display:none}
+.midi-cfg .seg{align-self:flex-start}
+.midi-ins,.midi-maps{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.midi-maps{flex-direction:column;align-items:stretch;gap:4px}
+.midi-map{justify-content:space-between}
+body.mlearn .knob{outline:1px dashed var(--accent);outline-offset:2px;border-radius:8px}
+body.mlearn .knob.mpick{outline:2px solid var(--accent)}
 /* CPU: the engine's load against the time each block of sound is allowed; the mark is the busiest block */
 .cpu-meter{position:relative;height:8px;border-radius:4px;background:var(--inset);border:1px solid var(--line);overflow:hidden}
 .cpu-meter i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--accent);transition:width .2s}
@@ -786,6 +800,7 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
     </div>
     <div class="status">
       <span class="msg" id="msg" role="status">Starting…</span>
+      <button class="pill pill-btn" id="midi-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="midi-pop" title="MIDI in: notes and controllers from external devices">MIDI ▾<i class="mdot" id="midi-dot" aria-hidden="true"></i></button>
       <button class="pill pill-btn cpu" id="cpu" type="button" aria-haspopup="dialog" aria-controls="rate-pop" title="How busy the sound engine is">CPU —</button>
       <button class="pill pill-btn" id="eng" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="rate-pop" title="Engine sample rate">AUDIO OFF ▾</button>
     </div>
@@ -1271,6 +1286,24 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
   <div class="rp-row"><button class="btn sm" id="aud-bg" type="button" aria-pressed="true">PLAY WHEN LOCKED</button><span class="rp-st" id="aud-bg-st"></span></div>
   <p class="desc" id="app-ver" hidden></p>
   <p class="desc" id="aud-desc">KEEP SCREEN ON stops the iPad locking by itself while CRGT is open. PLAY WHEN LOCKED keeps the sound going if you lock it anyway, the way a music player does (CRGT shows on the lock screen); loops wait while it is locked and carry on in time when you unlock. If the iPad still pauses the sound, the next tap or key brings it back.</p>
+</div>
+<div class="rate-pop" id="midi-pop" role="dialog" aria-label="MIDI in" hidden>
+  <div class="ph"><h2>MIDI IN</h2><span class="rp-now" id="midi-st"></span></div>
+  <div class="rp-row"><button class="btn sm" id="midi-on" type="button" aria-pressed="false">TURN ON</button></div>
+  <p class="desc" id="midi-why" hidden></p>
+  <div class="midi-cfg" id="midi-cfg">
+  <div class="rp-l">INPUTS</div>
+  <div class="midi-ins" id="midi-ins"></div>
+  <div class="rp-l">ROUTING</div>
+  <div class="seg" role="group" aria-label="MIDI routing"><button type="button" data-route="sel">PLAYER ON SCREEN</button><button type="button" data-route="ch">CHANNEL = PLAYER</button></div>
+  <div class="rp-l">VELOCITY</div>
+  <div class="seg" role="group" aria-label="MIDI velocity"><button type="button" data-mvel="played">AS PLAYED</button><button type="button" data-mvel="fixed">FIXED</button></div>
+  <div class="rp-row"><span class="rp-l">PITCH BEND</span><select class="sel" id="midi-bend" aria-label="Pitch bend range"><option value="0">OFF</option><option value="2">±2</option><option value="7">±7</option><option value="12">±12</option></select></div>
+  <div class="rp-l">CONTROLLERS</div>
+  <div class="rp-row"><button class="btn sm" id="midi-learn" type="button" aria-pressed="false">MIDI LEARN</button><button class="btn sm" id="midi-clear" type="button">FORGET ALL</button></div>
+  <div class="midi-maps" id="midi-maps"></div>
+  <p class="desc">Notes play the player on screen (or channel N plays player N) and are recorded into loops like the keys. The sustain pedal holds notes; pitch bend bends the notes held. MIDI LEARN: touch a knob, then move a control on your device: that controller then turns the knob, recorded like your hand.</p>
+  </div>
 </div>
 <button class="aud-back" id="aud-back" type="button" hidden>The iPad paused the sound · tap to bring it back</button>
 <div class="sheet" id="sess" hidden>
@@ -5113,7 +5146,7 @@ function makeKnob(key,host){
     setU(nu);
   });
   render();
-  knobs[key]={render,el};
+  knobs[key]={render,el,vAt,toU};   // (vAt: what a controller at 0 … 1 sets, for MIDI)
 }
 function makeSeg(key,host,opts){
   host.setAttribute('role','group');
@@ -7521,6 +7554,152 @@ function noteOff(m){
   gRecord(J,{k:'off',n:m});
   sendTo(J.i,{type:'off',id:'k'+m});
 }
+// ---------- v37: MIDI in (notes, sustain, pitch bend, CC on any knob through MIDI LEARN) ----------
+// Web MIDI: Chrome, Edge and Firefox on a computer, Chrome on Android, and iPad apps that add it (MIDIWeb Browser).
+// Safari, on Mac and on every iPad browser, has none: the panel says so. Notes play like the keys (recorded into
+// loops the same way); ROUTING sends every channel to the player on screen, or channel N to player N. Notes held by
+// the sustain pedal (CC 64) end when it lifts. PITCH BEND bends the notes held on its channel (not recorded).
+// MIDI LEARN: touch a knob and move a control (or the other way round): that CC then turns the knob, on the player
+// the notes go to, and is recorded like a hand on the knob. Settings and mappings stay on this device.
+const MIDI={ok:typeof navigator!=='undefined' && typeof navigator.requestMIDIAccess==='function',acc:null,on:false,err:'',route:'sel',vel:'played',bend:2,
+  maps:[],off:[],learn:null,held:new Map(),sus:new Array(16).fill(false),susHeld:new Map(),bendV:new Float64Array(16),last:0,said:0};
+// inside a frame that is not allowed MIDI (the Claude viewer), say so before anyone taps TURN ON
+try{ if(MIDI.ok && window.self!==window.top && document.featurePolicy && !document.featurePolicy.allowsFeature('midi')) MIDI.err='frame'; }catch(e){}
+try{ const s=JSON.parse(localStorage.getItem('wavesetPlayer.midi')||'{}');
+  if(s.route==='sel'||s.route==='ch') MIDI.route=s.route; if(s.vel==='played'||s.vel==='fixed') MIDI.vel=s.vel; if([0,2,7,12].includes(s.bend)) MIDI.bend=s.bend;
+  if(Array.isArray(s.maps)) MIDI.maps=s.maps.filter(m=>m && Number.isInteger(m.cc) && m.cc>=0 && m.cc<128 && Number.isInteger(m.ch) && m.ch>=-1 && m.ch<16 && SPECS[m.key]);
+  if(Array.isArray(s.off)) MIDI.off=s.off.filter(x=>typeof x==='string').slice(0,64); MIDI.want=!!s.on; }catch(e){}
+const midiSave=()=>{ try{ localStorage.setItem('wavesetPlayer.midi',JSON.stringify({on:MIDI.on,route:MIDI.route,vel:MIDI.vel,bend:MIDI.bend,maps:MIDI.maps,off:MIDI.off})); }catch(e){} };
+const midiBtn=$('#midi-btn'), midiPop=$('#midi-pop'), midiDot=$('#midi-dot');
+// the player a channel plays (null: none — CHANNEL = PLAYER past the last player)
+const midiTarget=ch=>MIDI.route==='sel'?I:(ch<inst.length?inst[ch]:null);
+const midiInputs=()=>MIDI.acc?[...MIDI.acc.inputs.values()]:[];
+const midiUsed=inp=>!MIDI.off.includes(inp.name||inp.id);
+function midiBlink(){ const now=performance.now(); MIDI.last=now; midiDot.classList.add('on'); clearTimeout(midiBlink.t); midiBlink.t=setTimeout(()=>midiDot.classList.remove('on'),110); }
+function midiStart(fromTap){
+  if(!MIDI.ok){ MIDI.err='none'; renderMidi(); return Promise.resolve(false); }
+  if(fromTap) audioIfOff();
+  return navigator.requestMIDIAccess({sysex:false}).then(acc=>{
+    MIDI.acc=acc; MIDI.on=true; MIDI.err=''; midiSave();
+    acc.onstatechange=e=>{ const p=e.port; midiHook(); renderMidi(); if(p && p.type==='input') msg(`MIDI: ${p.name||'a device'} ${p.state==='connected'?'connected':'gone'}.`,2500); };
+    midiHook(); renderMidi(); const n=midiInputs().length;
+    if(fromTap) msg(n?`MIDI on: ${n} input${n>1?'s':''} (${midiInputs().map(i=>i.name).join(', ')}).`:'MIDI on: no input yet. Plug one in (or pair it over Bluetooth) and it shows up here.',3200);
+    return true;
+  },err=>{ MIDI.on=false; MIDI.err=window.self!==window.top?'frame':'denied'; midiSave(); renderMidi(); if(fromTap) msg(MIDI.err==='frame'?'MIDI is blocked inside this viewer: open the CRGT app instead.':'MIDI was not allowed. It can be allowed in the browser\'s site settings.',4000); return false; });
+}
+function midiStop(){ for(const i of midiInputs()) i.onmidimessage=null; midiAllOff(); MIDI.on=false; MIDI.acc=null; midiSave(); renderMidi(); }
+function midiHook(){ for(const i of midiInputs()) i.onmidimessage=midiUsed(i)?e=>midiMsg(e.data):null; }
+function midiMsg(d){
+  if(!d || !d.length) return; const st=d[0]&0xF0, ch=d[0]&0x0F; if(st<0x80 || st>=0xF0) return;   // clock and system messages: not ours
+  midiBlink();
+  if(st===0x90 && d[2]>0) midiNoteOn(ch,d[1],d[2]);
+  else if(st===0x80 || st===0x90) midiNoteOff(ch,d[1]);
+  else if(st===0xB0) midiCC(ch,d[1],d[2]);
+  else if(st===0xE0) midiBend(ch,((d[2]<<7)|d[1])-8192);
+}
+function midiNoteOn(ch,n,v){
+  const J=midiTarget(ch); if(!J) return;
+  if(!J.sample){ if(J===I) emptyHint(J); return; }
+  const key=ch+':'+n; if(MIDI.held.has(key)) midiRelease(key);
+  MIDI.susHeld.delete(key);
+  const vel=MIDI.vel==='fixed'?0.8:Math.max(0.03,v/127), id='m'+ch+'_'+n;
+  MIDI.held.set(key,{J,id,n,ch});
+  if(J===I){ const el=keyEl(n); if(el) el.classList.add('on'); }
+  gRecord(J,{k:'on',n,vel});
+  if(!ctx || ctx.state!=='running' || !nodeReady){ const now=performance.now(); if(now-MIDI.said>4000){ MIDI.said=now; msg('MIDI is playing, but the sound is not on yet: tap anywhere once to start it.',4000); } audioFromGesture(); }
+  sendTo(J.i,{type:'on',id,note:n,ratio:ratioOfP(n+MIDI.bendV[ch],J.P),vel});
+  if(J===I) silenceCheck(J,n);
+}
+function midiNoteOff(ch,n){
+  const key=ch+':'+n; if(!MIDI.held.has(key)) return;
+  if(MIDI.sus[ch]){ MIDI.susHeld.set(key,true); return; }   // the pedal holds it
+  midiRelease(key);
+}
+function midiRelease(key){
+  const h=MIDI.held.get(key); if(!h) return; MIDI.held.delete(key); MIDI.susHeld.delete(key);
+  sendTo(h.J.i,{type:'off',id:h.id}); gRecord(h.J,{k:'off',n:h.n});
+  if(h.J===I && ![...MIDI.held.values()].some(x=>x.J===I && x.n===h.n) && !sounding.has(h.n)){ const el=keyEl(h.n); if(el) el.classList.remove('on'); }
+}
+function midiAllOff(ch){ for(const [k,h] of [...MIDI.held]) if(ch===undefined || h.ch===ch) midiRelease(k); }
+function midiBend(ch,b){
+  const semi=MIDI.bend?b/8192*MIDI.bend:0; MIDI.bendV[ch]=semi;
+  for(const h of MIDI.held.values()) if(h.ch===ch) sendTo(h.J.i,{type:'mod',id:h.id,ratio:ratioOfP(h.n+semi,h.J.P),vel:-1});
+}
+function midiCC(ch,cc,v){
+  if(cc===64){ const on=v>=64; MIDI.sus[ch]=on; if(!on) for(const k of [...MIDI.susHeld.keys()]) if(k.startsWith(ch+':')) midiRelease(k); return; }
+  if(cc===120 || cc===123){ MIDI.sus[ch]=false; midiAllOff(ch); return; }
+  if(cc===121){ MIDI.sus[ch]=false; midiBend(ch,0); return; }
+  if(MIDI.learn){ MIDI.learn.cc=cc; MIDI.learn.ch=ch; midiLearnTry(); return; }
+  for(const m of MIDI.maps) if(m.cc===cc && (m.ch<0 || m.ch===ch)){ const J=midiTarget(ch); if(J) midiSetKnob(J,m.key,v/127); }
+}
+// a knob turned by a controller: as if by hand (recorded, one UNDO step per gesture), on any player
+function midiSetKnob(J,key,u){
+  const k=knobs[key]; if(!k || !k.vAt) return; const old=J.P[key], v=k.vAt(u); if(v===old) return;
+  undoPoint('cc'+J.i+key); J.P[key]=v; sendTo(J.i,{type:'params',p:{[key]:v}}); gRecord(J,{k:'p',key,v}); afterParam(J,key);
+  if(J===I) k.render(); markState();
+}
+// MIDI LEARN: a knob and a control, in either order
+function midiLearn(on){
+  MIDI.learn=on?{key:null,cc:-1,ch:-1}:null; document.body.classList.toggle('mlearn',!!on);
+  for(const el of document.querySelectorAll('.knob.mpick')) el.classList.remove('mpick');
+  renderMidi(); if(on) msg('MIDI LEARN: touch a knob, then move a control on your device (or the other way round).',4000);
+}
+function midiLearnTry(){
+  const L=MIDI.learn; if(!L) return;
+  if(L.cc<0){ msg(`Now move a control on your device for ${SPECS[L.key].label}.`,3000); return; }
+  if(!L.key){ msg(`CC ${L.cc} heard: now touch the knob it should turn.`,3000); return; }
+  MIDI.maps=MIDI.maps.filter(m=>!(m.cc===L.cc && (m.ch===L.ch || m.ch<0)) && m.key!==L.key);
+  MIDI.maps.push({cc:L.cc,ch:MIDI.route==='ch'?-1:L.ch,key:L.key}); midiSave();
+  msg(`CC ${L.cc} (channel ${L.ch+1}) turns ${SPECS[L.key].label} now.`,3000); midiLearn(false);
+}
+document.addEventListener('pointerdown',e=>{
+  if(!MIDI.learn) return; const k=e.target.closest && e.target.closest('.knob'); if(!k) return;
+  e.preventDefault(); e.stopPropagation(); const key=k.id.slice(2); if(!SPECS[key]) return;
+  for(const el of document.querySelectorAll('.knob.mpick')) el.classList.remove('mpick'); k.classList.add('mpick');
+  MIDI.learn.key=key; midiLearnTry();
+},true);
+function renderMidi(){
+  const n=MIDI.on?midiInputs().filter(midiUsed).length:0;
+  midiBtn.textContent='MIDI'+(MIDI.on?' · '+n:'')+' ▾'; midiBtn.appendChild(midiDot); midiBtn.classList.toggle('ok',MIDI.on && n>0);
+  if(midiPop.hidden) return;
+  const st=$('#midi-st'), list=$('#midi-ins'), onB=$('#midi-on');
+  st.textContent=!MIDI.ok?'NOT IN THIS BROWSER':MIDI.err==='frame'?'BLOCKED HERE':MIDI.err==='denied'?'NOT ALLOWED':MIDI.on?(n?n+' IN':midiInputs().length?'ALL IGNORED':'NO INPUT'):'OFF';
+  onB.textContent=MIDI.on?'TURN OFF':'TURN ON'; onB.setAttribute('aria-pressed',String(MIDI.on)); onB.disabled=!MIDI.ok || MIDI.err==='frame';
+  $('#midi-why').hidden=MIDI.ok && MIDI.err!=='frame'; $('#midi-cfg').hidden=!MIDI.ok || MIDI.err==='frame';   // nothing to set where MIDI cannot come in
+  $('#midi-why').textContent=!MIDI.ok?'This browser has no Web MIDI: Safari has none, on a Mac and on every iPad browser. Open CRGT in Chrome, Edge or Firefox on a computer, in Chrome on Android, or on the iPad in an app that adds MIDI to web pages (MIDIWeb Browser, for one).':
+    'This page runs inside the Claude viewer, which keeps MIDI out. Open the CRGT app (tazzinaz.github.io/crgt) for MIDI.';
+  list.textContent='';
+  for(const i of midiInputs()){ const b=document.createElement('button'); b.type='button'; b.className='btn sm'; b.textContent=(i.name||'Input')+(i.state==='disconnected'?' (gone)':'');
+    b.setAttribute('aria-pressed',String(midiUsed(i))); b.title=midiUsed(i)?'Listening: tap to ignore this input':'Ignored: tap to listen';
+    b.addEventListener('click',()=>{ const nm=i.name||i.id; MIDI.off=midiUsed(i)?[...MIDI.off,nm]:MIDI.off.filter(x=>x!==nm); midiSave(); midiHook(); renderMidi(); }); list.appendChild(b); }
+  if(MIDI.on && !midiInputs().length){ const s=document.createElement('span'); s.className='rp-st'; s.textContent='No MIDI input: plug a device in, or pair one over Bluetooth.'; list.appendChild(s); }
+  for(const b of midiPop.querySelectorAll('[data-route]')) b.setAttribute('aria-pressed',String(b.dataset.route===MIDI.route));
+  for(const b of midiPop.querySelectorAll('[data-mvel]')) b.setAttribute('aria-pressed',String(b.dataset.mvel===MIDI.vel));
+  $('#midi-bend').value=String(MIDI.bend);
+  const lb=$('#midi-learn'); lb.setAttribute('aria-pressed',String(!!MIDI.learn)); lb.textContent=MIDI.learn?'LEARNING… (tap to stop)':'MIDI LEARN';
+  const ml=$('#midi-maps'); ml.textContent='';
+  for(const m of MIDI.maps){ const r=document.createElement('div'); r.className='rp-row midi-map'; const t=document.createElement('span'); t.className='rp-st';
+    t.textContent=`CC ${m.cc}${m.ch>=0?' · ch '+(m.ch+1):''} → ${SPECS[m.key].label}`; const x=document.createElement('button'); x.type='button'; x.className='btn sm nud'; x.textContent='×'; x.setAttribute('aria-label','Remove CC '+m.cc+' → '+SPECS[m.key].label);
+    x.addEventListener('click',()=>{ MIDI.maps=MIDI.maps.filter(y=>y!==m); midiSave(); renderMidi(); }); r.append(t,x); ml.appendChild(r); }
+  if(!MIDI.maps.length){ const s=document.createElement('span'); s.className='rp-st'; s.textContent='No controls learned yet.'; ml.appendChild(s); }
+}
+function placeMidiPop(){ const r=midiBtn.getBoundingClientRect(), w=midiPop.offsetWidth, vw=document.documentElement.clientWidth; midiPop.style.left=Math.max(8,Math.min(vw-w-8,r.right-w))+'px'; midiPop.style.top=(r.bottom+8)+'px'; }
+function openMidiPop(on){ midiPop.hidden=!on; midiBtn.setAttribute('aria-expanded',String(on)); if(on){ renderMidi(); placeMidiPop(); } }
+midiBtn.addEventListener('click',()=>openMidiPop(midiPop.hidden));
+document.addEventListener('pointerdown',e=>{ if(!midiPop.hidden && !midiPop.contains(e.target) && !midiBtn.contains(e.target) && !MIDI.learn) openMidiPop(false); },true);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ if(MIDI.learn) midiLearn(false); else if(!midiPop.hidden) openMidiPop(false); } });
+$('#midi-on').addEventListener('click',()=>{ if(MIDI.on) midiStop(); else midiStart(true); });
+$('#alloff').addEventListener('click',()=>{ for(let c=0;c<16;c++) MIDI.bendV[c]=0; });   // ALL OFF also forgets the bend
+midiPop.addEventListener('click',e=>{ const r=e.target.closest('[data-route]'), v=e.target.closest('[data-mvel]');
+  if(r){ midiAllOff(); MIDI.route=r.dataset.route; midiSave(); renderMidi(); msg(MIDI.route==='sel'?'MIDI: every channel plays the player on screen.':'MIDI: channel 1 plays player 1, channel 2 player 2, and so on.',2600); }
+  if(v){ MIDI.vel=v.dataset.mvel; midiSave(); renderMidi(); } });
+$('#midi-bend').addEventListener('change',e=>{ MIDI.bend=+e.target.value; for(let c=0;c<16;c++) MIDI.bendV[c]=0; midiSave(); });
+$('#midi-learn').addEventListener('click',()=>midiLearn(!MIDI.learn));
+$('#midi-clear').addEventListener('click',()=>{ if(!MIDI.maps.length) return; MIDI.maps=[]; midiSave(); renderMidi(); msg('Every learned control forgotten.',2000); });
+// MIDI that was on comes back on its own when the browser already allows it (no question asked at start)
+renderMidi();
+if(MIDI.want && MIDI.ok){ const go=()=>midiStart(false);
+  if(navigator.permissions && navigator.permissions.query) navigator.permissions.query({name:'midi'}).then(p=>{ if(p.state==='granted') go(); },()=>{}); }
 function noteAt(x,y){ const el=document.elementFromPoint(x,y), k=el&&el.closest?el.closest('#keys [data-note]'):null; return k?+k.dataset.note:null; }
 function velAt(m,y){ const el=keyEl(m); if(!el) return 0.8; const r=el.getBoundingClientRect(); return 0.3+0.7*Math.min(1,Math.max(0,(y-r.top)/r.height)); }
 keysEl.addEventListener('pointerdown',e=>{
@@ -7552,7 +7731,7 @@ holdBtn.addEventListener('click',()=>{
 });
 // ALL OFF: every held note and every looped note on all eight players (loops keep running and play new notes)
 function allOff(){
-  [...sounding.keys()].forEach(noteOff); touchNote.clear();
+  [...sounding.keys()].forEach(noteOff); touchNote.clear(); midiAllOff(); MIDI.sus.fill(false);
   freeT.forEach(f=>{ if(f.el) f.el.remove(); sendTo(f.inst,{type:'off',id:f.id}); gRecord(inst[f.inst],{k:'foff',id:f.id}); }); freeT.clear();
   post({type:'panic'});
   for(const J of inst) for(const L of J.G.layers){
