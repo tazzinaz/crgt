@@ -90,9 +90,10 @@ footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);color:v
     <p class="why">Free, no Mac needed. CRGT Host runs from inside Swift Playground.</p>
     <ol>
       <li>Install Apple's <a href="https://apps.apple.com/app/id908519492">Swift Playground</a> from the App Store (free, iPadOS 18 or later).</li>
-      <li>On the iPad, tap <b>Download CRGT Host</b> above.</li>
-      <li>In <span class="path">Files › Downloads</span>, tap the .zip to unzip it, then tap <span class="path">CRGTHost.swiftpm</span>. It opens in Swift Playground.</li>
-      <li>Tap <b>Run</b> (▶), then give the app the whole screen with its full-screen button.</li>
+      <li>On the iPad, tap <b>Download CRGT Host</b> above, then <b>Download</b> when Safari asks.</li>
+      <li>In <span class="path">Files › Downloads</span>, tap the .zip. It unzips to <span class="path">CRGTHost.swiftpm</span>. Move that into <span class="path">iCloud Drive › Playgrounds</span> so Swift Playground lists it, then tap it to open.</li>
+      <li>Wait for the first build. Hide the App Preview with <b>Show Preview</b> so only one CRGT is running, then tap <b>Run App</b>. CRGT opens in its own window.</li>
+      <li>To stop it, tap the red Swift button at the top right, then <b>Stop</b>.</li>
     </ol>
   </section>
   <section class="way">
@@ -100,9 +101,10 @@ footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);color:v
     <p class="why">A real app on the home screen. Uses the same cable as IDAM.</p>
     <ol>
       <li>Download the .zip on the Mac, unzip it, and double-click <span class="path">CRGTHost.swiftpm</span>. It opens in Xcode.</li>
-      <li>Add your Apple ID in <span class="path">Xcode › Settings › Accounts</span>.</li>
-      <li>Connect the iPad and pick it as the run destination. Under <span class="path">Signing &amp; Capabilities</span>, choose your team.</li>
-      <li>Press <kbd>⌘R</kbd>. The first time, turn on <span class="path">Settings › Privacy &amp; Security › Developer Mode</span> on the iPad.</li>
+      <li>Add your Apple ID in <span class="path">Xcode › Settings › Accounts</span>. A free one gives you a Personal Team.</li>
+      <li>Connect the iPad, unlock it and tap <b>Trust</b>. Pick the iPad as the run destination at the top of the window. In the app's <b>Signing</b> settings, choose your team.</li>
+      <li>On the iPad, turn on <span class="path">Settings › Privacy &amp; Security › Developer Mode</span>. The iPad restarts.</li>
+      <li>Press <kbd>⌘R</kbd>. The first time, trust yourself on the iPad: <span class="path">Settings › General › VPN &amp; Device Management</span>, choose your Apple ID, then <b>Trust</b>. The app's icon is named CRGT.</li>
     </ol>
     <p class="why">With a free Apple ID the app stops opening after 7 days. Run it from Xcode again and your sessions are still there.</p>
   </section>
