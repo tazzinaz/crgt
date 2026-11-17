@@ -1,0 +1,70 @@
+name: CRGT Host (iPad app)
+
+on:
+  push:
+    branches: [main]
+    paths: ['host/**', '.github/workflows/host.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: host-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tools
+        run: |
+          sw_vers
+          xcodebuild -version
+          swift --version
+
+      - name: Bridge script matches bridge.js
+        run: python3 host/tools/embed_bridge.py --check
+
+      - name: UMP conversion tests
+        run: |
+          swiftc -O host/CRGTHost.swiftpm/Sources/CRGTHost/UMP.swift host/tests/ump/main.swift -o "$RUNNER_TEMP/ump"
+          "$RUNNER_TEMP/ump"
+
+      - name: Compile for iPad (swift build, arm64-apple-ios)
+        working-directory: host/CRGTHost.swiftpm
+        run: swift build --sdk "$(xcrun --sdk iphoneos --show-sdk-path)" --triple arm64-apple-ios
+
+      - name: Build the app with Xcode (unsigned)
+        working-directory: host/CRGTHost.swiftpm
+        run: |
+          xcodebuild -list
+          xcodebuild -scheme "CRGT Host" -destination 'generic/platform=iOS' -derivedDataPath "$RUNNER_TEMP/dd" \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build > "$RUNNER_TEMP/xcodebuild.log" 2>&1 \
+            || { grep -E "error:|fatal" "$RUNNER_TEMP/xcodebuild.log" | head -60; tail -40 "$RUNNER_TEMP/xcodebuild.log"; exit 1; }
+          grep -E "warning:" "$RUNNER_TEMP/xcodebuild.log" | sort -u | head -40 || true
+          tail -3 "$RUNNER_TEMP/xcodebuild.log"
+
+      - name: Check the built app
+        run: |
+          APP=$(find "$RUNNER_TEMP/dd/Build/Products" -maxdepth 2 -name "*.app" | head -1)
+          echo "app: $APP"
+          ls -la "$APP"
+          plutil -p "$APP/Info.plist" | grep -E "CFBundle(Identifier|DisplayName|ShortVersionString)|UIBackgroundModes|audio|NSBluetooth|NSLocalNetwork|NSBonjour|_apple-midi" || true
+          find "$APP" -name "crgt.html" -o -name "Assets.car" | head
+          mkdir -p "$RUNNER_TEMP/ipa/Payload" && cp -R "$APP" "$RUNNER_TEMP/ipa/Payload/"
+          (cd "$RUNNER_TEMP/ipa" && zip -qry "$RUNNER_TEMP/CRGT-Host-unsigned.ipa" Payload)
+          ls -la "$RUNNER_TEMP/CRGT-Host-unsigned.ipa"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CRGT-Host-unsigned-ipa
+          path: ${{ runner.temp }}/CRGT-Host-unsigned.ipa
+          if-no-files-found: error
