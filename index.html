@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>CRGT Sample Workstation</title>
-<meta name="crgt-offline" content="v39">
+<meta name="crgt-offline" content="v40">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -20,7 +20,8 @@
 <style>
 /* CRGT Sample Workstation: a quiet instrument.
    Every colour is a PANTONE Fashion, Home + Interiors swatch, named beside its value; tints are those same swatches
-   at reduced opacity, never new hues. One palette on every device, whatever the system or viewer theme: Black Beauty
+   at reduced opacity, never new hues. The same palette on every device, whatever the system or viewer theme (v40: six
+   more can be chosen in SETTINGS, see the v40 block at the end); this first one, Black Beauty, has Black Beauty
    and Printer's Ink surfaces with Cloud Dancer (Color of the Year 2026) ink. One warm accent (Brandied Melon, the
    terracotta family) marks what you change; blue marks where the sound is, green the loop, violet the grains, red
    recording. Surfaces are flat colour blocks separated by hairlines; the only shadows lift the floating windows,
@@ -151,7 +152,7 @@ body.mlearn .knob.mpick{outline:2px solid var(--accent)}
 /* rack */
 .rack{display:grid;gap:10px;margin-top:10px;grid-template-columns:repeat(12,minmax(0,1fr))}
 /* sections: each one can be folded down to its icon in the bar above the rack (and back), for playing live without scrolling */
-.views{position:sticky;top:env(safe-area-inset-top,0px);z-index:12;display:flex;align-items:center;gap:5px;margin-top:10px;padding:6px 0;background:var(--bg);border-bottom:1px solid var(--line)}
+.views{position:sticky;top:0;z-index:12;display:flex;align-items:center;gap:5px;margin-top:10px;padding:6px 0;background:var(--bg);border-bottom:1px solid var(--line)}
 .views-in{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;min-width:0;flex:1 1 auto}
 .views-in::-webkit-scrollbar{display:none}
 .vchip{appearance:none;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:34px;min-width:36px;padding:0 6px 0 5px;border-radius:6px;cursor:pointer;
@@ -293,9 +294,18 @@ body.mlearn .knob.mpick{outline:2px solid var(--accent)}
 .take-msg.ok{color:var(--accent)}
 .take-msg.bad{color:var(--hot)}
 
-/* keyboard dock: fixed to the bottom so it stays under your hands while you edit any panel */
-.wrap{padding-bottom:calc(24px + var(--dock-h,0px))}
-.dock{position:fixed;left:0;right:0;bottom:0;z-index:15;background:var(--panel);border-top:1px solid var(--line);
+/* v40: the app is a column the height of the screen. The panels scroll inside .page; the keyboard dock is the bottom of
+   the column, laid out under it, not fixed over the page. iOS (the home-screen app, CRGT Host) could leave a fixed
+   dock floating partway up the screen after the on-screen keyboard or a rotation, and slide the sticky section bar
+   off the top with it; with nothing fixed to the screen's edges and the document itself never scrolled, there is
+   nothing left to drift. The top inset (status bar) is a band of its own colour above the column. */
+html,body{overflow:hidden;overscroll-behavior:none}
+:root{padding-bottom:0}
+body{display:flex;flex-direction:column}
+.page{flex:1 1 auto;min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:var(--bg)}
+.nodock .page>.wrap{padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+/* keyboard dock: the bottom of the app's column, so it stays under your hands while you edit any panel */
+.dock{position:relative;flex:0 0 auto;z-index:15;background:var(--panel);border-top:1px solid var(--line);
   padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .dock-in{max-width:1440px;margin:0 auto;display:flex;gap:12px;align-items:center}
@@ -308,9 +318,9 @@ body.mlearn .knob.mpick{outline:2px solid var(--accent)}
 #fs[aria-pressed="true"] .fs-in{display:none}
 #fs[aria-pressed="true"] .fs-out{display:inline}
 /* in full screen the page is the whole display: paint it, and let it scroll on its own */
-html{background:var(--bg)}
-:root:fullscreen{overflow-y:auto}
-:root:-webkit-full-screen{overflow-y:auto}
+html{background:var(--sbar,var(--bg))}   /* v40: the status-bar band above the app (dark in every palette) */
+:root:fullscreen{overflow:hidden}
+:root:-webkit-full-screen{overflow:hidden}
 .oct{min-width:76px;text-align:center;font-variant-numeric:tabular-nums;font-size:12px}
 .vc{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.04em;white-space:nowrap}
 #vcount{min-width:17ch;text-align:right}
@@ -480,7 +490,7 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
 @keyframes gblink{50%{opacity:.45}}
 .wk.gk,.bk.gk{box-shadow:inset 0 0 0 3px var(--hot)}
 /* the instrument surface never pinch-zooms by accident while two hands are on it */
-.wrap,.dock{touch-action:pan-y}
+.page,.wrap,.dock{touch-action:pan-y}
 .keys{position:relative;flex:1 1 auto;min-width:0;height:140px;touch-action:none;-webkit-user-select:none;user-select:none;cursor:pointer}
 .wk,.bk{position:absolute;top:0}
 .wk{bottom:0;background:var(--key-w);border:1px solid var(--key-w-edge);border-radius:0 0 6px 6px}
@@ -488,7 +498,7 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
 .wk.on,.bk.on{background:var(--accent);border-color:var(--accent)}
 .wk span{position:absolute;left:0;right:0;bottom:7px;text-align:center;font:500 10px/1 var(--f-mono);color:var(--key-txt);pointer-events:none}
 .wk.root span{color:var(--hot);font-weight:600}
-.wk.root::after{content:"";position:absolute;left:28%;right:28%;bottom:22px;height:3px;border-radius:2px;background:var(--hot);pointer-events:none}
+.wk.root::after{content:"";position:absolute;left:28%;right:28%;bottom:22px;height:3px;border-radius:2px;background:var(--key-mark,var(--hot));pointer-events:none}
 .wk.on span{color:var(--bg)}
 @media (max-width:899px){.dock-in{flex-wrap:wrap}.dock-ctl{flex:1 1 100%;min-width:0;flex-direction:row;flex-wrap:wrap}.keys{flex-basis:100%;height:118px}
   .dock-gest{flex:1 1 100%;padding-left:0;border-left:0}}
@@ -779,8 +789,315 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
   background:var(--panel);border-color:var(--edge);color:var(--ink);box-shadow:var(--lift)}
 .fwin .fw-h{background:var(--head)}
 .fwin.drag{border-color:var(--accent)}
+/* ===== v40: colour palettes (SETTINGS ▸ COLOURS) =====
+   Six more palettes besides Black Beauty, each built around a PANTONE Color of the Year, and like the first one made
+   only of named PANTONE Fashion, Home + Interiors swatches (the Colors of the Year at the values Pantone publishes for
+   them). Each palette sets every token of the page and of the floating windows, which keep a deeper layer of their own,
+   so the canvases, knobs, keys and windows all change with it. Blue still marks where the sound is, green the loop,
+   violet the grains and red recording, shifted where a palette's own hue would hide them (grains are pink on Ultra
+   Violet, the position is cyan on the blues). The choice is kept on this device, not in sessions. */
+:root{--sbar:#27272A}  /* PANTONE 19-3911 TCX Black Beauty: the band behind the iPad's status bar */
+:root[data-pal="mocha"]{
+  color-scheme:dark;
+  --bg:#34292A;         /* PANTONE 19-1018 TCX Ganache */
+  --panel:#433331;      /* PANTONE 19-1016 TCX Java */
+  --inset:#34292A;      /* PANTONE 19-1018 TCX Ganache */
+  --line:#4F3F3B;       /* PANTONE 19-1015 TCX Bracken */
+  --edge:#5A4743;       /* PANTONE 19-1213 TCX Shopping Bag */
+  --ink:#F3ECE0;        /* PANTONE 11-0103 TCX Egret */
+  --muted:#B19D8D;      /* PANTONE 16-1210 TCX Light Taupe */
+  --dim:#A47864;        /* PANTONE 17-1230 TCX Mocha Mousse */
+  --accent:#FFBE98;     /* PANTONE 13-1023 TCX Peach Fuzz */
+  --on-accent:#34292A;  /* PANTONE 19-1018 TCX Ganache */
+  --pos:#98B4D4;        /* PANTONE 15-4020 TCX Cerulean */
+  --loop:#88B04B;       /* PANTONE 15-0343 TCX Greenery */
+  --grain:#6667AB;      /* PANTONE 17-3938 TCX Very Peri */
+  --hot:#BC243C;        /* PANTONE 19-1664 TCX True Red */
+  --on-hot:#F3ECE0;     /* PANTONE 11-0103 TCX Egret */
+  --wave:#F3ECE0;       /* PANTONE 11-0103 TCX Egret */
+  --sel-bg:#F3ECE0;     /* PANTONE 11-0103 TCX Egret */
+  --sel-ink:#34292A;    /* PANTONE 19-1018 TCX Ganache */
+  --on-bg:#5A4743;      /* PANTONE 19-1213 TCX Shopping Bag */
+  --key-w:#5A4743;      /* PANTONE 19-1213 TCX Shopping Bag */
+  --key-w-edge:#34292A; /* PANTONE 19-1018 TCX Ganache */
+  --key-b:#34292A;      /* PANTONE 19-1018 TCX Ganache */
+  --key-txt:#B19D8D;    /* PANTONE 16-1210 TCX Light Taupe */
+  --lane-w:#433331;     /* PANTONE 19-1016 TCX Java */
+  --lane-b:#34292A;     /* PANTONE 19-1018 TCX Ganache */
+  --lane-edge:#4F3F3B;  /* PANTONE 19-1015 TCX Bracken */
+  --sbar:#34292A;       /* PANTONE 19-1018 TCX Ganache */
+  --scrim:rgba(0,0,0,.55);
+  --lift:0 1px 2px rgba(0,0,0,.3),0 18px 44px rgba(0,0,0,.5);
+  --sel-arrow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23B19D8D' stroke-width='1.4'/%3E%3C/svg%3E");
+}
+:root[data-pal="mocha"] :is(.fwin,.sheet-card,.rate-pop){
+  --bg:#2E272A;         /* PANTONE 19-3909 TCX Black Bean */
+  --panel:#392D2B;      /* PANTONE 19-1106 TCX Mole */
+  --inset:#2E272A;      /* PANTONE 19-3909 TCX Black Bean */
+  --head:#382E2D;       /* PANTONE 19-1109 TCX Chocolate Torte */
+  --line:#433937;       /* PANTONE 19-0910 TCX Mulch */
+  --edge:#493B39;       /* PANTONE 19-1314 TCX Seal Brown */
+  --muted:#A58D7F;      /* PANTONE 16-1412 TCX Stucco */
+  --dim:#7B6660;        /* PANTONE 18-1312 TCX Deep Taupe */
+  --on-bg:#433937;      /* PANTONE 19-0910 TCX Mulch */
+  --lane-w:#392D2B;     /* PANTONE 19-1106 TCX Mole */
+  --lane-b:#2E272A;     /* PANTONE 19-3909 TCX Black Bean */
+  --lane-edge:#433937;  /* PANTONE 19-0910 TCX Mulch */
+  --sel-arrow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23A58D7F' stroke-width='1.4'/%3E%3C/svg%3E");}
+:root[data-pal="classic"]{
+  color-scheme:dark;
+  --bg:#262934;         /* PANTONE 19-3922 TCX Sky Captain */
+  --panel:#353A4C;      /* PANTONE 19-4025 TCX Mood Indigo */
+  --inset:#262934;      /* PANTONE 19-3922 TCX Sky Captain */
+  --line:#434452;       /* PANTONE 19-3930 TCX Odyssey Gray */
+  --edge:#0F4C81;       /* PANTONE 19-4052 TCX Classic Blue */
+  --ink:#F0EEE9;        /* PANTONE 11-4201 TCX Cloud Dancer */
+  --muted:#92A8D1;      /* PANTONE 15-3919 TCX Serenity */
+  --dim:#98979A;        /* PANTONE 16-3915 TCX Alloy */
+  --accent:#F5DF4D;     /* PANTONE 13-0647 TCX Illuminating */
+  --on-accent:#262934;  /* PANTONE 19-3922 TCX Sky Captain */
+  --pos:#7FCDCD;        /* PANTONE 14-4811 TCX Aqua Sky */
+  --loop:#009B77;       /* PANTONE 17-5641 TCX Emerald */
+  --grain:#B163A3;      /* PANTONE 18-3224 TCX Radiant Orchid */
+  --hot:#BC243C;        /* PANTONE 19-1664 TCX True Red */
+  --on-hot:#F0EEE9;     /* PANTONE 11-4201 TCX Cloud Dancer */
+  --wave:#F0EEE9;       /* PANTONE 11-4201 TCX Cloud Dancer */
+  --sel-bg:#F0EEE9;     /* PANTONE 11-4201 TCX Cloud Dancer */
+  --sel-ink:#262934;    /* PANTONE 19-3922 TCX Sky Captain */
+  --on-bg:#0F4C81;      /* PANTONE 19-4052 TCX Classic Blue */
+  --key-w:#0F4C81;      /* PANTONE 19-4052 TCX Classic Blue */
+  --key-w-edge:#262934; /* PANTONE 19-3922 TCX Sky Captain */
+  --key-b:#262934;      /* PANTONE 19-3922 TCX Sky Captain */
+  --key-txt:#92A8D1;    /* PANTONE 15-3919 TCX Serenity */
+  --lane-w:#353A4C;     /* PANTONE 19-4025 TCX Mood Indigo */
+  --lane-b:#262934;     /* PANTONE 19-3922 TCX Sky Captain */
+  --lane-edge:#434452;  /* PANTONE 19-3930 TCX Odyssey Gray */
+  --sbar:#262934;       /* PANTONE 19-3922 TCX Sky Captain */
+  --scrim:rgba(0,0,0,.55);
+  --lift:0 1px 2px rgba(0,0,0,.3),0 18px 44px rgba(0,0,0,.5);
+  --sel-arrow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2392A8D1' stroke-width='1.4'/%3E%3C/svg%3E");
+}
+:root[data-pal="classic"] :is(.fwin,.sheet-card,.rate-pop){
+  --bg:#28282D;         /* PANTONE 19-4007 TCX Anthracite */
+  --panel:#2B2C30;      /* PANTONE 19-4005 TCX Stretch Limo */
+  --inset:#28282D;      /* PANTONE 19-4007 TCX Anthracite */
+  --head:#292A2D;       /* PANTONE 19-4006 TCX Caviar */
+  --line:#434447;       /* PANTONE 19-0201 TCX Asphalt */
+  --edge:#4A4B4D;       /* PANTONE 19-3906 TCX Dark Shadow */
+  --muted:#939597;      /* PANTONE 17-5104 TCX Ultimate Gray */
+  --dim:#6C6868;        /* PANTONE 18-0601 TCX Charcoal Gray */
+  --on-bg:#434447;      /* PANTONE 19-0201 TCX Asphalt */
+  --lane-w:#2B2C30;     /* PANTONE 19-4005 TCX Stretch Limo */
+  --lane-b:#28282D;     /* PANTONE 19-4007 TCX Anthracite */
+  --lane-edge:#434447;  /* PANTONE 19-0201 TCX Asphalt */
+  --sel-arrow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23939597' stroke-width='1.4'/%3E%3C/svg%3E");}
+:root[data-pal="magenta"]{
+  color-scheme:dark;
+  --key-mark:#F0EEE9;   /* PANTONE 11-4201 TCX Cloud Dancer: the C4 mark, on Viva Magenta keys */
+  --bg:#2E272A;         /* PANTONE 19-3909 TCX Black Bean */
+  --panel:#493338;      /* PANTONE 19-1619 TCX Fudge */
+  --inset:#2E272A;      /* PANTONE 19-3909 TCX Black Bean */
+  --line:#524144;       /* PANTONE 19-1606 TCX Raisin */
+  --edge:#77333B;       /* PANTONE 19-1629 TCX Ruby Wine */
+  --ink:#F0EEE9;        /* PANTONE 11-4201 TCX Cloud Dancer */
+  --muted:#BA9F99;      /* PANTONE 16-1508 TCX Adobe Rose */
+  --dim:#AD6D7F;        /* PANTONE 17-1608 TCX Heather Rose */
+  --accent:#F7CAC9;     /* PANTONE 13-1520 TCX Rose Quartz */
+  --on-accent:#2E272A;  /* PANTONE 19-3909 TCX Black Bean */
+  --pos:#7FCDCD;        /* PANTONE 14-4811 TCX Aqua Sky */
+  --loop:#45B5AA;       /* PANTONE 15-5519 TCX Turquoise */
+  --grain:#92A8D1;      /* PANTONE 15-3919 TCX Serenity */
+  --hot:#BC243C;        /* PANTONE 19-1664 TCX True Red */
+  --on-hot:#F0EEE9;     /* PANTONE 11-4201 TCX Cloud Dancer */
+  --wave:#F0EEE9;       /* PANTONE 11-4201 TCX Cloud Dancer */
+  --sel-bg:#F0EEE9;     /* PANTONE 11-4201 TCX Cloud Dancer */
+  --sel-ink:#2E272A;    /* PANTONE 19-3909 TCX Black Bean */
+  --on-bg:#77333B;      /* PANTONE 19-1629 TCX Ruby Wine */
+  --key-w:#BB2649;      /* PANTONE 18-1750 TCX Viva Magenta */
+  --key-w-edge:#2E272A; /* PANTONE 19-3909 TCX Black Bean */
+  --key-b:#2E272A;      /* PANTONE 19-3909 TCX Black Bean */
+  --key-txt:#F7CAC9;    /* PANTONE 13-1520 TCX Rose Quartz */
+  --lane-w:#493338;     /* PANTONE 19-1619 TCX Fudge */
+  --lane-b:#2E272A;     /* PANTONE 19-3909 TCX Black Bean */
+  --lane-edge:#524144;  /* PANTONE 19-1606 TCX Raisin */
+  --sbar:#2E272A;       /* PANTONE 19-3909 TCX Black Bean */
+  --scrim:rgba(0,0,0,.55);
+  --lift:0 1px 2px rgba(0,0,0,.3),0 18px 44px rgba(0,0,0,.5);
+  --sel-arrow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23BA9F99' stroke-width='1.4'/%3E%3C/svg%3E");
+}
+:root[data-pal="magenta"] :is(.fwin,.sheet-card,.rate-pop){
+  --bg:#2B272B;         /* PANTONE 19-4003 TCX Black Onyx */
+  --panel:#473442;      /* PANTONE 19-3316 TCX Plum Perfect */
+  --inset:#2B272B;      /* PANTONE 19-4003 TCX Black Onyx */
+  --head:#4D3246;       /* PANTONE 19-2816 TCX Blackberry Wine */
+  --line:#503B53;       /* PANTONE 19-3714 TCX Navy Cosmos */
+  --edge:#675A74;       /* PANTONE 18-3714 TCX Mulled Grape */
+  --muted:#B598A3;      /* PANTONE 16-3205 TCX Mauve Shadows */
+  --dim:#847986;        /* PANTONE 18-3710 TCX Gray Ridge */
+  --on-bg:#503B53;      /* PANTONE 19-3714 TCX Navy Cosmos */
+  --lane-w:#473442;     /* PANTONE 19-3316 TCX Plum Perfect */
+  --lane-b:#2B272B;     /* PANTONE 19-4003 TCX Black Onyx */
+  --lane-edge:#503B53;  /* PANTONE 19-3714 TCX Navy Cosmos */
+  --sel-arrow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23B598A3' stroke-width='1.4'/%3E%3C/svg%3E");}
+:root[data-pal="greenery"]{
+  color-scheme:dark;
+  --bg:#262C2A;         /* PANTONE 19-5708 TCX Jet Set */
+  --panel:#37413A;      /* PANTONE 19-6110 TCX Deep Forest */
+  --inset:#262C2A;      /* PANTONE 19-5708 TCX Jet Set */
+  --line:#355048;       /* PANTONE 19-5411 TCX Trekking Green */
+  --edge:#335749;       /* PANTONE 19-5511 TCX Hunter Green */
+  --ink:#F0EEE9;        /* PANTONE 11-4201 TCX Cloud Dancer */
+  --muted:#A8B197;      /* PANTONE 15-6310 TCX Swamp */
+  --dim:#888D82;        /* PANTONE 17-6206 TCX Shadow */
+  --accent:#EFC050;     /* PANTONE 14-0848 TCX Mimosa */
+  --on-accent:#262C2A;  /* PANTONE 19-5708 TCX Jet Set */
+  --pos:#98B4D4;        /* PANTONE 15-4020 TCX Cerulean */
+  --loop:#88B04B;       /* PANTONE 15-0343 TCX Greenery */
+  --grain:#6667AB;      /* PANTONE 17-3938 TCX Very Peri */
+  --hot:#BC243C;        /* PANTONE 19-1664 TCX True Red */
+  --on-hot:#F0EEE9;     /* PANTONE 11-4201 TCX Cloud Dancer */
+  --wave:#F0EEE9;       /* PANTONE 11-4201 TCX Cloud Dancer */
+  --sel-bg:#F0EEE9;     /* PANTONE 11-4201 TCX Cloud Dancer */
+  --sel-ink:#262C2A;    /* PANTONE 19-5708 TCX Jet Set */
+  --on-bg:#335749;      /* PANTONE 19-5511 TCX Hunter Green */
+  --key-w:#335749;      /* PANTONE 19-5511 TCX Hunter Green */
+  --key-w-edge:#262C2A; /* PANTONE 19-5708 TCX Jet Set */
+  --key-b:#262C2A;      /* PANTONE 19-5708 TCX Jet Set */
+  --key-txt:#A8B197;    /* PANTONE 15-6310 TCX Swamp */
+  --lane-w:#37413A;     /* PANTONE 19-6110 TCX Deep Forest */
+  --lane-b:#262C2A;     /* PANTONE 19-5708 TCX Jet Set */
+  --lane-edge:#355048;  /* PANTONE 19-5411 TCX Trekking Green */
+  --sbar:#262C2A;       /* PANTONE 19-5708 TCX Jet Set */
+  --scrim:rgba(0,0,0,.55);
+  --lift:0 1px 2px rgba(0,0,0,.3),0 18px 44px rgba(0,0,0,.5);
+  --sel-arrow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23A8B197' stroke-width='1.4'/%3E%3C/svg%3E");
+}
+:root[data-pal="greenery"] :is(.fwin,.sheet-card,.rate-pop){
+  --bg:#303D3C;         /* PANTONE 19-5212 TCX Darkest Spruce */
+  --panel:#324241;      /* PANTONE 19-4906 TCX Green Gables */
+  --inset:#303D3C;      /* PANTONE 19-5212 TCX Darkest Spruce */
+  --head:#203B3D;       /* PANTONE 19-5320 TCX Ponderosa Pine */
+  --line:#335959;       /* PANTONE 19-5413 TCX Jasper */
+  --edge:#405E5C;       /* PANTONE 19-4818 TCX Mallard Green */
+  --muted:#A5B2AA;      /* PANTONE 15-5205 TCX Aqua Gray */
+  --dim:#7C8C87;        /* PANTONE 17-5107 TCX Chinois Green */
+  --on-bg:#335959;      /* PANTONE 19-5413 TCX Jasper */
+  --lane-w:#324241;     /* PANTONE 19-4906 TCX Green Gables */
+  --lane-b:#303D3C;     /* PANTONE 19-5212 TCX Darkest Spruce */
+  --lane-edge:#335959;  /* PANTONE 19-5413 TCX Jasper */
+  --sel-arrow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23A5B2AA' stroke-width='1.4'/%3E%3C/svg%3E");}
+:root[data-pal="violet"]{
+  color-scheme:dark;
+  --bg:#2A2A35;         /* PANTONE 19-3924 TCX Night Sky */
+  --panel:#41354D;      /* PANTONE 19-3725 TCX Purple Velvet */
+  --inset:#2A2A35;      /* PANTONE 19-3924 TCX Night Sky */
+  --line:#493C62;       /* PANTONE 19-3722 TCX Mulberry Purple */
+  --edge:#5F4B8B;       /* PANTONE 18-3838 TCX Ultra Violet */
+  --ink:#F0EEE9;        /* PANTONE 11-4201 TCX Cloud Dancer */
+  --muted:#A198AF;      /* PANTONE 16-3810 TCX Wisteria */
+  --dim:#9890A2;        /* PANTONE 17-3910 TCX Lavender Gray */
+  --accent:#45B5AA;     /* PANTONE 15-5519 TCX Turquoise */
+  --on-accent:#2A2A35;  /* PANTONE 19-3924 TCX Night Sky */
+  --pos:#98B4D4;        /* PANTONE 15-4020 TCX Cerulean */
+  --loop:#88B04B;       /* PANTONE 15-0343 TCX Greenery */
+  --grain:#F7CAC9;      /* PANTONE 13-1520 TCX Rose Quartz */
+  --hot:#BC243C;        /* PANTONE 19-1664 TCX True Red */
+  --on-hot:#F0EEE9;     /* PANTONE 11-4201 TCX Cloud Dancer */
+  --wave:#F0EEE9;       /* PANTONE 11-4201 TCX Cloud Dancer */
+  --sel-bg:#F0EEE9;     /* PANTONE 11-4201 TCX Cloud Dancer */
+  --sel-ink:#2A2A35;    /* PANTONE 19-3924 TCX Night Sky */
+  --on-bg:#5F4B8B;      /* PANTONE 18-3838 TCX Ultra Violet */
+  --key-w:#5F4B8B;      /* PANTONE 18-3838 TCX Ultra Violet */
+  --key-w-edge:#2A2A35; /* PANTONE 19-3924 TCX Night Sky */
+  --key-b:#2A2A35;      /* PANTONE 19-3924 TCX Night Sky */
+  --key-txt:#A198AF;    /* PANTONE 16-3810 TCX Wisteria */
+  --lane-w:#41354D;     /* PANTONE 19-3725 TCX Purple Velvet */
+  --lane-b:#2A2A35;     /* PANTONE 19-3924 TCX Night Sky */
+  --lane-edge:#493C62;  /* PANTONE 19-3722 TCX Mulberry Purple */
+  --sbar:#2A2A35;       /* PANTONE 19-3924 TCX Night Sky */
+  --scrim:rgba(0,0,0,.55);
+  --lift:0 1px 2px rgba(0,0,0,.3),0 18px 44px rgba(0,0,0,.5);
+  --sel-arrow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23A198AF' stroke-width='1.4'/%3E%3C/svg%3E");
+}
+:root[data-pal="violet"] :is(.fwin,.sheet-card,.rate-pop){
+  --bg:#2C2A33;         /* PANTONE 19-3713 TCX Deep Well */
+  --panel:#433748;      /* PANTONE 19-3712 TCX Nightshade */
+  --inset:#2C2A33;      /* PANTONE 19-3713 TCX Deep Well */
+  --head:#46394B;       /* PANTONE 19-3617 TCX Mysterioso */
+  --line:#484A72;       /* PANTONE 19-3936 TCX Skipper Blue */
+  --edge:#675A74;       /* PANTONE 18-3714 TCX Mulled Grape */
+  --muted:#A198AF;      /* PANTONE 16-3810 TCX Wisteria */
+  --dim:#9890A2;        /* PANTONE 17-3910 TCX Lavender Gray */
+  --on-bg:#484A72;      /* PANTONE 19-3936 TCX Skipper Blue */
+  --lane-w:#433748;     /* PANTONE 19-3712 TCX Nightshade */
+  --lane-b:#2C2A33;     /* PANTONE 19-3713 TCX Deep Well */
+  --lane-edge:#484A72;  /* PANTONE 19-3936 TCX Skipper Blue */
+  --sel-arrow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23A198AF' stroke-width='1.4'/%3E%3C/svg%3E");}
+:root[data-pal="cloud"]{
+  color-scheme:light;
+  --bg:#DFDDD7;         /* PANTONE 12-4302 TCX Vaporous Gray */
+  --panel:#F0EEE9;      /* PANTONE 11-4201 TCX Cloud Dancer */
+  --inset:#DFDDD7;      /* PANTONE 12-4302 TCX Vaporous Gray */
+  --line:#C5C6C7;       /* PANTONE 14-4102 TCX Glacier Gray */
+  --edge:#A3A9A6;       /* PANTONE 15-4306 TCX Belgian Block */
+  --ink:#27272A;        /* PANTONE 19-3911 TCX Black Beauty */
+  --muted:#5F5E62;      /* PANTONE 18-0201 TCX Castlerock */
+  --dim:#939597;        /* PANTONE 17-5104 TCX Ultimate Gray */
+  --accent:#B45422;     /* PANTONE 16-1449 TCX Gold Flame */
+  --on-accent:#F0EEE9;  /* PANTONE 11-4201 TCX Cloud Dancer */
+  --pos:#0F4C81;        /* PANTONE 19-4052 TCX Classic Blue */
+  --loop:#009B77;       /* PANTONE 17-5641 TCX Emerald */
+  --grain:#6667AB;      /* PANTONE 17-3938 TCX Very Peri */
+  --hot:#BC243C;        /* PANTONE 19-1664 TCX True Red */
+  --on-hot:#F0EEE9;     /* PANTONE 11-4201 TCX Cloud Dancer */
+  --wave:#27272A;       /* PANTONE 19-3911 TCX Black Beauty */
+  --sel-bg:#27272A;     /* PANTONE 19-3911 TCX Black Beauty */
+  --sel-ink:#F0EEE9;    /* PANTONE 11-4201 TCX Cloud Dancer */
+  --on-bg:#C5C6C7;      /* PANTONE 14-4102 TCX Glacier Gray */
+  --key-w:#F4F5F0;      /* PANTONE 11-0601 TCX Bright White */
+  --key-w-edge:#C5C6C7; /* PANTONE 14-4102 TCX Glacier Gray */
+  --key-b:#27272A;      /* PANTONE 19-3911 TCX Black Beauty */
+  --key-txt:#5F5E62;    /* PANTONE 18-0201 TCX Castlerock */
+  --lane-w:#F0EEE9;     /* PANTONE 11-4201 TCX Cloud Dancer */
+  --lane-b:#DFDDD7;     /* PANTONE 12-4302 TCX Vaporous Gray */
+  --lane-edge:#C5C6C7;  /* PANTONE 14-4102 TCX Glacier Gray */
+  --sbar:#27272A;       /* PANTONE 19-3911 TCX Black Beauty */
+  --scrim:rgba(39,39,42,.32);
+  --lift:0 1px 2px rgba(39,39,42,.10),0 16px 40px rgba(39,39,42,.18);
+  --sel-arrow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%235F5E62' stroke-width='1.4'/%3E%3C/svg%3E");
+}
+:root[data-pal="cloud"] :is(.fwin,.sheet-card,.rate-pop){
+  --bg:#DDE0DF;         /* PANTONE 12-4306 TCX Barely Blue */
+  --panel:#F4F5F0;      /* PANTONE 11-0601 TCX Bright White */
+  --inset:#DDE0DF;      /* PANTONE 12-4306 TCX Barely Blue */
+  --head:#CACCCB;       /* PANTONE 13-4303 TCX Dawn Blue */
+  --line:#C5C6C7;       /* PANTONE 14-4102 TCX Glacier Gray */
+  --edge:#A3A9A6;       /* PANTONE 15-4306 TCX Belgian Block */
+  --muted:#5F5E62;      /* PANTONE 18-0201 TCX Castlerock */
+  --dim:#939597;        /* PANTONE 17-5104 TCX Ultimate Gray */
+  --on-bg:#C5C6C7;      /* PANTONE 14-4102 TCX Glacier Gray */
+  --lane-w:#F4F5F0;     /* PANTONE 11-0601 TCX Bright White */
+  --lane-b:#DDE0DF;     /* PANTONE 12-4306 TCX Barely Blue */
+  --lane-edge:#C5C6C7;  /* PANTONE 14-4102 TCX Glacier Gray */
+  --lift:0 1px 2px rgba(39,39,42,.10),0 16px 40px rgba(39,39,42,.2);
+  --sel-arrow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%235F5E62' stroke-width='1.4'/%3E%3C/svg%3E");}
+/* the settings pop-over and its palette list */
+.set-pop{width:min(380px,calc(100vw - 16px))}
+.pal-list{display:flex;flex-direction:column;gap:6px}
+.pal{appearance:none;display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto auto;column-gap:12px;row-gap:3px;align-items:center;
+  width:100%;text-align:left;padding:8px 10px;background:var(--inset);border:1px solid var(--line);border-radius:10px;color:var(--ink);min-height:48px}
+.pal:active{background:var(--on-bg)}
+.pal[aria-checked="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.pal-sw{grid-row:1 / span 2;display:flex;border-radius:6px;overflow:hidden;box-shadow:0 0 0 1px var(--line)}
+.pal-sw i{display:block;width:11px;height:32px}
+.pal-n{font:600 14px/1.15 var(--f-serif);display:flex;align-items:baseline;gap:8px;min-width:0}
+.pal-n b{font:500 9.5px/1 var(--f-mono);letter-spacing:.08em;color:var(--accent);margin-left:auto;white-space:nowrap}
+.pal-c{font:500 9.5px/1.35 var(--f-mono);letter-spacing:.03em;color:var(--muted);min-width:0}
+#set-btn[aria-expanded="true"]{border-color:var(--accent);color:var(--accent)}
 </style>
+<script>/* v40: the palette is on the page before it paints */try{var cp=localStorage.getItem('wavesetPlayer.pal');if(cp&&/^[a-z]{3,12}$/.test(cp)&&cp!=='beauty')document.documentElement.setAttribute('data-pal',cp);}catch(e){}</script>
 
+<div class="page" id="page">
 <div class="wrap">
   <header class="bar">
     <div class="brand" aria-label="CRGT Sample Workstation"><b>CRGT</b><span>Sample Workstation</span></div>
@@ -794,6 +1111,7 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
     <button class="btn" id="sess-btn" type="button">SESSION</button>
     <button class="btn" id="keys-btn" type="button" aria-pressed="true">KEYS</button>
     <button class="btn" id="help" type="button" aria-pressed="true">HELP</button>
+    <button class="btn icon" id="set-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="set-pop" aria-label="Settings" title="Settings: colour palettes"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="10" cy="10" r="3.1" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 1.8v2.6M10 15.6v2.6M1.8 10h2.6M15.6 10h2.6M4.2 4.2l1.8 1.8M14 14l1.8 1.8M4.2 15.8L6 14M14 6l1.8-1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
     <button class="btn icon" id="fs" type="button" aria-pressed="false" aria-label="Full screen" title="Full screen: hides the viewer's bar" hidden><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path class="fs-in" d="M2 7V2h5M13 2h5v5M18 13v5h-5M7 18H2v-5" fill="none" stroke="currentColor" stroke-width="2"/><path class="fs-out" d="M7 2v5H2M18 7h-5V2M13 18v-5h5M2 13h5v5" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
     <input type="file" id="file" accept="audio/*,.wav,.aif,.aiff,.caf,.mp3,.m4a,.flac" hidden>
     <input type="file" id="sess-file" accept=".zip,application/zip" hidden>
@@ -1046,7 +1364,8 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
     </section>
   </main>
 
-  <p class="foot"><b>Full screen:</b> the corner button (where the browser allows it) fills the whole display and hides the viewer’s bar; tap it again or press Esc to leave. <b>Sections:</b> every part of the page has an icon in the bar above the panels (it stays at the top while you scroll). Tap an icon to fold that section away or bring it back; a folded section shows just its icon. Double-tap an icon to keep only that panel open, and double-tap it again for the ones you had; ALL shows everything. The icon beside each panel’s title folds it too. The panels left open widen into the space. Each player keeps its own panels, so switching player switches the view (players, clock and keys are the same for all of them), and the whole view is saved with the session and inside its exported .zip: you keep just what you are playing with on screen, player by player. <b>Players:</b> drag a tab to move the player to another place (or hold it a moment, then drag); the others slide aside. A player keeps its sound, loops and view when it moves; its number is its place, and the keys 1–8 follow the places. The order is saved with the session. eight, each with its own sample, engine, settings, loop region and gesture loop; all eight sound together. The tab you pick receives the knobs, the waveform and the keys (1–8 on a computer keyboard switch tabs). M mutes a player. <b>Copy a player:</b> COPY takes the selected player as it is (sample, every setting, gesture loops, panels); pick another player and tap PASTE to make it a copy, then change what you like: the two are separate, and UNDO brings back what the player had. The copy can be pasted into several players. <b>CPU:</b> the pill shows how busy the sound engine is; tap it for each player’s share, how many blocks ran late in the last minute (each may be heard as a click), PROTECT (when the engine is over 85% busy, notes that are only fading out end quickly) and LATENCY (MEDIUM and SAFE give the device a longer buffer, so busy moments do not break the sound). <b>Touch:</b> drag a knob up or right to raise it, double-tap to reset. Touch the waveform to play the sample from there, at the pitch it was recorded (C4), as long as your finger stays; drag to move through it. While keys are sounding the touch does not play by itself: it moves the position the notes play from, and the touch sound comes back 120 ms after you let go of the keys. The blue handle is where you send it, each thin line is a read position you hear. <b>Several fingers:</b> every extra finger on the waveform (up to four in all) adds a read position for as long as it stays down, marked by a blue ring; each note plays all of them, so three notes with two fingers sound six streams. Lift the first finger and the next one takes over the blue handle. Gesture loops record and replay these fingers too (violet rings). <b>Scrub:</b> SKIP jumps to where your finger is; FLUID glides there through the wavesets in between, in order (backwards like tape when you drag left), as fast as GLIDE allows; while your finger moves the sound follows it, and when it rests the unit loops there. <b>Granular:</b> ENGINE above the waveform switches the player between WAVESET and GRANULAR, an engine modelled on the Tasty Chips GR-1. Only the engine's own panels change (GRAIN, GRAIN WINDOW and SCAN · KEYS take the place of WAVESET, INTERPOLATION, JITTER and PROCESS); the sample, position, loop, keys, voices, output, time stretch, filter, fx, LFOs, matrix, presets and gesture loops stay. Grains: DENSITY 0.1–1000 a second, SIZE 5 ms–5 s, SPRAY, SCAN −2×…+2×, TUNE, DIRECTION, PAN and PAN SPRAY; a window shaped by SIDES, TILT and CURVE; four spawn modes, granular glide, key sync, anti-aliasing and up to 128 grains per voice. Sample modes GRANULAR, AUDITION and TAPE; scan modes LOOP, ONE SHOT and PING PONG; KEY→POS and KEY PITCH. With LOOP on, the scan pointer, spray, grains and position offsets all stay inside the loop and scale with it, as in the waveset engine. With time stretch on, the grains keep TUNE and the stretch mode transposes to the key. <b>Simpler:</b> the third ENGINE plays the sample as Ableton's Simpler does. CLASSIC: notes start at the blue handle and play S LENGTH of the region (the LOOP region, or the file), pitched by the key, through the ADSR, with a sustain LOOP (LOOP LEN, LOOP FADE). ONE-SHOT: one note at a time, TRIGGER or GATE, FADE IN and FADE OUT. SLICE: one slice per key from ROOT, sliced by TRANSIENT, BEAT (DIVISION of the sample's tempo, found or typed), REGION (equal parts), MANUAL, or by spectral features: LOUDNESS, CHROMA (harmony), BRIGHTNESS, TIMBRE (MFCC) and NOISINESS; SENSITIVITY sets how many. Drag markers in the band at the top of the waveform, double-tap the band to add one, double-tap a marker to remove it; ◀ ▶ nudge, SPLIT and DELETE act on the selected slice; MONO, POLY and THRU playback. Every mode has SNAP, REVERSE, GAIN, TRANSPOSE, DETUNE, a pitch envelope, GLIDE and PORTA, SPREAD, PAN, VEL→VOL, RETRIG, WARP AS (bars of the BPM, with the TIME STRETCH mode as warp mode) and the FILTER (shared with the other engines). <b>LFO and MATRIX:</b> the buttons next to ENGINE open them as floating windows; drag a window by its title bar, × or Esc closes it. Two LFOs (sine, square, saw, S&amp;H and AUX, a shape you draw in the LFO SHAPE window opened by ✎ DRAW) with key sync, MAIN clock, quantize and cross-modulation; with CLOCK MAIN, RATE divides or multiplies MAIN, whether MAIN came from a take, was typed in or comes from the BPM. The matrix holds up to 16 routes from the LFOs, velocity, key, pressure or a random value per note; its menu lists the controls of the engine in use and the shared ones (envelope, filter, effect, time stretch); every note is modulated on its own. <b>Filter:</b> in every engine each note has its own filter, the one from SIMPLER: LP, HP, BP, NOTCH or MORPH, 12 or 24 dB, five circuits with DRIVE, an envelope (F.ATTACK … F.RELEASE, ENV), KEY and VEL tracking; sessions with the old 12 dB player filter open with it set the same. <b>FX:</b> each player has an FX RACK: a patch of up to five devices between IN and OUT (the FX panel shows it small; tap it or FX RACK to open the window). + ADD FX puts in a device: COMPRESS, DEFORM, DELAY, DISTORTION, DJ FILTER, MOSAIC, REDUCER, REVERB, RING or VAST; it goes after the device shown, onto the wire you picked, or at the end of the chain. Drag a device to place it; drag from its right-hand dot onto another device or OUT to wire them (or tap the dot, then the device); tap a wire and × to cut it. Devices one after another are in series; devices fed from the same place and wired to the same place are in parallel, and where wires meet the sounds mix equally (each device’s LEVEL sets its share). CHAINS rearranges them: SERIES (one chain), PARALLEL (each on its own), 2 CHAINS (side by side) or SPLIT (the first feeds the others in parallel, and with four or more they meet again in the last); DRY adds the plain sound straight from IN to OUT. Under the patch, FROM and TO wire the device shown without dragging, BYPASS lets the sound through it, REMOVE takes it out and joins the wires around it. Every knob of every device, and its LEVEL, can be modulated from the MATRIX and recorded in gesture loops. Sessions from before keep their effects, wired as they sounded. <b>SIMPLER slice LOOP:</b> FWD loops a slice while its key is held (LOOP FADE crossfades the joint), B&amp;F plays it back and forth; letting go fades it over FADE OUT. <b>Time stretch:</b> besides the four modes from the SuperCollider patch, MODE has Max stretch~’s modes (BASIC, MONOPHONIC, RHYTHMIC, GENERAL, POLYPHONIC, PADS, EXTREMESTRETCH, EFFICIENT), made here for this engine, with QUALITY and formant control, and five creative modes: BEATS and TEXTURE after Ableton Live’s warp modes, SPECTRAL after PaulXStretch (random phase, spread, harmonics tuned to the key, freeze), PRISM after CDP’s spectral shift, stretch and blur, and HYBRID after the noise-morphing method from Aalto University (sines and noise stretched apart). TRANSIENTS, after Rubber Band, chooses how GENERAL, POLYPHONIC, PADS and HYBRID treat hits. Every mode but OFF has controls of its own beyond PITCH, shown when it is chosen and described under the panel: from SuperCollider’s PitchShift P.DISP and T.DISP, Warp1’s window SHAPE, TGrains’ random rate and reverse; for the Max modes GRAIN, SEARCH, JITTER, SENS, PUNCH, FORMANT, ROUGH, DRIFT and SMOOTH; PaulXStretch’s ONSETS and octave mixer (OCT −1, OCT +1); CDP’s TRACE; and LOOP SIZE, FADE, SWING, DENSITY, WIDTH and SPLIT. All of them can be modulated from the MATRIX. <b>Loop:</b> drag on the ruler under the waveform to draw a loop; drag its edges or its middle to change it. Edges always land on a zero crossing. ◀ ▶ move an edge by one waveset; SET IN / SET OUT place it at the playhead you hear. Pinch on the ruler (or ctrl + scroll) to zoom down to single samples; the strip below shows the whole file, tap it to move the view. <b>Keys:</b> C4 (red mark) is the original pitch; press lower on a key to play louder. With time stretch OFF a key changes speed and pitch together; with any other mode it changes pitch only. On a computer keyboard, A–K play and Z/X change octave. <b>FREE:</b> the keyboard becomes a continuous surface; each finger glides on its own. <b>Process:</b> the PROCESS menu above the waveform runs Trevor Wishart’s CDP DISTORT waveset processes live (MULTIPLY, DIVIDE, HARMONIC, FRACTAL, REFORM, PITCH, QUIRK, AVERAGE, TELESCOPE, REPLACE, DELETE, OMIT, REVERSE, SHUFFLE, ENVEL); their settings are in the PROCESS panel. Group processes work inside each unit, so raise SIZE to give them wavecycles to group. ORDER reads the file in time, by waveset length or by waveset power. <b>Gesture loops:</b> each player loops what your hands do on it, in up to four layers (A–D) that play together. REC arms the selected layer; the take starts with your next move and ends when you press REC or PLAY. + adds a new layer and arms it while the other layers keep playing: give it its own LENGTH first, say MAIN ×2 for a position sweep twice as long as the notes in A. LENGTH decides what a layer plays: FREE plays the take as it is; a multiple or division of MAIN cuts the take to that length, or repeats it until it is filled. Each layer keeps its take, so its LENGTH can be changed at any time: shorter cuts, longer brings the cut part back or repeats it. MAIN is set by the first MAIN-length take, or type it in (÷2 and ×2 halve and double it), or let the tempo set it: SYNC makes MAIN a number of BARS of the signature at the BPM (type it or TAP it), CLICK ticks every beat (it is not recorded), free takes become whole beats and stay on the beat grid, and QUANT gives new takes a QUANTIZE of 1/4 … 1/32 notes (kept with the layer: change or remove it in ✎ EDIT); MAIN-length layers stay in time with it and with each other, and the lanes under the layer buttons show their lengths side by side. Notes and fingers of all layers sound together; a knob, a switch or the position follows the layer that recorded it last, so a new layer takes it over. Tap a layer to select it, tap it again to mute it: it keeps its place and comes back in time, and its controls go back to the layer below. While the layers play, REC overdubs into the selected one; a control you hold is yours. CLEAR empties the selected layer. <b>Fix a take:</b> ✎ EDIT opens the gesture editor on the selected layer, in every engine. Notes are bars (in SIMPLER SLICE the rows are slices, each drawn with its sound): drag one to move it in time, snapped to GRID, or up and down to another note or slice; drag its right end to change the length; drag its stem in VEL for how hard. POSITION shows where in the sample you played on the waveform, against the sample drawn top to bottom on the left: drag a point, or a whole jump or drag by its line, in time or to another part of the sample; it snaps to the sample's onsets (by transient, loudness, chroma, brightness, timbre or noisiness, as SLICE finds them), to zero crossings or to the loop's edges. Violet bars are extra fingers; THIN keeps the shape of long drags with fewer points. CONTROL shows a recorded knob or switch. Notes: tap one to select it and its tools appear beside it (DUPLICATE, LENGTH − +, ◀ ▶ ▲ ▼, DELETE); drag it to move it, drag the grips at either end to make it longer or shorter. Double-tap empty space to add a note and keep your finger down to drag out its length; with DRAW on, a single tap or drag on empty space draws one and a tap on a note removes it. New notes take the length and velocity of the last note you touched. DUPLICATE puts a copy right after the selection, so pressing it again builds a run. To work on several notes, hold your finger still on empty space for a moment and then drag a box around them (with a mouse just drag; ⇧-click adds or removes one); dragging, resizing, the velocity, the arrows, DUPLICATE and DELETE then act on all of them. With a keyboard: ⌫ deletes, ⌘D duplicates, ⌘A selects every note, ← → move, ⇧← ⇧→ shorter and longer, ↑ ↓ change the note, and ⌥-drag copies. Points on the waveform and in the control lane: double-tap to add or remove, the arrows move the selected one (◀ ▶ a grid step, 10 ms with GRID OFF; ▲ ▼ to the next onset or step). ▶ PLAY plays the loops while you edit. Zoom in time and in each lane (notes or slices, the position in the sample, the control): pinch with the fingers side by side to zoom time, one above the other to zoom the lane under them, and move them together to scroll; drag empty space to scroll; drag the ruler sideways to scroll and down to zoom in on the moment you hold; drag a lane's left edge up and down to scroll it, sideways to zoom it; ↔ − + zoom time around the selection, ↕ − + the lane you last touched (marked at its left edge). FIT frames the selection (or everything you played) in time and in every lane, and ALL shows the whole take again; double-tap the ruler or a lane's edge for the same on just that. Zoomed in, ◀ ▶ without GRID and ▲ ▼ between onsets or control values take finer steps, and an edit dragged to the edge scrolls the view. Drag between two lanes to give one more room (double-tap there to reset). On a trackpad: pinch or ⌘-scroll zooms time, ⌥-scroll zooms the lane, scrolling moves it. Each layer keeps its own view. QUANTIZE pulls the layer's notes and fingers (with + POSITION the jumps on the waveform too) to GRID by STRENGTH, with SWING; it keeps what you played, so it can be changed or turned off at any time, and whatever you moved by hand stays where you put it. Every change is one undo step, is saved with the session and is heard from the next cycle. LAT COMP (on unless you turn it off) puts new takes and overdubs where you heard them, moving them back by the output latency the browser reports; the button shows how much. <b>Undo:</b> ↶ and ↷ (or ⌘Z, ⇧⌘Z) step back and forward through changes to settings, samples, loop regions, gesture buffers, LENGTH, MAIN and mutes; a knob drag counts as one step. <b>Engine rate:</b> tap the audio pill at the top right (AUDIOWORKLET · 48.0 kHz) to choose the rate everything plays and records at: AUTO (your device’s own), 44.1, 48, 88.2 or 96 kHz. Higher rates leave less aliasing when you pitch up, drive or REDUCE, and take about twice the processing. Changing it restarts the sound for a moment with every sample, setting and loop kept; notes sounding at that moment stop. It is locked while a take is recording, and kept on this device. <b>Sound that keeps going:</b> there is no PLAY / STOP; the players sound from the keys, the FREE surface, the waveform and their loops. In the same AUDIO window, KEEP SCREEN ON stops the iPad locking by itself while CRGT is open, and PLAY WHEN LOCKED keeps the sound going if you lock it anyway, the way a music player does (CRGT shows on the lock screen); loops wait while it is locked and carry on in step when you unlock. If the iPad pauses the sound all the same (a call, another app, a long lock), the pill turns red and reads SOUND PAUSED: the next tap or key anywhere brings it back, with a fresh engine if the old one will not wake, keeping every sample, setting and loop. <b>Record:</b> REC captures the master (the mix you hear) as 24-bit WAV; with STEMS on it also records every player on its own track, sample-aligned with the master, and the takes sheet saves master and stems as separate files. Every joint between wavesets is spliced with a 1.5 ms crossfade from the sound's own continuation, and wavesets are cut from a DC-blocked copy of the file, so jumps, short units and fast scrubbing stay free of clicks. <b>Sessions:</b> everything is saved in this browser as you play and comes back when you reopen the page; SESSION saves named copies and exports them as .zip files with their samples.</p>
+  <p class="foot"><b>Settings:</b> the button beside HELP (a small sun) opens SETTINGS. COLOURS changes the whole look: Black Beauty, Mocha Mousse, Classic Blue, Viva Magenta, Greenery, Ultra Violet or Cloud Dancer (a light one), each made of PANTONE colours around a Color of the Year. The colours change the page, the windows and the waveform, never the sound, and the choice stays on this device. <b>Full screen:</b> the corner button (where the browser allows it) fills the whole display and hides the viewer’s bar; tap it again or press Esc to leave. <b>Sections:</b> every part of the page has an icon in the bar above the panels (it stays at the top while you scroll). Tap an icon to fold that section away or bring it back; a folded section shows just its icon. Double-tap an icon to keep only that panel open, and double-tap it again for the ones you had; ALL shows everything. The icon beside each panel’s title folds it too. The panels left open widen into the space. Each player keeps its own panels, so switching player switches the view (players, clock and keys are the same for all of them), and the whole view is saved with the session and inside its exported .zip: you keep just what you are playing with on screen, player by player. <b>Players:</b> drag a tab to move the player to another place (or hold it a moment, then drag); the others slide aside. A player keeps its sound, loops and view when it moves; its number is its place, and the keys 1–8 follow the places. The order is saved with the session. eight, each with its own sample, engine, settings, loop region and gesture loop; all eight sound together. The tab you pick receives the knobs, the waveform and the keys (1–8 on a computer keyboard switch tabs). M mutes a player. <b>Copy a player:</b> COPY takes the selected player as it is (sample, every setting, gesture loops, panels); pick another player and tap PASTE to make it a copy, then change what you like: the two are separate, and UNDO brings back what the player had. The copy can be pasted into several players. <b>CPU:</b> the pill shows how busy the sound engine is; tap it for each player’s share, how many blocks ran late in the last minute (each may be heard as a click), PROTECT (when the engine is over 85% busy, notes that are only fading out end quickly) and LATENCY (MEDIUM and SAFE give the device a longer buffer, so busy moments do not break the sound). <b>Touch:</b> drag a knob up or right to raise it, double-tap to reset. Touch the waveform to play the sample from there, at the pitch it was recorded (C4), as long as your finger stays; drag to move through it. While keys are sounding the touch does not play by itself: it moves the position the notes play from, and the touch sound comes back 120 ms after you let go of the keys. The blue handle is where you send it, each thin line is a read position you hear. <b>Several fingers:</b> every extra finger on the waveform (up to four in all) adds a read position for as long as it stays down, marked by a blue ring; each note plays all of them, so three notes with two fingers sound six streams. Lift the first finger and the next one takes over the blue handle. Gesture loops record and replay these fingers too (violet rings). <b>Scrub:</b> SKIP jumps to where your finger is; FLUID glides there through the wavesets in between, in order (backwards like tape when you drag left), as fast as GLIDE allows; while your finger moves the sound follows it, and when it rests the unit loops there. <b>Granular:</b> ENGINE above the waveform switches the player between WAVESET and GRANULAR, an engine modelled on the Tasty Chips GR-1. Only the engine's own panels change (GRAIN, GRAIN WINDOW and SCAN · KEYS take the place of WAVESET, INTERPOLATION, JITTER and PROCESS); the sample, position, loop, keys, voices, output, time stretch, filter, fx, LFOs, matrix, presets and gesture loops stay. Grains: DENSITY 0.1–1000 a second, SIZE 5 ms–5 s, SPRAY, SCAN −2×…+2×, TUNE, DIRECTION, PAN and PAN SPRAY; a window shaped by SIDES, TILT and CURVE; four spawn modes, granular glide, key sync, anti-aliasing and up to 128 grains per voice. Sample modes GRANULAR, AUDITION and TAPE; scan modes LOOP, ONE SHOT and PING PONG; KEY→POS and KEY PITCH. With LOOP on, the scan pointer, spray, grains and position offsets all stay inside the loop and scale with it, as in the waveset engine. With time stretch on, the grains keep TUNE and the stretch mode transposes to the key. <b>Simpler:</b> the third ENGINE plays the sample as Ableton's Simpler does. CLASSIC: notes start at the blue handle and play S LENGTH of the region (the LOOP region, or the file), pitched by the key, through the ADSR, with a sustain LOOP (LOOP LEN, LOOP FADE). ONE-SHOT: one note at a time, TRIGGER or GATE, FADE IN and FADE OUT. SLICE: one slice per key from ROOT, sliced by TRANSIENT, BEAT (DIVISION of the sample's tempo, found or typed), REGION (equal parts), MANUAL, or by spectral features: LOUDNESS, CHROMA (harmony), BRIGHTNESS, TIMBRE (MFCC) and NOISINESS; SENSITIVITY sets how many. Drag markers in the band at the top of the waveform, double-tap the band to add one, double-tap a marker to remove it; ◀ ▶ nudge, SPLIT and DELETE act on the selected slice; MONO, POLY and THRU playback. Every mode has SNAP, REVERSE, GAIN, TRANSPOSE, DETUNE, a pitch envelope, GLIDE and PORTA, SPREAD, PAN, VEL→VOL, RETRIG, WARP AS (bars of the BPM, with the TIME STRETCH mode as warp mode) and the FILTER (shared with the other engines). <b>LFO and MATRIX:</b> the buttons next to ENGINE open them as floating windows; drag a window by its title bar, × or Esc closes it. Two LFOs (sine, square, saw, S&amp;H and AUX, a shape you draw in the LFO SHAPE window opened by ✎ DRAW) with key sync, MAIN clock, quantize and cross-modulation; with CLOCK MAIN, RATE divides or multiplies MAIN, whether MAIN came from a take, was typed in or comes from the BPM. The matrix holds up to 16 routes from the LFOs, velocity, key, pressure or a random value per note; its menu lists the controls of the engine in use and the shared ones (envelope, filter, effect, time stretch); every note is modulated on its own. <b>Filter:</b> in every engine each note has its own filter, the one from SIMPLER: LP, HP, BP, NOTCH or MORPH, 12 or 24 dB, five circuits with DRIVE, an envelope (F.ATTACK … F.RELEASE, ENV), KEY and VEL tracking; sessions with the old 12 dB player filter open with it set the same. <b>FX:</b> each player has an FX RACK: a patch of up to five devices between IN and OUT (the FX panel shows it small; tap it or FX RACK to open the window). + ADD FX puts in a device: COMPRESS, DEFORM, DELAY, DISTORTION, DJ FILTER, MOSAIC, REDUCER, REVERB, RING or VAST; it goes after the device shown, onto the wire you picked, or at the end of the chain. Drag a device to place it; drag from its right-hand dot onto another device or OUT to wire them (or tap the dot, then the device); tap a wire and × to cut it. Devices one after another are in series; devices fed from the same place and wired to the same place are in parallel, and where wires meet the sounds mix equally (each device’s LEVEL sets its share). CHAINS rearranges them: SERIES (one chain), PARALLEL (each on its own), 2 CHAINS (side by side) or SPLIT (the first feeds the others in parallel, and with four or more they meet again in the last); DRY adds the plain sound straight from IN to OUT. Under the patch, FROM and TO wire the device shown without dragging, BYPASS lets the sound through it, REMOVE takes it out and joins the wires around it. Every knob of every device, and its LEVEL, can be modulated from the MATRIX and recorded in gesture loops. Sessions from before keep their effects, wired as they sounded. <b>SIMPLER slice LOOP:</b> FWD loops a slice while its key is held (LOOP FADE crossfades the joint), B&amp;F plays it back and forth; letting go fades it over FADE OUT. <b>Time stretch:</b> besides the four modes from the SuperCollider patch, MODE has Max stretch~’s modes (BASIC, MONOPHONIC, RHYTHMIC, GENERAL, POLYPHONIC, PADS, EXTREMESTRETCH, EFFICIENT), made here for this engine, with QUALITY and formant control, and five creative modes: BEATS and TEXTURE after Ableton Live’s warp modes, SPECTRAL after PaulXStretch (random phase, spread, harmonics tuned to the key, freeze), PRISM after CDP’s spectral shift, stretch and blur, and HYBRID after the noise-morphing method from Aalto University (sines and noise stretched apart). TRANSIENTS, after Rubber Band, chooses how GENERAL, POLYPHONIC, PADS and HYBRID treat hits. Every mode but OFF has controls of its own beyond PITCH, shown when it is chosen and described under the panel: from SuperCollider’s PitchShift P.DISP and T.DISP, Warp1’s window SHAPE, TGrains’ random rate and reverse; for the Max modes GRAIN, SEARCH, JITTER, SENS, PUNCH, FORMANT, ROUGH, DRIFT and SMOOTH; PaulXStretch’s ONSETS and octave mixer (OCT −1, OCT +1); CDP’s TRACE; and LOOP SIZE, FADE, SWING, DENSITY, WIDTH and SPLIT. All of them can be modulated from the MATRIX. <b>Loop:</b> drag on the ruler under the waveform to draw a loop; drag its edges or its middle to change it. Edges always land on a zero crossing. ◀ ▶ move an edge by one waveset; SET IN / SET OUT place it at the playhead you hear. Pinch on the ruler (or ctrl + scroll) to zoom down to single samples; the strip below shows the whole file, tap it to move the view. <b>Keys:</b> C4 (red mark) is the original pitch; press lower on a key to play louder. With time stretch OFF a key changes speed and pitch together; with any other mode it changes pitch only. On a computer keyboard, A–K play and Z/X change octave. <b>FREE:</b> the keyboard becomes a continuous surface; each finger glides on its own. <b>Process:</b> the PROCESS menu above the waveform runs Trevor Wishart’s CDP DISTORT waveset processes live (MULTIPLY, DIVIDE, HARMONIC, FRACTAL, REFORM, PITCH, QUIRK, AVERAGE, TELESCOPE, REPLACE, DELETE, OMIT, REVERSE, SHUFFLE, ENVEL); their settings are in the PROCESS panel. Group processes work inside each unit, so raise SIZE to give them wavecycles to group. ORDER reads the file in time, by waveset length or by waveset power. <b>Gesture loops:</b> each player loops what your hands do on it, in up to four layers (A–D) that play together. REC arms the selected layer; the take starts with your next move and ends when you press REC or PLAY. + adds a new layer and arms it while the other layers keep playing: give it its own LENGTH first, say MAIN ×2 for a position sweep twice as long as the notes in A. LENGTH decides what a layer plays: FREE plays the take as it is; a multiple or division of MAIN cuts the take to that length, or repeats it until it is filled. Each layer keeps its take, so its LENGTH can be changed at any time: shorter cuts, longer brings the cut part back or repeats it. MAIN is set by the first MAIN-length take, or type it in (÷2 and ×2 halve and double it), or let the tempo set it: SYNC makes MAIN a number of BARS of the signature at the BPM (type it or TAP it), CLICK ticks every beat (it is not recorded), free takes become whole beats and stay on the beat grid, and QUANT gives new takes a QUANTIZE of 1/4 … 1/32 notes (kept with the layer: change or remove it in ✎ EDIT); MAIN-length layers stay in time with it and with each other, and the lanes under the layer buttons show their lengths side by side. Notes and fingers of all layers sound together; a knob, a switch or the position follows the layer that recorded it last, so a new layer takes it over. Tap a layer to select it, tap it again to mute it: it keeps its place and comes back in time, and its controls go back to the layer below. While the layers play, REC overdubs into the selected one; a control you hold is yours. CLEAR empties the selected layer. <b>Fix a take:</b> ✎ EDIT opens the gesture editor on the selected layer, in every engine. Notes are bars (in SIMPLER SLICE the rows are slices, each drawn with its sound): drag one to move it in time, snapped to GRID, or up and down to another note or slice; drag its right end to change the length; drag its stem in VEL for how hard. POSITION shows where in the sample you played on the waveform, against the sample drawn top to bottom on the left: drag a point, or a whole jump or drag by its line, in time or to another part of the sample; it snaps to the sample's onsets (by transient, loudness, chroma, brightness, timbre or noisiness, as SLICE finds them), to zero crossings or to the loop's edges. Violet bars are extra fingers; THIN keeps the shape of long drags with fewer points. CONTROL shows a recorded knob or switch. Notes: tap one to select it and its tools appear beside it (DUPLICATE, LENGTH − +, ◀ ▶ ▲ ▼, DELETE); drag it to move it, drag the grips at either end to make it longer or shorter. Double-tap empty space to add a note and keep your finger down to drag out its length; with DRAW on, a single tap or drag on empty space draws one and a tap on a note removes it. New notes take the length and velocity of the last note you touched. DUPLICATE puts a copy right after the selection, so pressing it again builds a run. To work on several notes, hold your finger still on empty space for a moment and then drag a box around them (with a mouse just drag; ⇧-click adds or removes one); dragging, resizing, the velocity, the arrows, DUPLICATE and DELETE then act on all of them. With a keyboard: ⌫ deletes, ⌘D duplicates, ⌘A selects every note, ← → move, ⇧← ⇧→ shorter and longer, ↑ ↓ change the note, and ⌥-drag copies. Points on the waveform and in the control lane: double-tap to add or remove, the arrows move the selected one (◀ ▶ a grid step, 10 ms with GRID OFF; ▲ ▼ to the next onset or step). ▶ PLAY plays the loops while you edit. Zoom in time and in each lane (notes or slices, the position in the sample, the control): pinch with the fingers side by side to zoom time, one above the other to zoom the lane under them, and move them together to scroll; drag empty space to scroll; drag the ruler sideways to scroll and down to zoom in on the moment you hold; drag a lane's left edge up and down to scroll it, sideways to zoom it; ↔ − + zoom time around the selection, ↕ − + the lane you last touched (marked at its left edge). FIT frames the selection (or everything you played) in time and in every lane, and ALL shows the whole take again; double-tap the ruler or a lane's edge for the same on just that. Zoomed in, ◀ ▶ without GRID and ▲ ▼ between onsets or control values take finer steps, and an edit dragged to the edge scrolls the view. Drag between two lanes to give one more room (double-tap there to reset). On a trackpad: pinch or ⌘-scroll zooms time, ⌥-scroll zooms the lane, scrolling moves it. Each layer keeps its own view. QUANTIZE pulls the layer's notes and fingers (with + POSITION the jumps on the waveform too) to GRID by STRENGTH, with SWING; it keeps what you played, so it can be changed or turned off at any time, and whatever you moved by hand stays where you put it. Every change is one undo step, is saved with the session and is heard from the next cycle. LAT COMP (on unless you turn it off) puts new takes and overdubs where you heard them, moving them back by the output latency the browser reports; the button shows how much. <b>Undo:</b> ↶ and ↷ (or ⌘Z, ⇧⌘Z) step back and forward through changes to settings, samples, loop regions, gesture buffers, LENGTH, MAIN and mutes; a knob drag counts as one step. <b>Engine rate:</b> tap the audio pill at the top right (AUDIOWORKLET · 48.0 kHz) to choose the rate everything plays and records at: AUTO (your device’s own), 44.1, 48, 88.2 or 96 kHz. Higher rates leave less aliasing when you pitch up, drive or REDUCE, and take about twice the processing. Changing it restarts the sound for a moment with every sample, setting and loop kept; notes sounding at that moment stop. It is locked while a take is recording, and kept on this device. <b>Sound that keeps going:</b> there is no PLAY / STOP; the players sound from the keys, the FREE surface, the waveform and their loops. In the same AUDIO window, KEEP SCREEN ON stops the iPad locking by itself while CRGT is open, and PLAY WHEN LOCKED keeps the sound going if you lock it anyway, the way a music player does (CRGT shows on the lock screen); loops wait while it is locked and carry on in step when you unlock. If the iPad pauses the sound all the same (a call, another app, a long lock), the pill turns red and reads SOUND PAUSED: the next tap or key anywhere brings it back, with a fresh engine if the old one will not wake, keeping every sample, setting and loop. <b>Record:</b> REC captures the master (the mix you hear) as 24-bit WAV; with STEMS on it also records every player on its own track, sample-aligned with the master, and the takes sheet saves master and stems as separate files. Every joint between wavesets is spliced with a 1.5 ms crossfade from the sound's own continuation, and wavesets are cut from a DC-blocked copy of the file, so jumps, short units and fast scrubbing stay free of clicks. <b>Sessions:</b> everything is saved in this browser as you play and comes back when you reopen the page; SESSION saves named copies and exports them as .zip files with their samples.</p>
+</div>
 </div>
 
 <div class="fwin" id="fw-lfo" hidden role="dialog" aria-labelledby="wl-h">
@@ -1314,6 +1633,12 @@ html.gr .p-spf,html.sp .p-spf{order:6} html.gr .p-fx,html.sp .p-fx{order:7} html
   <div class="midi-maps" id="midi-maps"></div>
   <p class="desc">Notes play the player on screen (or channel N plays player N) and are recorded into loops like the keys. The sustain pedal holds notes; pitch bend bends the notes held. MIDI LEARN: touch a knob, then move a control on your device: that controller then turns the knob, recorded like your hand.</p>
   </div>
+</div>
+<div class="rate-pop set-pop" id="set-pop" role="dialog" aria-label="Settings" hidden>
+  <div class="ph"><h2>SETTINGS</h2><span class="rp-now" id="pal-now"></span></div>
+  <div class="rp-l">COLOURS · PANTONE</div>
+  <div class="pal-list" id="pal-list" role="radiogroup" aria-label="Colour palette"></div>
+  <p class="desc">Each palette is built from PANTONE swatches around a Color of the Year. It changes the whole page, the floating windows and the waveform; your sound and sessions stay as they are. The choice is kept on this device.</p>
 </div>
 <button class="aud-back" id="aud-back" type="button" hidden>The iPad paused the sound · tap to bring it back</button>
 <div class="sheet" id="sess" hidden>
@@ -5046,7 +5371,7 @@ function readColors(){ const cs=getComputedStyle(document.documentElement), fw=d
 readColors();
 function themeChanged(){ readColors(); baseDirty=true; ovDirty=true; dirty=true; drawWinPic(); }
 try{ matchMedia('(prefers-color-scheme: dark)').addEventListener('change',themeChanged); }catch(e){}
-new MutationObserver(themeChanged).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+new MutationObserver(themeChanged).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme','data-pal']});
 function hexA(hex,a){ const h=hex.replace('#',''); const n=parseInt(h.length===3?h.split('').map(c=>c+c).join(''):h,16); return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`; }
 
 // ---------- instances ----------
@@ -5073,6 +5398,51 @@ let ctx=null, node=null, engine=null, nodeReady=false, setupP=null;
 let dirty=true, baseDirty=true, ovDirty=true, waveDrag=null;
 const msgEl=$('#msg'); let msgTimer=0;
 function msg(t,revert){ msgEl.textContent=t; msgEl.title=t; clearTimeout(msgTimer); if(revert) msgTimer=setTimeout(()=>{ msgEl.textContent='Ready.'; },revert); }
+
+// ---------- v40: colour palettes (SETTINGS) ----------
+// The palette is an attribute on <html> (none for Black Beauty) that the CSS turns into every token; the canvases read
+// the tokens again when it changes (the theme observer above). It is kept on this device, not in sessions, and set
+// before the page paints by the small script after the styles.
+const PALS=[
+  {"id": "beauty", "name": "Black Beauty", "coty": "PANTONE 19-3911 Black Beauty · Cloud Dancer, Color of the Year 2026", "note": "charcoal, Brandied Melon", "sw": ["#27272A", "#353536", "#4A4B4D", "#D18365", "#98B4D4", "#009B77", "#F0EEE9"], "sbar": "#27272A"},
+  {"id": "mocha", "name": "Mocha Mousse", "coty": "PANTONE 17-1230 Mocha Mousse · Color of the Year 2025", "note": "espresso browns, Peach Fuzz", "sw": ["#34292A", "#433331", "#5A4743", "#FFBE98", "#98B4D4", "#88B04B", "#F3ECE0"], "sbar": "#34292A"},
+  {"id": "classic", "name": "Classic Blue", "coty": "PANTONE 19-4052 Classic Blue · Color of the Year 2020", "note": "midnight navy, Illuminating", "sw": ["#262934", "#353A4C", "#0F4C81", "#F5DF4D", "#7FCDCD", "#009B77", "#F0EEE9"], "sbar": "#262934"},
+  {"id": "magenta", "name": "Viva Magenta", "coty": "PANTONE 18-1750 Viva Magenta · Color of the Year 2023", "note": "black plum and wine, Rose Quartz", "sw": ["#2E272A", "#493338", "#BB2649", "#F7CAC9", "#7FCDCD", "#45B5AA", "#F0EEE9"], "sbar": "#2E272A"},
+  {"id": "greenery", "name": "Greenery", "coty": "PANTONE 15-0343 Greenery · Color of the Year 2017", "note": "deep forest, Mimosa", "sw": ["#262C2A", "#37413A", "#335749", "#EFC050", "#98B4D4", "#88B04B", "#F0EEE9"], "sbar": "#262C2A"},
+  {"id": "violet", "name": "Ultra Violet", "coty": "PANTONE 18-3838 Ultra Violet · Color of the Year 2018", "note": "violet night, Turquoise", "sw": ["#2A2A35", "#41354D", "#5F4B8B", "#45B5AA", "#98B4D4", "#88B04B", "#F0EEE9"], "sbar": "#2A2A35"},
+  {"id": "cloud", "name": "Cloud Dancer", "coty": "PANTONE 11-4201 Cloud Dancer · Color of the Year 2026", "note": "paper white, Gold Flame", "sw": ["#DFDDD7", "#F0EEE9", "#F4F5F0", "#B45422", "#0F4C81", "#009B77", "#27272A"], "sbar": "#27272A"}
+];
+let palCur=(()=>{ const a=document.documentElement.getAttribute('data-pal'); return PALS.some(p=>p.id===a)?a:'beauty'; })();
+if(palCur==='beauty') document.documentElement.removeAttribute('data-pal');
+const setBtn=$('#set-btn'), setPop=$('#set-pop'), palList=$('#pal-list');
+function palMeta(P){ const m=document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute('content',P.sbar); }
+function setPal(id,say){
+  const P=PALS.find(p=>p.id===id)||PALS[0]; palCur=P.id;
+  if(P.id==='beauty') document.documentElement.removeAttribute('data-pal'); else document.documentElement.setAttribute('data-pal',P.id);
+  try{ localStorage.setItem('wavesetPlayer.pal',P.id); }catch(e){}
+  palMeta(P); renderPals(); if(say) msg('Colours: '+P.name+'.',1800);
+}
+function renderPals(){
+  palList.textContent='';
+  for(const P of PALS){
+    const b=document.createElement('button'); b.type='button'; b.className='pal'; b.dataset.pal=P.id; b.setAttribute('role','radio'); b.setAttribute('aria-checked',String(P.id===palCur));
+    const s=document.createElement('span'); s.className='pal-sw'; s.setAttribute('aria-hidden','true');
+    for(const c of P.sw){ const i=document.createElement('i'); i.style.background=c; s.appendChild(i); }
+    const n=document.createElement('span'); n.className='pal-n'; n.textContent=P.name;
+    if(P.id===palCur){ const k=document.createElement('b'); k.textContent='IN USE'; n.appendChild(k); }
+    const c=document.createElement('span'); c.className='pal-c'; c.textContent=P.coty+' · '+P.note;
+    b.append(s,n,c); palList.appendChild(b);
+  }
+  const P=PALS.find(p=>p.id===palCur); $('#pal-now').textContent=P?P.name.toUpperCase():'';
+}
+palList.addEventListener('click',e=>{ const b=e.target.closest('.pal'); if(b) setPal(b.dataset.pal,true); });
+function placeSetPop(){ const r=setBtn.getBoundingClientRect(), w=setPop.offsetWidth, vw=document.documentElement.clientWidth; setPop.style.left=Math.max(8,Math.min(vw-w-8,r.right-w))+'px'; setPop.style.top=Math.round(r.bottom+8)+'px'; }
+function openSetPop(on){ setPop.hidden=!on; setBtn.setAttribute('aria-expanded',String(on)); if(on){ renderPals(); placeSetPop(); } }
+setBtn.addEventListener('click',()=>openSetPop(setPop.hidden));
+document.addEventListener('pointerdown',e=>{ if(!setPop.hidden && !setPop.contains(e.target) && !setBtn.contains(e.target)) openSetPop(false); },true);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !setPop.hidden) openSetPop(false); });
+window.addEventListener('resize',()=>{ if(!setPop.hidden) placeSetPop(); });
+palMeta(PALS.find(p=>p.id===palCur)||PALS[0]);
 function post(m){ if(!nodeReady) return; if(engine) engine.handle(m); else node.port.postMessage(m); }
 function sendTo(i,m){ m.inst=i; post(m); }
 function send(m){ sendTo(cur,m); }
@@ -7811,31 +8181,34 @@ document.addEventListener('keyup',e=>{
   const m=qwDown.get(k); qwDown.delete(k); if(!hold) noteOff(m);
 });
 window.addEventListener('blur',()=>{ if(!hold){ qwDown.forEach(m=>noteOff(m)); } qwDown.clear(); });
-// keep the page's bottom padding equal to the dock, so nothing hides under it
-const keysBtn=$('#keys-btn');
-function syncDock(){ document.documentElement.style.setProperty('--dock-h',(dock.hidden?0:dock.offsetHeight)+'px'); if(!dock.hidden && keysEl.clientWidth && Math.abs(keysEl.clientWidth-lastKeysW)>40) buildKeys(); }
+// v40: the dock is laid out under the page (not fixed over it): its height comes off the page's scrolling area by itself
+const keysBtn=$('#keys-btn'), pageEl=$('#page');
+function syncDock(){ document.documentElement.classList.toggle('nodock',dock.hidden); document.documentElement.style.setProperty('--dock-h',(dock.hidden?0:dock.offsetHeight)+'px'); if(!dock.hidden && keysEl.clientWidth && Math.abs(keysEl.clientWidth-lastKeysW)>40) buildKeys(); }
 new ResizeObserver(syncDock).observe(dock);
-// HOME-SCREEN APP (iOS): WebKit can keep a shrunken viewport after the on-screen keyboard closes, after a rotation
-// or after the screen is unlocked, and then the fixed keyboard dock floats partway up the screen. After those moments
-// (and whenever a finger lifts while the dock is not at the bottom) the page is made to measure the viewport again:
-// the full-height <body> leaves the layout for an instant and comes back, which is what restores it, with the scroll
-// position kept. The tallest height seen at the current width is the bottom the dock belongs to.
-const STANDALONE=(()=>{ try{ return navigator.standalone===true || matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches; }catch(e){ return false; } })();
+// iOS (home-screen app and CRGT Host): WebKit can keep a shrunken viewport after the on-screen keyboard closes, after a
+// rotation or after the screen is unlocked, or leave the document itself scrolled. The app's column is as tall as the
+// viewport and the document never scrolls (only .page does), so: the document is put back at the top whenever it
+// moved (unless you are typing or zoomed in), and when the column ends above the bottom of the screen the page is made
+// to measure the viewport again: the <body> leaves the layout for an instant and comes back, which is what restores
+// it, with the panels' scroll position kept. The tallest height seen at the current width is the bottom of the screen.
+const STANDALONE=(()=>{ try{ return !!window.CRGT_HOST || navigator.standalone===true || matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches; }catch(e){ return false; } })();
 let vpW=innerWidth, vpMax=innerHeight, vpT=[]; const vpDown=new Set();
 function vpNote(){ if(Math.abs(innerWidth-vpW)>2){ vpW=innerWidth; vpMax=innerHeight; } else if(innerHeight>vpMax) vpMax=innerHeight; }
 function typingNow(){ const a=document.activeElement; if(!a || a===document.body) return false; if(a.tagName==='TEXTAREA' || a.isContentEditable) return true;
   return a.tagName==='INPUT' && !/^(button|checkbox|radio|range|file|color|submit|reset)$/i.test(a.type||''); }
-function dockLow(){ if(dock.hidden) return false; const b=dock.getBoundingClientRect().bottom; return b<Math.max(vpMax,innerHeight)-4; }
+function zoomedIn(){ const vv=window.visualViewport; return !!(vv && vv.scale>1.01); }
+function colBottom(){ return dock.hidden?pageEl.getBoundingClientRect().bottom:dock.getBoundingClientRect().bottom; }
+function dockLow(){ return colBottom()<Math.max(vpMax,innerHeight)-4-(parseFloat(getComputedStyle(document.documentElement).paddingBottom)||0); }
+function docHome(){ if((scrollX||scrollY) && !typingNow() && !zoomedIn()){ scrollTo(0,0); return true; } return false; }
 function vpReflow(){
-  const sx=scrollX, sy=scrollY, b=document.body;
+  const st=pageEl.scrollTop, b=document.body;
   b.style.display='none'; void b.offsetHeight; b.style.display=''; void b.offsetHeight;
-  scrollTo(sx,Math.min(sy,Math.max(0,document.documentElement.scrollHeight-innerHeight)));
+  pageEl.scrollTop=st; if(!zoomedIn()) scrollTo(0,0);
 }
 function vpHeal(force,accept){
   vpNote();
   if(typingNow() || vpDown.size) return false;
-  // a page scrolled past its end (the keyboard leaves that behind) is pulled back first
-  const maxY=Math.max(0,document.documentElement.scrollHeight-innerHeight); if(scrollY>maxY+1) scrollTo(scrollX,maxY);
+  docHome();
   const vv=window.visualViewport, short=innerHeight<vpMax-4 || (vv && vv.scale<1.01 && vv.height<innerHeight-4);
   if(!(force || (STANDALONE && (short || dockLow())))) return false;
   vpReflow(); vpNote(); syncDock();
@@ -7847,11 +8220,14 @@ function vpSoon(){ vpT.forEach(clearTimeout); vpT=[150,500,1200].map((ms,i)=>set
 window.addEventListener('resize',()=>{ vpNote(); vpSoon(); });
 window.addEventListener('orientationchange',vpSoon);
 window.addEventListener('pageshow',vpSoon);
+// the document itself never scrolls: whatever moved it (the on-screen keyboard, a focus) is undone once typing is over
+let docHomeT=0;
+window.addEventListener('scroll',()=>{ if(!scrollX && !scrollY) return; clearTimeout(docHomeT); docHomeT=setTimeout(docHome,typingNow()?600:60); },{passive:true});
 document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') vpSoon(); });
 document.addEventListener('focusout',e=>{ const t=e.target; if(t && (t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable)) vpSoon(); },true);
 if(window.visualViewport) visualViewport.addEventListener('resize',()=>{ if(!typingNow()) vpSoon(); });
 document.addEventListener('pointerdown',e=>{ vpDown.add(e.pointerId); },true);
-const vpUp=e=>{ vpDown.delete(e.pointerId); if(!vpDown.size && STANDALONE && !typingNow() && dockLow()) setTimeout(()=>vpHeal(false,true),60); };
+const vpUp=e=>{ vpDown.delete(e.pointerId); if(!vpDown.size && !typingNow() && (scrollX||scrollY)) setTimeout(docHome,60); if(!vpDown.size && STANDALONE && !typingNow() && dockLow()) setTimeout(()=>vpHeal(false,true),60); };
 document.addEventListener('visibilitychange',()=>vpDown.clear());
 document.addEventListener('pointerup',vpUp,true); document.addEventListener('pointercancel',vpUp,true);
 function setKeys(on){ dock.hidden=!on; keysBtn.setAttribute('aria-pressed',String(on)); try{ localStorage.setItem('wavesetPlayer.keys',on?'1':'0'); }catch(e){} if(!on) allOff(); syncDock(); if(on) buildKeys(); }
@@ -10290,7 +10666,7 @@ keysBtn.addEventListener('click',()=>setTimeout(secApply,0));
 let secW=innerWidth; window.addEventListener('resize',()=>{ if(innerWidth!==secW){ secW=innerWidth; secBase.clear(); secApply(); } });
 secReady=true; secApply();
 
-window.__ws={plCopy:()=>plCopy(),plPaste:()=>plPaste(),get plClip(){ return plClip; },get cpu(){ return CPU; },get engHow(){ return engHow; },send,vpHeal,get vp(){ return {STANDALONE,vpMax,vpW,low:dockLow()}; },get tabOrder(){ return tabOrder.slice(); },get secAll(){ return {inst:inst.map(J=>[...J.secs].sort()),page:[...secGlobal].sort(),keys:!dock.hidden}; },get aud(){ return {AUD,broken:audioBroken,wake:!!wakeLock,bg:!!(bgEl&&!bgEl.paused)}; },heal:()=>audioHeal(),breakAudio:()=>{ audioBroken=true; renderAudioState(); },get secs(){ return {min:[...I.secs,...secGlobal],solo:I.secSolo}; },get ctx(){ return ctx; },get nodeReady(){ return nodeReady; },inst,M,fakeLoad:m=>onLoad(m),get cpuSaid(){ return cpuSaid; },ed:{ED,EL,tool:t=>edTool(t),put:list=>{ const L=edLayer(); if(!L) return 0; edBegin(); const S=L.src.S; for(const x of list) edPutNote(x.n,x.t,x.len,x.vel||0.8,S,x.ex); edCommit(); renderEd(); return edModel(L).notes.length; },LMIN,newTake:()=>edNewTake(),findKey:ns=>edFindKey(ns),selRows:rs=>{ const L=edLayer(); if(!L) return 0; const m=edModel(L), got=m.notes.filter(n=>rs.includes(n.row)).sort((a,b)=>a.t0-b.t0).map(n=>n.o); edSetSel(got); renderEd(); return got.length; },selIdx:ix=>{ const L=edLayer(); if(!L) return 0; const ns=edModel(L).notes.slice().sort((a,b)=>a.t0-b.t0||a.row-b.row), got=ix.map(i=>ns[i]).filter(Boolean).map(n=>n.o); edSetSel(got); renderEd(); return got.length; },model:()=>{ const L=edLayer(); return L?edModel(L):null; },geo:()=>edGeo(),rows:()=>{ const L=edLayer(); return L?edRows(edModel(L)):null; },posRange:()=>edPosRange(),ctlRange:()=>edCtlRange(),targets:()=>edTargets(),tx:(t)=>{ const L=edLayer(); return edTX(edGeo(),t,L.src.S); },yv:v=>edYV(edGeo(),v),yu:u=>edYU(edGeo(),u)},get cur(){ return cur; },snapshot,selectInst,restoreSession,sessionZip,unzip,undo,redo,get undoN(){ return undoStack.length; },takeZip,get takes(){ return takes; }};
+window.__ws={get pal(){ return palCur; },setPal:id=>setPal(id),pals:PALS.map(p=>p.id),plCopy:()=>plCopy(),plPaste:()=>plPaste(),get plClip(){ return plClip; },get cpu(){ return CPU; },get engHow(){ return engHow; },send,vpHeal,get vp(){ return {STANDALONE,vpMax,vpW,low:dockLow()}; },get tabOrder(){ return tabOrder.slice(); },get secAll(){ return {inst:inst.map(J=>[...J.secs].sort()),page:[...secGlobal].sort(),keys:!dock.hidden}; },get aud(){ return {AUD,broken:audioBroken,wake:!!wakeLock,bg:!!(bgEl&&!bgEl.paused)}; },heal:()=>audioHeal(),breakAudio:()=>{ audioBroken=true; renderAudioState(); },get secs(){ return {min:[...I.secs,...secGlobal],solo:I.secSolo}; },get ctx(){ return ctx; },get nodeReady(){ return nodeReady; },inst,M,fakeLoad:m=>onLoad(m),get cpuSaid(){ return cpuSaid; },ed:{ED,EL,tool:t=>edTool(t),put:list=>{ const L=edLayer(); if(!L) return 0; edBegin(); const S=L.src.S; for(const x of list) edPutNote(x.n,x.t,x.len,x.vel||0.8,S,x.ex); edCommit(); renderEd(); return edModel(L).notes.length; },LMIN,newTake:()=>edNewTake(),findKey:ns=>edFindKey(ns),selRows:rs=>{ const L=edLayer(); if(!L) return 0; const m=edModel(L), got=m.notes.filter(n=>rs.includes(n.row)).sort((a,b)=>a.t0-b.t0).map(n=>n.o); edSetSel(got); renderEd(); return got.length; },selIdx:ix=>{ const L=edLayer(); if(!L) return 0; const ns=edModel(L).notes.slice().sort((a,b)=>a.t0-b.t0||a.row-b.row), got=ix.map(i=>ns[i]).filter(Boolean).map(n=>n.o); edSetSel(got); renderEd(); return got.length; },model:()=>{ const L=edLayer(); return L?edModel(L):null; },geo:()=>edGeo(),rows:()=>{ const L=edLayer(); return L?edRows(edModel(L)):null; },posRange:()=>edPosRange(),ctlRange:()=>edCtlRange(),targets:()=>edTargets(),tx:(t)=>{ const L=edLayer(); return edTX(edGeo(),t,L.src.S); },yv:v=>edYV(edGeo(),v),yu:u=>edYU(edGeo(),u)},get cur(){ return cur; },snapshot,selectInst,restoreSession,sessionZip,unzip,undo,redo,get undoN(){ return undoStack.length; },takeZip,get takes(){ return takes; }};
 })();
 // ==/UI==
 </script>
