@@ -1,0 +1,24 @@
+<script>
+// the app keeps itself on the device; when a newer version is online it is fetched in the background, and a banner
+// offers to restart into it (never by itself, so a performance is not cut)
+// inside CRGT Host (the iPad app) the app keeps CRGT and fetches new versions itself: same banner, no service worker
+(function(){
+  const H=window.CRGT_HOST||null;
+  let reg=null, shown=false;
+  function banner(){ if(shown) return; shown=true; const b=document.createElement('button'); b.type='button'; b.className='aud-back';
+    b.style.background='var(--accent)'; b.style.borderColor='var(--accent)'; b.style.color='var(--on-accent)';
+    b.textContent='A new version of CRGT is ready · tap to restart into it'; b.onclick=()=>{ if(H) H.reload().catch(()=>location.reload()); else location.reload(); }; document.body.appendChild(b); }
+  if(H){ addEventListener('crgthostupdate',banner); addEventListener('load',()=>{ if(H.updateReady()) banner(); }); return; }
+  if(!('serviceWorker' in navigator) || !(location.protocol==='https:'||location.hostname==='localhost')) return;
+  addEventListener('load',async()=>{
+    try{ reg=await navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}); }catch(e){ return; }
+    const had=!!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange',()=>{ if(had) banner(); });
+    const check=()=>{ if(reg && navigator.onLine!==false) reg.update().catch(()=>{}); };
+    document.addEventListener('visibilitychange',()=>{ if(!document.hidden) check(); });
+    addEventListener('online',check); setInterval(check,20*60*1000); check();
+  });
+})();
+</script>
+</body>
+</html>
