@@ -9,7 +9,7 @@ python3 "$REPO/dev/build.py" --preview "$WD/preview.html"
 python3 "$REPO/dev/build.py" --dsp "$WD/crgt-dsp.js"
 mkdir -p "$WD/off"; python3 "$REPO/dev/build.py" --offline "$V" "$WD/off/index.html"
 cp "$REPO/manifest.webmanifest" "$REPO"/icon-*.png "$REPO/sw.js" "$WD/off/"
-for t in t_smoke t_wf44 t_lat46; do
+for t in t_smoke t_wf44 t_lat46 t_gest47; do
   out=$(node "$REPO/dev/tests/$t.js" 2>&1 || true); p=$(printf '%s\n' "$out" | grep -c '^PASS' || true); f=$(printf '%s\n' "$out" | grep -c '^FAIL' || true)
   echo "$t: PASS=$p FAIL=$f"; printf '%s\n' "$out" | grep '^FAIL' | head -5
 done
