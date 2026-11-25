@@ -1,4 +1,4 @@
-CRGT Sample Workstation, offline version (v47)
+CRGT Sample Workstation, offline version (v48)
 
 What this is
   The same app as the Claude artifact, packed to live on your iPad's home screen and run with no connection:
